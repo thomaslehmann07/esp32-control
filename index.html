@@ -506,6 +506,7 @@ button{
   border-radius:10px;
   display:block;
   cursor:crosshair;
+  touch-action:none;
 }
 
 .drawControls{
@@ -692,6 +693,7 @@ button{
 /* MOBILE */
 
 @media(max-width:800px){
+
   .sidebar{
     width:70px;
     padding:20px 8px;
@@ -774,28 +776,57 @@ button{
 <div class="app">
 
   <aside class="sidebar">
-    <div class="logo">ESP32 <span>REMOTE</span></div>
+
+    <div class="logo">
+      ESP32 <span>REMOTE</span>
+    </div>
 
     <div class="nav">
-      <button id="navHome" onclick="showView('home')">🏠 Inicio</button>
-      <button id="navChat" onclick="showView('chat')">💬 Chat</button>
-      <button id="navArcade" onclick="showView('arcade')">🎮 Arcade</button>
-      <button id="navDraw" onclick="showView('draw')">🎨 Dibujar</button>
-      <button id="navEsp" onclick="showView('esp')">⚡ ESP32</button>
+
+      <button id="navHome" onclick="showView('home')">
+        🏠 Inicio
+      </button>
+
+      <button id="navChat" onclick="showView('chat')">
+        💬 Chat
+      </button>
+
+      <button id="navArcade" onclick="showView('arcade')">
+        🎮 Arcade
+      </button>
+
+      <button id="navDraw" onclick="showView('draw')">
+        🎨 Dibujar
+      </button>
+
+      <button id="navEsp" onclick="showView('esp')">
+        ⚡ ESP32
+      </button>
+
     </div>
 
     <div class="status">
       <span id="statusDot" class="dot"></span>
       <span id="statusText">Desconectado</span>
     </div>
+
   </aside>
+
 
   <main class="main">
 
     <header class="topbar">
-      <div id="pageName" class="pageName">INICIO</div>
-      <div id="topUser" class="userName">Sin nombre</div>
+
+      <div id="pageName" class="pageName">
+        INICIO
+      </div>
+
+      <div id="topUser" class="userName">
+        Sin nombre
+      </div>
+
     </header>
+
 
     <div class="content">
 
@@ -804,28 +835,59 @@ button{
       <section id="home" class="view active">
 
         <div class="hero">
-          <h1>ESP32 Remote 🎮</h1>
+
+          <h1>
+            ESP32 Remote 🎮
+          </h1>
+
           <p>
             Controlá tu ESP32-C3, chateá y jugá partidas
             multijugador directamente desde el navegador.
           </p>
+
         </div>
 
+
         <div class="homeStats">
-          <div class="stat">
-            <div id="onlineCount" class="statValue">0</div>
-            <div class="statLabel">Jugadores online</div>
-          </div>
 
           <div class="stat">
-            <div id="roomCount" class="statValue">0</div>
-            <div class="statLabel">Salas abiertas</div>
+
+            <div id="onlineCount" class="statValue">
+              0
+            </div>
+
+            <div class="statLabel">
+              Jugadores online
+            </div>
+
           </div>
 
+
           <div class="stat">
-            <div id="espStatus" class="statValue">OFF</div>
-            <div class="statLabel">ESP32</div>
+
+            <div id="roomCount" class="statValue">
+              0
+            </div>
+
+            <div class="statLabel">
+              Salas abiertas
+            </div>
+
           </div>
+
+
+          <div class="stat">
+
+            <div id="espStatus" class="statValue">
+              OFF
+            </div>
+
+            <div class="statLabel">
+              ESP32
+            </div>
+
+          </div>
+
         </div>
 
       </section>
@@ -836,15 +898,25 @@ button{
       <section id="chat" class="view">
 
         <div class="sectionTitle">
-          <h2>Chat global 💬</h2>
-          <p>Todos los jugadores conectados pueden verlo.</p>
+
+          <h2>
+            Chat global 💬
+          </h2>
+
+          <p>
+            Todos los jugadores conectados pueden verlo.
+          </p>
+
         </div>
+
 
         <div class="chatBox">
 
           <div id="messages" class="messages"></div>
 
+
           <div class="chatInput">
+
             <input
               id="chatMessage"
               type="text"
@@ -853,9 +925,13 @@ button{
               onkeydown="if(event.key==='Enter')sendChat()"
             >
 
-            <button class="primary" onclick="sendChat()">
+            <button
+              class="primary"
+              onclick="sendChat()"
+            >
               Enviar
             </button>
+
           </div>
 
         </div>
@@ -868,94 +944,195 @@ button{
       <section id="arcade" class="view">
 
         <div class="arcadeTop">
+
           <div class="sectionTitle">
-            <h2>Arcade 🎮</h2>
-            <p>Creá una sala o unite a una partida abierta.</p>
+
+            <h2>
+              Arcade 🎮
+            </h2>
+
+            <p>
+              Creá una sala o unite a una partida abierta.
+            </p>
+
           </div>
 
-          <button class="primary" onclick="openCreateRoom()">
+
+          <button
+            class="primary"
+            onclick="openCreateRoom()"
+          >
             + Crear sala
           </button>
+
         </div>
+
 
         <div class="grid">
 
           <div class="card">
-            <div class="cardIcon">🎯</div>
-            <h3>Caza el objetivo</h3>
+
+            <div class="cardIcon">
+              🎯
+            </div>
+
+            <h3>
+              Caza el objetivo
+            </h3>
+
             <p>
               Tocá el objetivo tantas veces como puedas.
               El jugador con más puntos gana.
             </p>
-            <button class="secondary" onclick="openCreateRoom('target')">
+
+            <button
+              class="secondary"
+              onclick="openCreateRoom('target')"
+            >
               Crear partida
             </button>
+
           </div>
 
+
           <div class="card">
-            <div class="cardIcon">⚡</div>
-            <h3>Reflejos</h3>
+
+            <div class="cardIcon">
+              ⚡
+            </div>
+
+            <h3>
+              Reflejos
+            </h3>
+
             <p>
               Esperá la señal y reaccioná lo más rápido posible.
             </p>
-            <button class="secondary" onclick="openCreateRoom('reaction')">
+
+            <button
+              class="secondary"
+              onclick="openCreateRoom('reaction')"
+            >
               Crear partida
             </button>
+
           </div>
 
+
           <div class="card">
-            <div class="cardIcon">❌</div>
-            <h3>Tres en línea</h3>
+
+            <div class="cardIcon">
+              ❌
+            </div>
+
+            <h3>
+              Tres en línea
+            </h3>
+
             <p>
               Clásico tres en línea para dos jugadores.
             </p>
-            <button class="secondary" onclick="openCreateRoom('ttt')">
+
+            <button
+              class="secondary"
+              onclick="openCreateRoom('ttt')"
+            >
               Crear partida
             </button>
+
           </div>
 
+
           <div class="card">
-            <div class="cardIcon">🧠</div>
-            <h3>Adiviná el número</h3>
+
+            <div class="cardIcon">
+              🧠
+            </div>
+
+            <h3>
+              Adiviná el número
+            </h3>
+
             <p>
               Juego individual. Intentá descubrir el número secreto.
             </p>
-            <button class="secondary" onclick="startNumberGame()">
+
+            <button
+              class="secondary"
+              onclick="startNumberGame()"
+            >
               Jugar
             </button>
+
           </div>
 
+
           <div class="card">
-            <div class="cardIcon">🎨</div>
-            <h3>Duelo de dibujo</h3>
+
+            <div class="cardIcon">
+              🎨
+            </div>
+
+            <h3>
+              Duelo de dibujo
+            </h3>
+
             <p>
               Dibujen y comparen sus obras en tiempo real.
             </p>
-            <button class="secondary" onclick="openCreateRoom('draw')">
+
+            <button
+              class="secondary"
+              onclick="openCreateRoom('draw')"
+            >
               Crear partida
             </button>
+
           </div>
 
         </div>
+
+
+        <!-- ROOMS -->
 
         <div class="rooms">
+
           <div class="sectionTitle">
-            <h2>Salas disponibles</h2>
-            <p>Las salas abiertas aparecen automáticamente.</p>
+
+            <h2>
+              Salas disponibles
+            </h2>
+
+            <p>
+              Las salas abiertas aparecen automáticamente.
+            </p>
+
           </div>
 
+
           <div id="roomList"></div>
+
         </div>
+
 
         <!-- NUMBER GAME -->
 
-        <div id="numberGame" class="numberGame" style="display:none">
+        <div
+          id="numberGame"
+          class="numberGame"
+          style="display:none"
+        >
 
-          <h2>🧠 Adiviná el número</h2>
+          <h2>
+            🧠 Adiviná el número
+          </h2>
 
           <p style="color:#858b9b;margin:10px 0 20px">
+
             Estoy pensando un número entre 1 y 100.
+
           </p>
+
 
           <input
             id="numberInput"
@@ -963,13 +1140,22 @@ button{
             min="1"
             max="100"
             placeholder="Número"
+            onkeydown="if(event.key==='Enter')guessNumber()"
           >
 
-          <button class="primary" onclick="guessNumber()">
+
+          <button
+            class="primary"
+            onclick="guessNumber()"
+          >
             Adivinar
           </button>
 
-          <div id="numberMessage" class="numberMessage"></div>
+
+          <div
+            id="numberMessage"
+            class="numberMessage"
+          ></div>
 
         </div>
 
@@ -978,56 +1164,97 @@ button{
 
       <!-- ACTIVE GAME -->
 
-      <section id="activeGame" class="view gameScreen">
+      <section
+        id="activeGame"
+        class="view gameScreen"
+      >
 
         <div class="activeGameHeader">
 
-          <div id="activeGameIcon" class="activeGameIcon">
+          <div
+            id="activeGameIcon"
+            class="activeGameIcon"
+          >
             🎮
           </div>
 
+
           <div>
-            <h1 id="activeGameTitle">Partida</h1>
-            <div id="activeGameStatus" class="activeGameStatus">
+
+            <h1 id="activeGameTitle">
+              Partida
+            </h1>
+
+            <div
+              id="activeGameStatus"
+              class="activeGameStatus"
+            >
               Preparando partida...
             </div>
+
           </div>
 
         </div>
 
+
         <div class="gameArea">
 
           <div class="gameScore">
+
             <div>
               Puntos:
-              <strong id="targetScore">0</strong>
+              <strong id="targetScore">
+                0
+              </strong>
             </div>
 
             <div id="gameTimer">
               --
             </div>
+
           </div>
 
-          <div id="targetArea" class="targetArea">
 
-            <div id="target" class="target"></div>
+          <!-- TARGET / REACTION -->
 
-            <div id="gameMessage" style="color:#707687">
+          <div
+            id="targetArea"
+            class="targetArea"
+          >
+
+            <div
+              id="target"
+              class="target"
+            ></div>
+
+
+            <div
+              id="gameMessage"
+              style="color:#707687"
+            >
               Preparando...
             </div>
 
           </div>
 
-          <div id="tttArea" style="display:none">
+
+          <!-- TTT -->
+
+          <div
+            id="tttArea"
+            style="display:none"
+          >
 
             <div class="ttt">
 
               <button onclick="tttMove(0)"></button>
               <button onclick="tttMove(1)"></button>
               <button onclick="tttMove(2)"></button>
+
               <button onclick="tttMove(3)"></button>
               <button onclick="tttMove(4)"></button>
               <button onclick="tttMove(5)"></button>
+
               <button onclick="tttMove(6)"></button>
               <button onclick="tttMove(7)"></button>
               <button onclick="tttMove(8)"></button>
@@ -1036,9 +1263,17 @@ button{
 
           </div>
 
-          <div id="ranking" class="ranking">
 
-            <h3>🏆 Resultados</h3>
+          <!-- RANKING -->
+
+          <div
+            id="ranking"
+            class="ranking"
+          >
+
+            <h3>
+              🏆 Resultados
+            </h3>
 
             <div id="rankingContent">
               Esperando resultados...
@@ -1047,6 +1282,7 @@ button{
           </div>
 
         </div>
+
 
         <button
           class="secondary backGame"
@@ -1063,26 +1299,48 @@ button{
       <section id="draw" class="view">
 
         <div class="sectionTitle">
-          <h2>Duelo de dibujo 🎨</h2>
-          <p>Dibujá mientras tu rival ve el dibujo.</p>
+
+          <h2>
+            Duelo de dibujo 🎨
+          </h2>
+
+          <p>
+            Dibujá mientras tu rival ve el dibujo.
+          </p>
+
         </div>
+
 
         <div class="drawLayout">
 
           <div class="canvasBox">
-            <canvas id="canvas" class="canvas"></canvas>
+
+            <canvas
+              id="canvas"
+              class="canvas"
+            ></canvas>
+
           </div>
+
 
           <div class="drawControls">
 
-            <h3>🎨 Tu dibujo</h3>
+            <h3>
+              🎨 Tu dibujo
+            </h3>
 
             <div class="drawInfo">
+
               Dibujá libremente en el área blanca.
               Tu rival recibirá tus trazos automáticamente.
+
             </div>
 
-            <button class="danger" onclick="clearCanvas()">
+
+            <button
+              class="danger"
+              onclick="clearCanvas()"
+            >
               Limpiar
             </button>
 
@@ -1098,52 +1356,83 @@ button{
       <section id="esp" class="view">
 
         <div class="sectionTitle">
-          <h2>Control del ESP32 ⚡</h2>
-          <p>Mandá comandos directamente a tu ESP32-C3.</p>
+
+          <h2>
+            Control del ESP32 ⚡
+          </h2>
+
+          <p>
+            Mandá comandos directamente a tu ESP32-C3.
+          </p>
+
         </div>
+
 
         <div class="espButtons">
 
-          <button class="primary" onclick="sendCommand('PING')">
+          <button
+            class="primary"
+            onclick="sendCommand('PING')"
+          >
             PING
           </button>
 
-          <button class="primary" onclick="sendCommand('ON')">
+          <button
+            class="primary"
+            onclick="sendCommand('ON')"
+          >
             ON
           </button>
 
-          <button class="secondary" onclick="sendCommand('OFF')">
+          <button
+            class="secondary"
+            onclick="sendCommand('OFF')"
+          >
             OFF
           </button>
 
-          <button class="primary" onclick="sendCommand('GAME')">
+          <button
+            class="primary"
+            onclick="sendCommand('GAME')"
+          >
             GAME
           </button>
 
         </div>
 
-        <div id="espConsole" class="console">
-Esperando conexión...
+
+        <div
+          id="espConsole"
+          class="console"
+        >Esperando conexión...
         </div>
 
       </section>
 
     </div>
+
   </main>
+
 </div>
 
 
 <!-- NAME MODAL -->
 
-<div id="nameOverlay" class="overlay">
+<div
+  id="nameOverlay"
+  class="overlay"
+>
 
   <div class="modal">
 
-    <h2>👋 ¿Cómo te llamás?</h2>
+    <h2>
+      👋 ¿Cómo te llamás?
+    </h2>
 
     <p>
       Elegí el nombre que van a ver los demás jugadores.
     </p>
+
 
     <input
       id="nameInput"
@@ -1153,10 +1442,16 @@ Esperando conexión...
       onkeydown="if(event.key==='Enter')saveName()"
     >
 
+
     <div class="modalButtons">
-      <button class="primary" onclick="saveName()">
+
+      <button
+        class="primary"
+        onclick="saveName()"
+      >
         Continuar
       </button>
+
     </div>
 
   </div>
@@ -1166,15 +1461,21 @@ Esperando conexión...
 
 <!-- CREATE ROOM -->
 
-<div id="createOverlay" class="overlay">
+<div
+  id="createOverlay"
+  class="overlay"
+>
 
   <div class="modal">
 
-    <h2>🎮 Crear partida</h2>
+    <h2>
+      🎮 Crear partida
+    </h2>
 
     <p>
       Elegí el juego. Otro jugador podrá ver tu sala y entrar.
     </p>
+
 
     <div class="gameChoice">
 
@@ -1196,7 +1497,11 @@ Esperando conexión...
 
     </div>
 
-    <button class="secondary" onclick="closeCreateRoom()">
+
+    <button
+      class="secondary"
+      onclick="closeCreateRoom()"
+    >
       Cancelar
     </button>
 
@@ -1207,23 +1512,35 @@ Esperando conexión...
 
 <!-- MATCH COUNTDOWN -->
 
-<div id="matchOverlay" class="overlay">
+<div
+  id="matchOverlay"
+  class="overlay"
+>
 
   <div class="modal matchBig">
 
-    <div id="matchIcon" class="matchBigIcon">
+    <div
+      id="matchIcon"
+      class="matchBigIcon"
+    >
       🎮
     </div>
+
 
     <h2 id="matchTitle">
       Esperando jugador...
     </h2>
 
+
     <p id="matchSub">
       Compartí la sala con otro jugador.
     </p>
 
-    <div id="matchCountdown" class="matchCountdown"></div>
+
+    <div
+      id="matchCountdown"
+      class="matchCountdown"
+    ></div>
 
   </div>
 
@@ -1232,21 +1549,33 @@ Esperando conexión...
 
 <!-- RESULT -->
 
-<div id="resultOverlay" class="overlay">
+<div
+  id="resultOverlay"
+  class="overlay"
+>
 
   <div class="modal result">
 
-    <div id="resultIcon" class="resultIcon">
+    <div
+      id="resultIcon"
+      class="resultIcon"
+    >
       🏆
     </div>
+
 
     <h2 id="resultTitle">
       Resultado
     </h2>
 
+
     <p id="resultText"></p>
 
-    <button class="primary" onclick="closeResult()">
+
+    <button
+      class="primary"
+      onclick="closeResult()"
+    >
       Continuar
     </button>
 
@@ -1256,20 +1585,32 @@ Esperando conexión...
 
 
 <script>
+
 /* =========================================================
    MQTT
 ========================================================= */
 
-const MQTT_BROKER = "wss://broker.hivemq.com:8884/mqtt";
+const MQTT_BROKER =
+  "wss://broker.hivemq.com:8884/mqtt";
 
-const COMMAND_TOPIC = "thomy/esp32c3/comandos";
-const STATE_TOPIC = "thomy/esp32c3/estado";
+const COMMAND_TOPIC =
+  "thomy/esp32c3/comandos";
 
-const LOBBY = "thomy/esp32c3/v4/lobby";
-const CHAT_TOPIC = "thomy/esp32c3/v4/chat";
-const ROOM_PREFIX = "thomy/esp32c3/v4/room/";
+const STATE_TOPIC =
+  "thomy/esp32c3/estado";
+
+const LOBBY =
+  "thomy/esp32c3/v4/lobby";
+
+const CHAT_TOPIC =
+  "thomy/esp32c3/v4/chat";
+
+const ROOM_PREFIX =
+  "thomy/esp32c3/v4/room/";
+
 
 let mqttClient = null;
+
 let connected = false;
 
 
@@ -1281,10 +1622,16 @@ let playerId =
   localStorage.getItem("esp32PlayerId") ||
   crypto.randomUUID();
 
-localStorage.setItem("esp32PlayerId", playerId);
+localStorage.setItem(
+  "esp32PlayerId",
+  playerId
+);
+
 
 let username =
-  localStorage.getItem("esp32Username") || "";
+  localStorage.getItem("esp32Username") ||
+  "";
+
 
 let onlinePlayers = {};
 
@@ -1294,60 +1641,140 @@ let match = null;
 
 let matchResultShown = false;
 
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
 let targetScore = 0;
+
 let targetTime = null;
+
 let targetInterval = null;
 
 let reactionStart = null;
+
 let reactionTimeout = null;
 
+let countdownTimer = null;
+
+
 let tttState = {
-  board:["","","","","","","","",""],
+
+  board:[
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+
   turn:null,
+
   winner:null
+
 };
 
+
 let numberSecret = 0;
+
 let numberAttempts = 0;
+
+
+/* =========================================================
+   DRAW STATE
+========================================================= */
+
+let drawing = false;
+
+let lastX = 0;
+
+let lastY = 0;
 
 
 /* =========================================================
    DOM
 ========================================================= */
 
-const statusDot = document.getElementById("statusDot");
-const statusText = document.getElementById("statusText");
-const pageName = document.getElementById("pageName");
-const topUser = document.getElementById("topUser");
+const statusDot =
+  document.getElementById("statusDot");
 
-const nameOverlay = document.getElementById("nameOverlay");
+const statusText =
+  document.getElementById("statusText");
 
-const createOverlay = document.getElementById("createOverlay");
+const pageName =
+  document.getElementById("pageName");
 
-const matchOverlay = document.getElementById("matchOverlay");
-const matchTitle = document.getElementById("matchTitle");
-const matchSub = document.getElementById("matchSub");
-const matchCountdown = document.getElementById("matchCountdown");
+const topUser =
+  document.getElementById("topUser");
 
-const resultOverlay = document.getElementById("resultOverlay");
 
-const target = document.getElementById("target");
-const targetArea = document.getElementById("targetArea");
-const targetScoreEl = document.getElementById("targetScore");
+const nameOverlay =
+  document.getElementById("nameOverlay");
 
-const gameTimer = document.getElementById("gameTimer");
-const gameMessage = document.getElementById("gameMessage");
+const createOverlay =
+  document.getElementById("createOverlay");
 
-const tttArea = document.getElementById("tttArea");
 
-const rankingContent = document.getElementById("rankingContent");
+const matchOverlay =
+  document.getElementById("matchOverlay");
 
-const espConsole = document.getElementById("espConsole");
+const matchTitle =
+  document.getElementById("matchTitle");
 
-const messages = document.getElementById("messages");
+const matchSub =
+  document.getElementById("matchSub");
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const matchCountdown =
+  document.getElementById("matchCountdown");
+
+
+const resultOverlay =
+  document.getElementById("resultOverlay");
+
+
+const target =
+  document.getElementById("target");
+
+const targetArea =
+  document.getElementById("targetArea");
+
+const targetScoreEl =
+  document.getElementById("targetScore");
+
+
+const gameTimer =
+  document.getElementById("gameTimer");
+
+const gameMessage =
+  document.getElementById("gameMessage");
+
+
+const tttArea =
+  document.getElementById("tttArea");
+
+
+const rankingContent =
+  document.getElementById("rankingContent");
+
+
+const espConsole =
+  document.getElementById("espConsole");
+
+
+const messages =
+  document.getElementById("messages");
+
+
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext("2d");
 
 
 /* =========================================================
@@ -1357,42 +1784,74 @@ const ctx = canvas.getContext("2d");
 function showView(view){
 
   document.querySelectorAll(".view").forEach(v=>{
+
     v.classList.remove("active");
+
   });
 
-  const element = document.getElementById(view);
+
+  const element =
+    document.getElementById(view);
+
 
   if(element){
+
     element.classList.add("active");
+
   }
+
 
   document.querySelectorAll(".nav button").forEach(b=>{
+
     b.classList.remove("active");
+
   });
 
-  const nav = document.getElementById(
-    "nav" + view.charAt(0).toUpperCase() + view.slice(1)
-  );
+
+  const nav =
+    document.getElementById(
+      "nav" +
+      view.charAt(0).toUpperCase() +
+      view.slice(1)
+    );
+
 
   if(nav){
+
     nav.classList.add("active");
+
   }
 
+
   const names = {
+
     home:"INICIO",
+
     chat:"CHAT",
+
     arcade:"ARCADE",
+
     activeGame:"ARCADE / PARTIDA",
+
     draw:"DIBUJAR",
+
     esp:"ESP32"
+
   };
 
-  pageName.textContent = names[view] || "ESP32 REMOTE";
+
+  pageName.textContent =
+    names[view] || "ESP32 REMOTE";
+
 
   window.scrollTo({
+
     top:0,
+
     behavior:"smooth"
+
   });
+
 }
 
 
@@ -1404,79 +1863,150 @@ function openName(){
 
   nameOverlay.classList.add("show");
 
+
   setTimeout(()=>{
-    document.getElementById("nameInput").focus();
+
+    document
+      .getElementById("nameInput")
+      .focus();
+
   },100);
+
 }
+
 
 function saveName(){
 
   const input =
     document.getElementById("nameInput");
 
+
   const value =
     input.value.trim();
 
+
   if(!value) return;
 
-  username = value.substring(0,18);
+
+  username =
+    value.substring(0,18);
+
 
   localStorage.setItem(
     "esp32Username",
     username
   );
 
-  topUser.textContent = username;
+
+  topUser.textContent =
+    username;
+
 
   nameOverlay.classList.remove("show");
 
+
   announcePresence();
+
+  announceRoom();
+
 }
 
 
 /* =========================================================
-   MQTT
+   MQTT CONNECT
 ========================================================= */
 
 function connectMQTT(){
 
   const clientId =
     "web-" +
-    playerId.replaceAll("-","").substring(0,12) +
+    playerId
+      .replaceAll("-","")
+      .substring(0,12) +
     "-" +
-    Math.random().toString(16).slice(2);
+    Math.random()
+      .toString(16)
+      .slice(2);
 
-  mqttClient = mqtt.connect(
-    MQTT_BROKER,
-    {
-      clientId:clientId,
-      clean:true,
-      reconnectPeriod:3000
-    }
-  );
+
+  mqttClient =
+    mqtt.connect(
+
+      MQTT_BROKER,
+
+      {
+
+        clientId:clientId,
+
+        clean:true,
+
+        reconnectPeriod:3000
+
+      }
+
+    );
+
 
   mqttClient.on("connect",()=>{
 
     connected = true;
 
-    statusDot.classList.add("online");
-    statusText.textContent = "Online";
 
-    mqttClient.subscribe(COMMAND_TOPIC);
-    mqttClient.subscribe(STATE_TOPIC);
-    mqttClient.subscribe(LOBBY);
-    mqttClient.subscribe(CHAT_TOPIC);
+    statusDot.classList.add("online");
+
+    statusText.textContent =
+      "Online";
+
+
+    mqttClient.subscribe(
+      COMMAND_TOPIC
+    );
+
+    mqttClient.subscribe(
+      STATE_TOPIC
+    );
+
+    mqttClient.subscribe(
+      LOBBY
+    );
+
+    mqttClient.subscribe(
+      CHAT_TOPIC
+    );
+
+
+    /*
+      Si había una partida local al reconectar,
+      volvemos a suscribirnos a su canal.
+    */
+
+    if(match){
+
+      mqttClient.subscribe(
+        ROOM_PREFIX + match.id
+      );
+
+    }
+
 
     announcePresence();
+
     announceRoom();
 
-    addConsole("MQTT conectado.");
+
+    addConsole(
+      "MQTT conectado."
+    );
+
   });
 
 
   mqttClient.on("reconnect",()=>{
 
-    statusText.textContent = "Conectando...";
+    connected = false;
+
+    statusText.textContent =
+      "Conectando...";
 
   });
 
@@ -1486,62 +2016,95 @@ function connectMQTT(){
     connected = false;
 
     statusDot.classList.remove("online");
-    statusText.textContent = "Desconectado";
+
+    statusText.textContent =
+      "Desconectado";
 
   });
 
 
   mqttClient.on("error",(err)=>{
 
-    console.log("MQTT ERROR",err);
+    console.log(
+      "MQTT ERROR",
+      err
+    );
 
   });
 
 
-  mqttClient.on("message",(topic,payload)=>{
+  mqttClient.on(
+    "message",
+    (topic,payload)=>{
 
-    const data = payload.toString();
+      const data =
+        payload.toString();
 
-    if(topic === LOBBY){
 
-      try{
-        handleLobby(JSON.parse(data));
-      }catch(e){}
+      if(topic === LOBBY){
 
-      return;
+        try{
+
+          handleLobby(
+            JSON.parse(data)
+          );
+
+        }catch(e){}
+
+        return;
+
+      }
+
+
+      if(topic === CHAT_TOPIC){
+
+        try{
+
+          handleChat(
+            JSON.parse(data)
+          );
+
+        }catch(e){}
+
+        return;
+
+      }
+
+
+      if(topic.startsWith(ROOM_PREFIX)){
+
+        try{
+
+          handleRoom(
+            JSON.parse(data)
+          );
+
+        }catch(e){}
+
+        return;
+
+      }
+
+
+      if(topic === STATE_TOPIC){
+
+        handleESPState(data);
+
+        return;
+
+      }
+
+
+      if(topic === COMMAND_TOPIC){
+
+        return;
+
+      }
+
     }
 
-    if(topic === CHAT_TOPIC){
+  );
 
-      try{
-        handleChat(JSON.parse(data));
-      }catch(e){}
-
-      return;
-    }
-
-    if(topic.startsWith(ROOM_PREFIX)){
-
-      try{
-        handleRoom(JSON.parse(data));
-      }catch(e){}
-
-      return;
-    }
-
-    if(topic === STATE_TOPIC){
-
-      handleESPState(data);
-
-      return;
-    }
-
-    if(topic === COMMAND_TOPIC){
-
-      return;
-    }
-
-  });
 }
 
 
@@ -1551,14 +2114,30 @@ function connectMQTT(){
 
 function publish(topic,data){
 
-  if(!connected || !mqttClient) return;
+  if(
+    !connected ||
+    !mqttClient ||
+    !mqttClient.connected
+  ){
+
+    return false;
+
+  }
+
 
   mqttClient.publish(
+
     topic,
+
     typeof data === "string"
       ? data
       : JSON.stringify(data)
+
   );
+
+
+  return true;
+
 }
 
 
@@ -1568,15 +2147,36 @@ function publish(topic,data){
 
 function announcePresence(){
 
-  if(!connected || !username) return;
+  if(
+    !connected ||
+    !username
+  ){
 
-  publish(LOBBY,{
-    type:"presence",
-    playerId:playerId,
-    name:username,
-    busy:!!match,
-    ts:Date.now()
-  });
+    return;
+
+  }
+
+
+  publish(
+
+    LOBBY,
+
+    {
+
+      type:"presence",
+
+      playerId:playerId,
+
+      name:username,
+
+      busy:!!match,
+
+      ts:Date.now()
+
+    }
+
+  );
+
 }
 
 
@@ -1587,23 +2187,48 @@ function announcePresence(){
 function announceRoom(){
 
   if(
+
     !connected ||
+
+    !username ||
+
     !match ||
+
     match.host !== playerId ||
+
     match.state !== "open"
+
   ){
+
     return;
+
   }
 
-  publish(LOBBY,{
-    type:"room",
-    roomId:match.id,
-    hostId:playerId,
-    hostName:username,
-    game:match.game,
-    state:"open",
-    ts:Date.now()
-  });
+
+  publish(
+
+    LOBBY,
+
+    {
+
+      type:"room",
+
+      roomId:match.id,
+
+      hostId:playerId,
+
+      hostName:username,
+
+      game:match.game,
+
+      state:"open",
+
+      ts:Date.now()
+
+    }
+
+  );
+
 }
 
 
@@ -1613,39 +2238,170 @@ function announceRoom(){
 
 function handleLobby(data){
 
+  if(!data) return;
+
+
+  /* PRESENCE */
+
   if(data.type === "presence"){
 
+    if(
+      !data.playerId ||
+      !data.name
+    ){
+
+      return;
+
+    }
+
+
     onlinePlayers[data.playerId] = {
+
       name:data.name,
-      busy:data.busy,
-      ts:data.ts
+
+      busy:!!data.busy,
+
+      ts:data.ts || Date.now()
+
     };
 
+
     return;
+
   }
 
+
+  /* ROOM */
 
   if(data.type === "room"){
 
-    if(data.state !== "open") return;
+    if(
+      !data.roomId ||
+      !data.hostId ||
+      !data.game
+    ){
 
-    if(data.hostId === playerId) return;
+      return;
+
+    }
+
+
+    if(data.state !== "open"){
+
+      delete rooms[data.roomId];
+
+      return;
+
+    }
+
+
+    /*
+      No mostramos nuestra propia sala.
+    */
+
+    if(
+      data.hostId === playerId
+    ){
+
+      return;
+
+    }
+
+
+    /*
+      Si ya estamos dentro de una partida,
+      no necesitamos seguir mostrando salas.
+    */
+
+    if(match){
+
+      return;
+
+    }
+
 
     rooms[data.roomId] = {
-      ...data,
+
+      roomId:data.roomId,
+
+      hostId:data.hostId,
+
+      hostName:data.hostName || "Jugador",
+
+      game:data.game,
+
+      state:"open",
+
+      ts:data.ts || Date.now(),
+
       received:Date.now()
+
     };
 
+
     return;
+
   }
 
+
+  /* ROOM CLOSED */
 
   if(data.type === "roomClosed"){
 
-    delete rooms[data.roomId];
+    if(data.roomId){
+
+      delete rooms[data.roomId];
+
+    }
 
     return;
+
   }
+
+}
+
+
+/* =========================================================
+   ROOM HELPERS
+========================================================= */
+
+function gameName(game){
+
+  const names = {
+
+    target:"Caza el objetivo",
+
+    reaction:"Reflejos",
+
+    ttt:"Tres en línea",
+
+    draw:"Duelo de dibujo"
+
+  };
+
+
+  return names[game] || game;
+
+}
+
+
+function gameIcon(game){
+
+  const icons = {
+
+    target:"🎯",
+
+    reaction:"⚡",
+
+    ttt:"❌",
+
+    draw:"🎨"
+
+  };
+
+
+  return icons[game] || "🎮";
+
 }
 
 
@@ -1653,43 +2409,26 @@ function handleLobby(data){
    ROOM LIST
 ========================================================= */
 
-function gameName(game){
-
-  const names = {
-    target:"Caza el objetivo",
-    reaction:"Reflejos",
-    ttt:"Tres en línea",
-    draw:"Duelo de dibujo"
-  };
-
-  return names[game] || game;
-}
-
-
-function gameIcon(game){
-
-  const icons = {
-    target:"🎯",
-    reaction:"⚡",
-    ttt:"❌",
-    draw:"🎨"
-  };
-
-  return icons[game] || "🎮";
-}
-
-
 function renderRooms(){
 
   const list =
     document.getElementById("roomList");
 
-  const now = Date.now();
+
+  const now =
+    Date.now();
+
 
   Object.keys(rooms).forEach(id=>{
 
-    if(now - rooms[id].received > 8000){
+    if(
+      now -
+      rooms[id].received >
+      8000
+    ){
+
       delete rooms[id];
+
     }
 
   });
@@ -1698,20 +2437,31 @@ function renderRooms(){
   const available =
     Object.values(rooms);
 
-  document.getElementById("roomCount").textContent =
+
+  document.getElementById(
+    "roomCount"
+  ).textContent =
     available.length;
 
 
   if(!available.length){
 
-    list.innerHTML =
-      `<div class="card">
+    list.innerHTML = `
+
+      <div class="card">
+
         <p style="margin:0">
+
           No hay salas abiertas en este momento.
+
         </p>
-      </div>`;
+
+      </div>
+
+    `;
 
     return;
+
   }
 
 
@@ -1723,27 +2473,41 @@ function renderRooms(){
         <div class="roomInfo">
 
           <strong>
+
             ${gameIcon(room.game)}
-            ${escapeHTML(gameName(room.game))}
+
+            ${escapeHTML(
+              gameName(room.game)
+            )}
+
           </strong>
 
           <small>
-            ${escapeHTML(room.hostName)}
+
+            ${escapeHTML(
+              room.hostName
+            )}
+
             está esperando un jugador
+
           </small>
 
         </div>
 
+
         <button
           class="primary"
-          onclick="joinRoom('${room.roomId}')"
+          onclick="joinRoom('${escapeHTML(room.roomId)}')"
         >
+
           Unirse
+
         </button>
 
       </div>
 
     `).join("");
+
 }
 
 
@@ -1753,39 +2517,98 @@ function renderRooms(){
 
 function openCreateRoom(game=null){
 
-  createOverlay.classList.add("show");
+  if(!username){
+
+    openName();
+
+    return;
+
+  }
+
+
+  createOverlay.classList.add(
+    "show"
+  );
+
 
   if(game){
+
     createRoom(game);
+
   }
+
 }
 
 
 function closeCreateRoom(){
 
-  createOverlay.classList.remove("show");
+  createOverlay.classList.remove(
+    "show"
+  );
 
 }
 
 
 function createRoom(game){
 
+  if(!game) return;
+
+
   if(!username){
+
+    closeCreateRoom();
+
     openName();
+
     return;
+
   }
 
-  createOverlay.classList.remove("show");
+
+  if(!connected){
+
+    addConsole(
+      "Esperando conexión MQTT..."
+    );
+
+    return;
+
+  }
+
+
+  createOverlay.classList.remove(
+    "show"
+  );
+
+
+  /*
+    Si ya estábamos en una partida,
+    la cerramos antes de crear otra.
+  */
 
   if(match){
+
     leaveMatch();
+
   }
+
+
+  /*
+    Limpiamos salas viejas.
+  */
+
+  rooms = {};
 
 
   const roomId =
+
     playerId.substring(0,8) +
+
     "-" +
-    Math.random().toString(16).slice(2,8);
+
+    Math.random()
+      .toString(16)
+      .slice(2,8);
 
 
   match = {
@@ -1796,6 +2619,8 @@ function createRoom(game){
 
     host:playerId,
 
+    hostName:username,
+
     guest:null,
 
     guestName:null,
@@ -1804,19 +2629,49 @@ function createRoom(game){
 
     startSent:false,
 
-    resultSent:false
+    resultSent:false,
+
+    targetResults:{},
+
+    reactionResults:{}
 
   };
 
 
+  /*
+    Nos suscribimos PRIMERO al canal.
+  */
+
   mqttClient.subscribe(
-    ROOM_PREFIX + roomId
+
+    ROOM_PREFIX + roomId,
+
+    ()=>{
+
+      /*
+        Después de suscribirnos,
+        anunciamos la sala.
+      */
+
+      announceRoom();
+
+    }
+
   );
 
 
+  /*
+    También publicamos inmediatamente.
+    El heartbeat se encargará de mantenerla.
+  */
+
   announceRoom();
 
+
   showMatchFound();
+
+
+  announcePresence();
 
 }
 
@@ -1827,14 +2682,47 @@ function createRoom(game){
 
 function joinRoom(roomId){
 
-  const room = rooms[roomId];
+  if(match){
 
-  if(!room) return;
+    return;
+
+  }
+
+
+  const room =
+    rooms[roomId];
+
+
+  if(!room){
+
+    return;
+
+  }
+
 
   if(!username){
+
     openName();
+
     return;
+
   }
+
+
+  if(!connected){
+
+    return;
+
+  }
+
+
+  /*
+    Sacamos la sala de nuestra lista inmediatamente
+    para impedir doble click.
+  */
+
+  delete rooms[roomId];
+
 
   match = {
 
@@ -1854,28 +2742,45 @@ function joinRoom(roomId){
 
     startSent:false,
 
-    resultSent:false
+    resultSent:false,
+
+    targetResults:{},
+
+    reactionResults:{}
 
   };
 
 
   mqttClient.subscribe(
+
     ROOM_PREFIX + roomId
+
   );
 
 
   publish(
+
     ROOM_PREFIX + roomId,
+
     {
+
       type:"roomJoin",
+
       roomId:roomId,
+
       playerId:playerId,
+
       playerName:username
+
     }
+
   );
 
 
   showMatchFound();
+
+
+  announcePresence();
 
 }
 
@@ -1888,42 +2793,112 @@ function handleRoom(data){
 
   if(!match) return;
 
-  if(data.roomId !== match.id) return;
+
+  if(data.roomId !== match.id){
+
+    return;
+
+  }
 
 
-  /* HOST RECEIVES JOIN */
+  /* =====================================================
+     HOST RECEIVES JOIN
+  ===================================================== */
 
   if(data.type === "roomJoin"){
 
-    if(match.host !== playerId) return;
+    if(match.host !== playerId){
 
-    if(match.guest || match.state !== "open"){
       return;
+
     }
 
-    match.guest = data.playerId;
-    match.guestName = data.playerName;
 
-    match.state = "starting";
+    /*
+      Impide que dos jugadores entren
+      a la misma sala.
+    */
 
+    if(
+      match.guest ||
+      match.state !== "open"
+    ){
+
+      return;
+
+    }
+
+
+    match.guest =
+      data.playerId;
+
+    match.guestName =
+      data.playerName;
+
+
+    match.state =
+      "starting";
+
+
+    /*
+      Dejamos de anunciar la sala.
+    */
 
     publish(
-      ROOM_PREFIX + match.id,
+
+      LOBBY,
+
       {
-        type:"roomAccepted",
-        roomId:match.id,
-        hostId:playerId,
-        hostName:username,
-        guestId:data.playerId,
-        guestName:data.playerName
+
+        type:"roomClosed",
+
+        roomId:match.id
+
       }
+
+    );
+
+
+    /*
+      Avisamos al invitado que fue aceptado.
+    */
+
+    publish(
+
+      ROOM_PREFIX + match.id,
+
+      {
+
+        type:"roomAccepted",
+
+        roomId:match.id,
+
+        hostId:playerId,
+
+        hostName:username,
+
+        guestId:data.playerId,
+
+        guestName:data.playerName
+
+      }
+
     );
 
 
     showMatchFound();
 
 
-    if(match.startSent) return;
+    /*
+      Protección contra doble inicio.
+    */
+
+    if(match.startSent){
+
+      return;
+
+    }
+
 
     match.startSent = true;
 
@@ -1933,104 +2908,148 @@ function handleRoom(data){
 
 
     publish(
+
       ROOM_PREFIX + match.id,
+
       {
+
         type:"start",
+
         roomId:match.id,
+
         startAt:startAt
+
       }
+
     );
 
 
-    startCountdown(startAt);
+    startCountdown(
+      startAt
+    );
+
 
     return;
+
   }
 
 
-  /* GUEST RECEIVES ACCEPT */
+  /* =====================================================
+     GUEST RECEIVES ACCEPT
+  ===================================================== */
 
   if(data.type === "roomAccepted"){
 
-    if(data.guestId !== playerId) return;
+    if(
+      data.guestId !== playerId
+    ){
 
-    match.host = data.hostId;
-    match.hostName = data.hostName;
+      return;
 
-    match.guest = playerId;
-    match.guestName = username;
+    }
 
-    match.state = "starting";
+
+    match.host =
+      data.hostId;
+
+    match.hostName =
+      data.hostName;
+
+    match.guest =
+      playerId;
+
+    match.guestName =
+      username;
+
+    match.state =
+      "starting";
+
 
     showMatchFound();
 
     return;
+
   }
 
 
-  /* START */
+  /* =====================================================
+     START
+  ===================================================== */
 
   if(data.type === "start"){
 
-    if(match.state === "playing"){
+    if(
+      match.state === "playing"
+    ){
+
       return;
+
     }
 
-    match.state = "starting";
 
-    startCountdown(data.startAt);
+    match.state =
+      "starting";
+
+
+    startCountdown(
+      data.startAt
+    );
+
 
     return;
+
   }
 
 
-  /* TARGET */
-
-  if(data.type === "targetHit"){
-
-    if(data.playerId === playerId){
-      return;
-    }
-
-    return;
-  }
-
+  /* =====================================================
+     TARGET
+  ===================================================== */
 
   if(data.type === "targetFinished"){
 
     handleTargetFinished(data);
 
     return;
+
   }
 
 
-  /* REACTION */
+  /* =====================================================
+     REACTION
+  ===================================================== */
 
   if(data.type === "reactionFinished"){
 
     handleReactionFinished(data);
 
     return;
+
   }
 
 
-  /* TTT */
+  /* =====================================================
+     TTT
+  ===================================================== */
 
   if(data.type === "tttState"){
 
     handleTTTState(data);
 
     return;
+
   }
 
 
-  /* DRAW */
+  /* =====================================================
+     DRAW
+  ===================================================== */
 
   if(data.type === "draw"){
 
     receiveDrawing(data);
 
     return;
+
   }
 
 
@@ -2039,22 +3058,83 @@ function handleRoom(data){
     handleDrawingFinished(data);
 
     return;
+
   }
 
 
-  /* ROOM CLOSED */
+  /* =====================================================
+     ROOM LEAVE
+  ===================================================== */
+
+  if(data.type === "roomLeave"){
+
+    /*
+      Si el rival se fue durante la partida,
+      terminamos nuestra partida localmente.
+    */
+
+    if(
+      data.playerId !== playerId
+    ){
+
+      showGameResult(
+        true,
+        "El otro jugador abandonó la partida."
+      );
+
+    }
+
+    return;
+
+  }
+
+
+  /* =====================================================
+     ROOM CLOSED
+  ===================================================== */
 
   if(data.type === "roomClosed"){
 
-    if(match){
+    /*
+      Si nosotros mismos ya terminamos,
+      no hacemos nada.
+    */
 
-      match = null;
+    if(
+      match &&
+      data.roomId === match.id
+    ){
 
-      matchOverlay.classList.remove("show");
+      if(
+        !matchResultShown
+      ){
 
-      showView("arcade");
+        match = null;
+
+        clearInterval(
+          targetInterval
+        );
+
+        clearTimeout(
+          reactionTimeout
+        );
+
+        clearCountdown();
+
+        matchOverlay.classList.remove(
+          "show"
+        );
+
+        showView("arcade");
+
+        announcePresence();
+
+      }
 
     }
+
+
+    return;
 
   }
 
@@ -2069,17 +3149,46 @@ function showMatchFound(){
 
   if(!match) return;
 
-  matchOverlay.classList.add("show");
 
-  matchTitle.textContent =
-    match.state === "open"
-      ? "Esperando jugador..."
-      : "¡Jugador encontrado!";
+  matchOverlay.classList.add(
+    "show"
+  );
 
-  matchSub.textContent =
+
+  document.getElementById(
+    "matchIcon"
+  ).textContent =
+    gameIcon(match.game);
+
+
+  if(
     match.state === "open"
-      ? "La sala está abierta."
-      : `${gameName(match.game)} • ${match.hostName || username}`;
+  ){
+
+    matchTitle.textContent =
+      "Esperando jugador...";
+
+    matchSub.textContent =
+      "La sala está abierta.";
+
+  }
+
+  else{
+
+    matchTitle.textContent =
+      "¡Jugador encontrado!";
+
+    matchSub.textContent =
+      gameName(match.game) +
+      " • " +
+      (
+        match.guestName ||
+        match.hostName ||
+        username
+      );
+
+  }
+
 
   matchCountdown.textContent = "";
 
@@ -2090,67 +3199,109 @@ function showMatchFound(){
    COUNTDOWN
 ========================================================= */
 
+function clearCountdown(){
+
+  if(countdownTimer){
+
+    clearInterval(
+      countdownTimer
+    );
+
+    countdownTimer = null;
+
+  }
+
+}
+
+
 function startCountdown(startAt){
 
-  matchOverlay.classList.add("show");
+  if(!match) return;
+
+
+  clearCountdown();
+
+
+  matchOverlay.classList.add(
+    "show"
+  );
+
 
   matchTitle.textContent =
     "🎮 La partida comienza en...";
 
+
   matchSub.textContent =
     gameName(match.game);
 
-  const timer = setInterval(()=>{
 
-    if(!match){
-
-      clearInterval(timer);
-      return;
-    }
+  matchCountdown.textContent =
+    "3";
 
 
-    const remaining =
-      startAt - Date.now();
+  countdownTimer =
+    setInterval(()=>{
+
+      if(!match){
+
+        clearCountdown();
+
+        return;
+
+      }
 
 
-    if(remaining <= 0){
-
-      clearInterval(timer);
-
-      matchCountdown.textContent = "GO!";
-
-      /*
-        IMPORTANTE:
-
-        Acá NO volvemos a Arcade.
-
-        Apenas terminan los 3 segundos:
-        1. Cerramos el overlay.
-        2. Abrimos el juego correspondiente.
-        3. Arranca inmediatamente.
-      */
-
-      setTimeout(()=>{
-
-        if(!match) return;
-
-        matchOverlay.classList.remove("show");
-
-        startMatchGame();
-
-      },120);
-
-      return;
-    }
+      const remaining =
+        startAt - Date.now();
 
 
-    const seconds =
-      Math.ceil(remaining / 1000);
+      if(remaining <= 0){
 
-    matchCountdown.textContent =
-      seconds;
+        clearCountdown();
 
-  },50);
+
+        matchCountdown.textContent =
+          "GO!";
+
+
+        /*
+          AHORA sí:
+
+          1. Cerramos overlay.
+          2. Abrimos la pantalla real.
+          3. Iniciamos el juego.
+        */
+
+        setTimeout(()=>{
+
+          if(!match) return;
+
+
+          matchOverlay.classList.remove(
+            "show"
+          );
+
+
+          startMatchGame();
+
+        },120);
+
+
+        return;
+
+      }
+
+
+      const seconds =
+        Math.ceil(
+          remaining / 1000
+        );
+
+
+      matchCountdown.textContent =
+        seconds;
+
+    },50);
 
 }
 
@@ -2163,40 +3314,71 @@ function startMatchGame(){
 
   if(!match) return;
 
-  match.state = "playing";
 
-  matchResultShown = false;
+  /*
+    Evita volver a iniciar la misma partida.
+  */
 
-  match.resultSent = false;
+  if(match.state === "playing"){
+
+    return;
+
+  }
+
+
+  match.state =
+    "playing";
+
+
+  matchResultShown =
+    false;
+
+
+  match.resultSent =
+    false;
+
+
+  match.targetResults = {};
+
+  match.reactionResults = {};
 
 
   if(match.game === "target"){
 
-    showGameScreen("target");
+    showGameScreen(
+      "target"
+    );
 
     startTargetGame();
 
     return;
+
   }
 
 
   if(match.game === "reaction"){
 
-    showGameScreen("reaction");
+    showGameScreen(
+      "reaction"
+    );
 
     startReactionGame();
 
     return;
+
   }
 
 
   if(match.game === "ttt"){
 
-    showGameScreen("ttt");
+    showGameScreen(
+      "ttt"
+    );
 
     startTTTGame();
 
     return;
+
   }
 
 
@@ -2204,9 +3386,13 @@ function startMatchGame(){
 
     showView("draw");
 
-    initCanvas();
+    setTimeout(
+      initCanvas,
+      50
+    );
 
     return;
+
   }
 
 }
@@ -2218,62 +3404,112 @@ function startMatchGame(){
 
 function showGameScreen(game){
 
-  showView("activeGame");
+  showView(
+    "activeGame"
+  );
 
 
   const info = {
 
     target:{
+
       icon:"🎯",
+
       title:"Caza el objetivo",
-      status:"¡Tocá el objetivo lo más rápido posible!"
+
+      status:
+        "¡Tocá el objetivo lo más rápido posible!"
+
     },
+
 
     reaction:{
+
       icon:"⚡",
+
       title:"Reflejos",
-      status:"Esperá la señal..."
+
+      status:
+        "Esperá la señal..."
+
     },
 
+
     ttt:{
+
       icon:"❌",
+
       title:"Tres en línea",
-      status:"La partida está comenzando..."
+
+      status:
+        "La partida está comenzando..."
+
     }
 
   };
 
 
-  const data = info[game] || {
-    icon:"🎮",
-    title:"Partida",
-    status:"Jugando..."
-  };
+  const data =
+    info[game] || {
+
+      icon:"🎮",
+
+      title:"Partida",
+
+      status:"Jugando..."
+
+    };
 
 
-  document.getElementById("activeGameIcon")
-    .textContent = data.icon;
-
-  document.getElementById("activeGameTitle")
-    .textContent = data.title;
-
-  document.getElementById("activeGameStatus")
-    .textContent = data.status;
+  document.getElementById(
+    "activeGameIcon"
+  ).textContent =
+    data.icon;
 
 
-  target.style.display = "none";
+  document.getElementById(
+    "activeGameTitle"
+  ).textContent =
+    data.title;
 
-  targetArea.style.display = "flex";
 
-  tttArea.style.display = "none";
+  document.getElementById(
+    "activeGameStatus"
+  ).textContent =
+    data.status;
 
-  gameMessage.textContent = "";
 
-  targetScore = 0;
+  target.style.display =
+    "none";
 
-  targetScoreEl.textContent = "0";
 
-  gameTimer.textContent = "--";
+  target.style.background =
+    "#ff4757";
+
+
+  targetArea.style.display =
+    "flex";
+
+
+  tttArea.style.display =
+    "none";
+
+
+  gameMessage.textContent =
+    "";
+
+
+  targetScore =
+    0;
+
+
+  targetScoreEl.textContent =
+    "0";
+
+
+  gameTimer.textContent =
+    "--";
+
 
   rankingContent.innerHTML =
     "Esperando resultados...";
@@ -2281,20 +3517,26 @@ function showGameScreen(game){
 
   if(game === "ttt"){
 
-    targetArea.style.display = "none";
+    targetArea.style.display =
+      "none";
 
-    tttArea.style.display = "block";
+    tttArea.style.display =
+      "block";
 
   }
 
 
   pageName.textContent =
-    "ARCADE / " + data.title;
+    "ARCADE / " +
+    data.title;
 
 
   window.scrollTo({
+
     top:0,
+
     behavior:"smooth"
+
   });
 
 }
@@ -2306,1218 +3548,84 @@ function showGameScreen(game){
 
 function startTargetGame(){
 
-  clearInterval(targetInterval);
+  clearInterval(
+    targetInterval
+  );
 
-  targetScore = 0;
 
-  targetScoreEl.textContent = "0";
+  targetScore =
+    0;
+
+
+  targetScoreEl.textContent =
+    "0";
+
 
   gameMessage.textContent =
     "¡Cazá el objetivo!";
 
 
-  targetTime = Date.now() + 20000;
+  target.style.background =
+    "#ff4757";
+
+
+  targetTime =
+    Date.now() + 20000;
 
 
   moveTarget();
 
 
-  targetInterval = setInterval(()=>{
+  targetInterval =
+    setInterval(()=>{
 
-    const left =
-      Math.max(
-        0,
-        targetTime - Date.now()
-      );
+      if(
+        !match ||
+        match.game !== "target"
+      ){
 
+        clearInterval(
+          targetInterval
+        );
 
-    gameTimer.textContent =
-      (left / 1000).toFixed(1) + " s";
+        return;
 
-
-    if(left <= 0){
-
-      clearInterval(targetInterval);
-
-      target.style.display = "none";
-
-      finishTarget();
-
-    }
-
-  },50);
-
-}
-
-
-function moveTarget(){
-
-  const area =
-    targetArea.getBoundingClientRect();
-
-
-  const size = 80;
-
-  const maxX =
-    Math.max(0, area.width - size);
-
-  const maxY =
-    Math.max(0, area.height - size);
-
-
-  target.style.left =
-    Math.random() * maxX + "px";
-
-  target.style.top =
-    Math.random() * maxY + "px";
-
-  target.style.display = "block";
-
-}
-
-
-target.addEventListener("click",()=>{
-
-  if(!match || match.game !== "target") return;
-
-  if(match.state !== "playing") return;
-
-
-  targetScore++;
-
-  targetScoreEl.textContent =
-    targetScore;
-
-
-  publish(
-    ROOM_PREFIX + match.id,
-    {
-      type:"targetHit",
-      playerId:playerId,
-      score:targetScore
-    }
-  );
-
-
-  moveTarget();
-
-});
-
-
-function finishTarget(){
-
-  if(!match) return;
-
-
-  publish(
-    ROOM_PREFIX + match.id,
-    {
-      type:"targetFinished",
-      playerId:playerId,
-      name:username,
-      score:targetScore
-    }
-  );
-
-
-  handleTargetFinished({
-    playerId:playerId,
-    name:username,
-    score:targetScore
-  });
-
-}
-
-
-function handleTargetFinished(data){
-
-  if(!match) return;
-
-  if(!match.targetResults){
-    match.targetResults = {};
-  }
-
-
-  match.targetResults[data.playerId] = data;
-
-
-  renderTargetRanking();
-
-
-  const totalPlayers =
-    match.guest ? 2 : 1;
-
-
-  if(Object.keys(match.targetResults).length >= totalPlayers){
-
-    const results =
-      Object.values(match.targetResults)
-        .sort((a,b)=>b.score-a.score);
-
-
-    const winner =
-      results[0];
-
-
-    showGameResult(
-      winner.playerId === playerId,
-      winner.name + " ganó con " +
-      winner.score + " puntos."
-    );
-
-  }
-
-}
-
-
-function renderTargetRanking(){
-
-  if(!match || !match.targetResults) return;
-
-
-  const results =
-    Object.values(match.targetResults)
-      .sort((a,b)=>b.score-a.score);
-
-
-  rankingContent.innerHTML =
-    results.map((r,i)=>`
-
-      <div class="rankRow">
-        <span>
-          ${i+1}. ${escapeHTML(r.name)}
-        </span>
-
-        <strong>
-          ${r.score}
-        </strong>
-      </div>
-
-    `).join("");
-
-}
-
-
-/* =========================================================
-   REACTION GAME
-========================================================= */
-
-function startReactionGame(){
-
-  clearTimeout(reactionTimeout);
-
-  reactionStart = null;
-
-  gameMessage.textContent =
-    "Esperá...";
-
-
-  target.style.display = "none";
-
-
-  const delay =
-    1500 + Math.random() * 3500;
-
-
-  reactionTimeout =
-    setTimeout(()=>{
-
-      if(!match) return;
-
-      if(match.game !== "reaction") return;
-
-      reactionStart = Date.now();
-
-      gameMessage.textContent =
-        "¡AHORA!";
-
-      target.style.display = "block";
-
-      target.style.background =
-        "#35d07f";
-
-    },delay);
-
-}
-
-
-/* Clicking target also handles reaction */
-
-function reactionClick(){
-
-  if(!match) return;
-
-  if(match.game !== "reaction") return;
-
-  if(match.state !== "playing") return;
-
-
-  if(!reactionStart){
-
-    gameMessage.textContent =
-      "¡Demasiado pronto!";
-
-    return;
-  }
-
-
-  const time =
-    Date.now() - reactionStart;
-
-
-  target.style.display = "none";
-
-  gameMessage.textContent =
-    time + " ms";
-
-
-  publish(
-    ROOM_PREFIX + match.id,
-    {
-      type:"reactionFinished",
-      playerId:playerId,
-      name:username,
-      time:time
-    }
-  );
-
-
-  handleReactionFinished({
-    playerId:playerId,
-    name:username,
-    time:time
-  });
-
-}
-
-
-target.addEventListener("click",()=>{
-
-  if(match && match.game === "reaction"){
-    reactionClick();
-  }
-
-});
-
-
-function handleReactionFinished(data){
-
-  if(!match) return;
-
-
-  if(!match.reactionResults){
-    match.reactionResults = {};
-  }
-
-
-  match.reactionResults[data.playerId] = data;
-
-
-  const results =
-    Object.values(match.reactionResults)
-      .sort((a,b)=>a.time-b.time);
-
-
-  rankingContent.innerHTML =
-    results.map((r,i)=>`
-
-      <div class="rankRow">
-
-        <span>
-          ${i+1}. ${escapeHTML(r.name)}
-        </span>
-
-        <strong>
-          ${r.time} ms
-        </strong>
-
-      </div>
-
-    `).join("");
-
-
-  const totalPlayers =
-    match.guest ? 2 : 1;
-
-
-  if(results.length >= totalPlayers){
-
-    const winner = results[0];
-
-    showGameResult(
-      winner.playerId === playerId,
-      winner.name +
-      " ganó con " +
-      winner.time +
-      " ms."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   TTT
-========================================================= */
-
-function startTTTGame(){
-
-  tttState = {
-    board:["","","","","","","","",""],
-    turn:match.host,
-    winner:null
-  };
-
-
-  renderTTT();
-
-
-  document.getElementById("activeGameStatus")
-    .textContent =
-      tttState.turn === playerId
-        ? "Es tu turno"
-        : "Turno del rival";
-
-}
-
-
-function renderTTT(){
-
-  const buttons =
-    document.querySelectorAll(".ttt button");
-
-
-  buttons.forEach((button,index)=>{
-
-    button.textContent =
-      tttState.board[index] || "";
-
-  });
-
-
-  document.getElementById("activeGameStatus")
-    .textContent =
-      tttState.turn === playerId
-        ? "Es tu turno"
-        : "Turno del rival";
-
-}
-
-
-function tttMove(index){
-
-  if(!match) return;
-
-  if(match.game !== "ttt") return;
-
-  if(match.state !== "playing") return;
-
-  if(tttState.turn !== playerId) return;
-
-  if(tttState.board[index]) return;
-
-  if(tttState.winner) return;
-
-
-  const symbol =
-    playerId === match.host
-      ? "X"
-      : "O";
-
-
-  tttState.board[index] =
-    symbol;
-
-
-  const result =
-    checkTTT(tttState.board);
-
-
-  if(result){
-
-    tttState.winner =
-      result === "draw"
-        ? "draw"
-        : playerId;
-
-
-    renderTTT();
-
-
-    publish(
-      ROOM_PREFIX + match.id,
-      {
-        type:"tttState",
-        board:tttState.board,
-        turn:null,
-        winner:tttState.winner,
-        final:true,
-        playerId:playerId
       }
-    );
 
 
-    finishTTT(result);
+      const left =
+        Math.max(
 
-    return;
-  }
+          0,
 
+          targetTime -
+          Date.now()
 
-  tttState.turn =
-    tttState.turn === match.host
-      ? match.guest
-      : match.host;
+        );
 
 
-  renderTTT();
+      gameTimer.textContent =
+        (left / 1000)
+          .toFixed(1) +
+        " s";
 
 
-  publish(
-    ROOM_PREFIX + match.id,
-    {
-      type:"tttState",
-      board:tttState.board,
-      turn:tttState.turn,
-      winner:null,
-      final:false,
-      playerId:playerId
-    }
-  );
+      if(left <= 0){
 
-}
+        clearInterval(
+          targetInterval
+        );
 
 
-function handleTTTState(data){
+        target.style.display =
+          "none";
 
-  if(!match) return;
 
-  if(data.playerId === playerId) return;
+        finishTarget();
 
-
-  tttState.board =
-    data.board;
-
-  tttState.turn =
-    data.turn;
-
-  tttState.winner =
-    data.winner;
-
-
-  renderTTT();
-
-
-  if(data.final){
-
-    if(data.winner === "draw"){
-
-      showGameResult(
-        false,
-        "¡Empate!"
-      );
-
-    }
-
-    else{
-
-      showGameResult(
-        data.winner === playerId,
-        data.winner === match.host
-          ? match.hostName + " ganó."
-          : match.guestName + " ganó."
-      );
-
-    }
-
-  }
-
-}
-
-
-function checkTTT(board){
-
-  const wins = [
-
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-
-    [0,4,8],
-    [2,4,6]
-
-  ];
-
-
-  for(const [a,b,c] of wins){
-
-    if(
-      board[a] &&
-      board[a] === board[b] &&
-      board[a] === board[c]
-    ){
-
-      return board[a];
-
-    }
-
-  }
-
-
-  if(board.every(Boolean)){
-    return "draw";
-  }
-
-
-  return null;
-
-}
-
-
-function finishTTT(result){
-
-  if(result === "draw"){
-
-    showGameResult(
-      false,
-      "¡La partida terminó en empate!"
-    );
-
-    return;
-  }
-
-
-  const winnerSymbol =
-    result;
-
-
-  const winnerId =
-    winnerSymbol === "X"
-      ? match.host
-      : match.guest;
-
-
-  showGameResult(
-    winnerId === playerId,
-    winnerId === match.host
-      ? match.hostName + " ganó."
-      : match.guestName + " ganó."
-  );
-
-}
-
-
-/* =========================================================
-   DRAW
-========================================================= */
-
-let drawing = false;
-let lastX = 0;
-let lastY = 0;
-
-
-function initCanvas(){
-
-  const rect =
-    canvas.getBoundingClientRect();
-
-
-  canvas.width =
-    rect.width * devicePixelRatio;
-
-  canvas.height =
-    rect.height * devicePixelRatio;
-
-
-  ctx.scale(
-    devicePixelRatio,
-    devicePixelRatio
-  );
-
-
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#111";
-
-}
-
-
-function canvasPosition(e){
-
-  const rect =
-    canvas.getBoundingClientRect();
-
-
-  return {
-
-    x:e.clientX - rect.left,
-
-    y:e.clientY - rect.top
-
-  };
-
-}
-
-
-canvas.addEventListener("pointerdown",e=>{
-
-  if(!match || match.game !== "draw") return;
-
-  drawing = true;
-
-  const p =
-    canvasPosition(e);
-
-  lastX = p.x;
-  lastY = p.y;
-
-});
-
-
-canvas.addEventListener("pointermove",e=>{
-
-  if(!drawing) return;
-
-  const p =
-    canvasPosition(e);
-
-
-  ctx.beginPath();
-
-  ctx.moveTo(lastX,lastY);
-
-  ctx.lineTo(p.x,p.y);
-
-  ctx.stroke();
-
-
-  if(match){
-
-    publish(
-      ROOM_PREFIX + match.id,
-      {
-        type:"draw",
-        x1:lastX,
-        y1:lastY,
-        x2:p.x,
-        y2:p.y
       }
-    );
 
-  }
-
-
-  lastX = p.x;
-  lastY = p.y;
-
-});
-
-
-canvas.addEventListener("pointerup",()=>{
-  drawing = false;
-});
-
-canvas.addEventListener("pointerleave",()=>{
-  drawing = false;
-});
-
-
-function clearCanvas(){
-
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+    },50);
 
 }
 
-
-function receiveDrawing(data){
-
-  if(!canvas) return;
-
-
-  ctx.beginPath();
-
-  ctx.moveTo(
-    data.x1,
-    data.y1
-  );
-
-  ctx.lineTo(
-    data.x2,
-    data.y2
-  );
-
-  ctx.stroke();
-
-}
-
-
-function handleDrawingFinished(data){
-
-  showGameResult(
-    data.playerId === playerId,
-    data.name + " terminó el dibujo."
-  );
-
-}
-
-
-/* =========================================================
-   NUMBER GAME
-========================================================= */
-
-function startNumberGame(){
-
-  showView("arcade");
-
-  const game =
-    document.getElementById("numberGame");
-
-  game.style.display = "block";
-
-  numberSecret =
-    Math.floor(Math.random()*100)+1;
-
-  numberAttempts = 0;
-
-  document.getElementById("numberMessage")
-    .textContent =
-      "¡Empezá a adivinar!";
-
-  document.getElementById("numberInput").value = "";
-
-  document.getElementById("numberInput").focus();
-
-}
-
-
-function guessNumber(){
-
-  const input =
-    document.getElementById("numberInput");
-
-  const value =
-    Number(input.value);
-
-
-  if(!value || value < 1 || value > 100){
-
-    document.getElementById("numberMessage")
-      .textContent =
-        "Poné un número entre 1 y 100.";
-
-    return;
-  }
-
-
-  numberAttempts++;
-
-
-  if(value === numberSecret){
-
-    document.getElementById("numberMessage")
-      .textContent =
-        "🎉 ¡Ganaste! Lo encontraste en " +
-        numberAttempts +
-        " intentos.";
-
-    publish(
-      COMMAND_TOPIC,
-      "NUMBER_WIN:" + numberAttempts
-    );
-
-    return;
-  }
-
-
-  if(value < numberSecret){
-
-    document.getElementById("numberMessage")
-      .textContent =
-        "⬆️ Es más grande.";
-
-  }
-
-  else{
-
-    document.getElementById("numberMessage")
-      .textContent =
-        "⬇️ Es más chico.";
-
-  }
-
-}
-
-
-/* =========================================================
-   RESULT
-========================================================= */
-
-function showGameResult(won,text){
-
-  if(matchResultShown) return;
-
-  matchResultShown = true;
-
-
-  document.getElementById("resultIcon")
-    .textContent =
-      won ? "🏆" : "😢";
-
-
-  document.getElementById("resultTitle")
-    .textContent =
-      won ? "¡Ganaste!" : "Fin de la partida";
-
-
-  document.getElementById("resultText")
-    .textContent =
-      text;
-
-
-  resultOverlay.classList.add("show");
-
-
-  setTimeout(()=>{
-
-    finishMatchAfterResult();
-
-  },1800);
-
-}
-
-
-function finishMatchAfterResult(){
-
-  if(!match) return;
-
-
-  const roomId =
-    match.id;
-
-
-  publish(
-    ROOM_PREFIX + roomId,
-    {
-      type:"roomClosed",
-      roomId:roomId
-    }
-  );
-
-
-  publish(
-    LOBBY,
-    {
-      type:"roomClosed",
-      roomId:roomId
-    }
-  );
-
-
-  mqttClient.unsubscribe(
-    ROOM_PREFIX + roomId
-  );
-
-
-  match = null;
-
-  announcePresence();
-
-}
-
-
-function closeResult(){
-
-  resultOverlay.classList.remove("show");
-
-  showView("arcade");
-
-}
-
-
-/* =========================================================
-   LEAVE MATCH
-========================================================= */
-
-function leaveMatch(){
-
-  if(match){
-
-    publish(
-      ROOM_PREFIX + match.id,
-      {
-        type:"roomLeave",
-        roomId:match.id,
-        playerId:playerId
-      }
-    );
-
-
-    publish(
-      ROOM_PREFIX + match.id,
-      {
-        type:"roomClosed",
-        roomId:match.id
-      }
-    );
-
-
-    publish(
-      LOBBY,
-      {
-        type:"roomClosed",
-        roomId:match.id
-      }
-    );
-
-
-    mqttClient.unsubscribe(
-      ROOM_PREFIX + match.id
-    );
-
-  }
-
-
-  clearInterval(targetInterval);
-
-  clearTimeout(reactionTimeout);
-
-
-  match = null;
-
-  matchResultShown = false;
-
-
-  target.style.display = "none";
-
-
-  matchOverlay.classList.remove("show");
-
-  resultOverlay.classList.remove("show");
-
-
-  announcePresence();
-
-  showView("arcade");
-
-}
-
-
-/* =========================================================
-   CHAT
-========================================================= */
-
-function sendChat(){
-
-  const input =
-    document.getElementById("chatMessage");
-
-  const text =
-    input.value.trim();
-
-
-  if(!text) return;
-
-  if(!username){
-
-    openName();
-
-    return;
-
-  }
-
-
-  publish(
-    CHAT_TOPIC,
-    {
-      type:"chat",
-      playerId:playerId,
-      name:username,
-      text:text,
-      ts:Date.now()
-    }
-  );
-
-
-  input.value = "";
-
-}
-
-
-function handleChat(data){
-
-  if(data.type !== "chat") return;
-
-
-  const div =
-    document.createElement("div");
-
-  div.className = "message";
-
-
-  div.innerHTML =
-    `<strong>${escapeHTML(data.name)}:</strong>
-     <span>${escapeHTML(data.text)}</span>`;
-
-
-  messages.appendChild(div);
-
-
-  messages.scrollTop =
-    messages.scrollHeight;
-
-}
-
-
-/* =========================================================
-   ESP32
-========================================================= */
-
-function sendCommand(command){
-
-  publish(
-    COMMAND_TOPIC,
-    command
-  );
-
-
-  addConsole(
-    "→ " + command
-  );
-
-}
-
-
-function handleESPState(data){
-
-  addConsole(
-    "ESP32 → " + data
-  );
-
-
-  document.getElementById("espStatus")
-    .textContent = "ON";
-
-}
-
-
-function addConsole(text){
-
-  const now =
-    new Date().toLocaleTimeString();
-
-
-  espConsole.textContent +=
-    "\n[" + now + "] " + text;
-
-
-  espConsole.scrollTop =
-    espConsole.scrollHeight;
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(text){
-
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-/* =========================================================
-   PERIODIC TASKS
-========================================================= */
-
-setInterval(()=>{
-
-  const now =
-    Date.now();
-
-
-  Object.keys(onlinePlayers).forEach(id=>{
-
-    if(now - onlinePlayers[id].ts > 8000){
-
-      delete onlinePlayers[id];
-
-    }
-
-  });
-
-
-  Object.keys(rooms).forEach(id=>{
-
-    if(now - rooms[id].received > 8000){
-
-      delete rooms[id];
-
-    }
-
-  });
-
-
-  document.getElementById("onlineCount")
-    .textContent =
-      Object.keys(onlinePlayers).length;
-
-
-  renderRooms();
-
-},1000);
-
-
-/*
-  Mantiene viva la sala del host.
-  Así los demás jugadores pueden seguir viéndola.
-*/
-
-setInterval(()=>{
-
-  announceRoom();
-  announcePresence();
-
-},2500);
-
-
-/* =========================================================
-   START
-========================================================= */
-
-topUser.textContent =
-  username || "Sin nombre";
-
-
-if(!username){
-
-  setTimeout(()=>{
-    openName();
-  },400);
-
-}
-
-
-connectMQTT();
-
-showView("home");
-
-</script>
-
-</body>
-</html>
