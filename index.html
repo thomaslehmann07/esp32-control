@@ -8,206 +8,697 @@
 
 <style>
 :root{
---bg:#050912;--panel:#0b1321;--panel2:#101b2d;--line:#20304a;
---text:#eef7ff;--muted:#8190a8;--cyan:#38e8ff;--purple:#8b5cf6;
---green:#39e58c;--red:#ff5577;--yellow:#ffd447
+--bg:#050912;
+--panel:#0b1321;
+--panel2:#101b2d;
+--line:#20304a;
+--text:#eef7ff;
+--muted:#8190a8;
+--cyan:#38e8ff;
+--purple:#8b5cf6;
+--green:#39e58c;
+--red:#ff5577;
+--yellow:#ffd447
 }
+
 *{box-sizing:border-box}
+
 body{
-margin:0;background:
+margin:0;
+background:
 radial-gradient(circle at 15% 0%,#17345b 0,transparent 32%),
-radial-gradient(circle at 100% 100%,#291344 0,transparent 30%),var(--bg);
-color:var(--text);font-family:Arial,sans-serif;min-height:100vh
+radial-gradient(circle at 100% 100%,#291344 0,transparent 30%),
+var(--bg);
+color:var(--text);
+font-family:Arial,sans-serif;
+min-height:100vh
 }
+
 button,input{font:inherit}
 button{cursor:pointer}
-.app{display:grid;grid-template-columns:225px 1fr;min-height:100vh}
+
+.app{
+display:grid;
+grid-template-columns:225px 1fr;
+min-height:100vh
+}
+
 .sidebar{
-position:sticky;top:0;height:100vh;padding:22px 14px;
-border-right:1px solid var(--line);background:#050912dd;backdrop-filter:blur(15px)
+position:sticky;
+top:0;
+height:100vh;
+padding:22px 14px;
+border-right:1px solid var(--line);
+background:#050912dd;
+backdrop-filter:blur(15px)
 }
-.logo{font-size:19px;font-weight:900;letter-spacing:2px}
-.logo span,.cyan{color:var(--cyan)}
-.sub{font-size:10px;color:var(--muted);margin-top:5px}
-.nav{display:grid;gap:6px;margin-top:30px}
+
+.logo{
+font-size:19px;
+font-weight:900;
+letter-spacing:2px
+}
+
+.logo span,.cyan{
+color:var(--cyan)
+}
+
+.sub{
+font-size:10px;
+color:var(--muted);
+margin-top:5px
+}
+
+.nav{
+display:grid;
+gap:6px;
+margin-top:30px
+}
+
 .nav button{
-padding:12px;border:1px solid transparent;border-radius:11px;
-background:transparent;color:var(--muted);text-align:left
+padding:12px;
+border:1px solid transparent;
+border-radius:11px;
+background:transparent;
+color:var(--muted);
+text-align:left
 }
-.nav button:hover,.nav button.active{
-color:#fff;border-color:var(--line);
+
+.nav button:hover,
+.nav button.active{
+color:#fff;
+border-color:var(--line);
 background:linear-gradient(90deg,#38e8ff16,#8b5cf615)
 }
+
 .status{
-position:absolute;left:14px;right:14px;bottom:15px;padding:12px;
-border:1px solid var(--line);border-radius:12px;background:#ffffff05
+position:absolute;
+left:14px;
+right:14px;
+bottom:15px;
+padding:12px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#ffffff05
 }
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:5px}
-.dot.online{background:var(--green);box-shadow:0 0 12px var(--green)}
-main{width:100%;max-width:1500px;margin:auto;padding:24px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+
+.dot{
+display:inline-block;
+width:8px;
+height:8px;
+border-radius:50%;
+background:var(--red);
+margin-right:5px
+}
+
+.dot.online{
+background:var(--green);
+box-shadow:0 0 12px var(--green)
+}
+
+main{
+width:100%;
+max-width:1500px;
+margin:auto;
+padding:24px
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
+}
+
 .muted{color:var(--muted)}
-.view{display:none}.view.active{display:block}
+
+.view{display:none}
+.view.active{display:block}
+
 .card{
-padding:18px;border:1px solid var(--line);border-radius:17px;
-background:#0b1321dd;box-shadow:0 15px 50px #0003
+padding:18px;
+border:1px solid var(--line);
+border-radius:17px;
+background:#0b1321dd;
+box-shadow:0 15px 50px #0003
 }
+
 .hero{
-padding:35px;border:1px solid var(--line);border-radius:23px;
+padding:35px;
+border:1px solid var(--line);
+border-radius:23px;
 background:linear-gradient(135deg,#38e8ff0d,#8b5cf615)
 }
-.hero h1{font-size:clamp(42px,7vw,75px);line-height:.9;margin:12px 0}
-.eyebrow{color:var(--cyan);font-size:11px;font-weight:bold;letter-spacing:3px}
-.grid{display:grid;gap:14px}.two{grid-template-columns:1.4fr 1fr}
-.three{grid-template-columns:repeat(3,1fr)}
-.stats{grid-template-columns:repeat(4,1fr);margin:15px 0}
-.label{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-.big{font-size:28px;font-weight:900;margin-top:6px}
+
+.hero h1{
+font-size:clamp(42px,7vw,75px);
+line-height:.9;
+margin:12px 0
+}
+
+.eyebrow{
+color:var(--cyan);
+font-size:11px;
+font-weight:bold;
+letter-spacing:3px
+}
+
+.grid{
+display:grid;
+gap:14px
+}
+
+.two{
+grid-template-columns:1.4fr 1fr
+}
+
+.three{
+grid-template-columns:repeat(3,1fr)
+}
+
+.stats{
+grid-template-columns:repeat(4,1fr);
+margin:15px 0
+}
+
+.label{
+font-size:10px;
+color:var(--muted);
+letter-spacing:2px;
+text-transform:uppercase
+}
+
+.big{
+font-size:28px;
+font-weight:900;
+margin-top:6px
+}
+
 .btn{
-padding:10px 14px;border-radius:10px;border:1px solid var(--line);
-background:#101a2b;color:#fff
+padding:10px 14px;
+border-radius:10px;
+border:1px solid var(--line);
+background:#101a2b;
+color:#fff
 }
-.btn:hover{background:#17243a}
-.btn.primary{border:0;background:linear-gradient(135deg,#16c9e6,#7652db);font-weight:bold}
-.btn.green{border-color:#1f674b;color:#71f5b0}
-.btn.danger{border-color:#6d2638;color:#ff9caf}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+
+.btn:hover{
+background:#17243a
+}
+
+.btn.primary{
+border:0;
+background:linear-gradient(135deg,#16c9e6,#7652db);
+font-weight:bold
+}
+
+.btn.green{
+border-color:#1f674b;
+color:#71f5b0
+}
+
+.btn.danger{
+border-color:#6d2638;
+color:#ff9caf
+}
+
+.btn:disabled{
+opacity:.45;
+cursor:not-allowed
+}
+
+.actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:15px
+}
+
 .input{
-width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;
-background:#070d17;color:#fff;outline:none
+width:100%;
+padding:11px;
+border:1px solid var(--line);
+border-radius:10px;
+background:#070d17;
+color:#fff;
+outline:none
 }
-.input:focus{border-color:#47749e}
-.players{display:grid;gap:8px}
+
+.input:focus{
+border-color:#47749e
+}
+
+.players{
+display:grid;
+gap:8px
+}
+
 .player{
-display:flex;align-items:center;justify-content:space-between;
-padding:12px;border:1px solid var(--line);border-radius:12px;background:#09101b
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:12px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#09101b
 }
+
 .avatar{
-width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
-background:linear-gradient(135deg,#38e8ff,#8b5cf6);font-weight:900
+width:34px;
+height:34px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,#38e8ff,#8b5cf6);
+font-weight:900
 }
-.playerLeft{display:flex;align-items:center;gap:10px}
-.badge{font-size:10px;padding:5px 8px;border-radius:99px;background:#ffffff0c;color:var(--muted)}
-.badge.green{color:#71f5b0;background:#39e58c15}
-.badge.yellow{color:#ffe37b;background:#ffd44715}
-.roomCode{
-font-size:46px;font-weight:900;letter-spacing:8px;text-align:center;
-color:var(--cyan);margin:10px 0
+
+.playerLeft{
+display:flex;
+align-items:center;
+gap:10px
 }
-.center{text-align:center}
-.messages{height:460px;overflow:auto}
-.message{max-width:78%;padding:10px 12px;margin:8px 0;border:1px solid var(--line);border-radius:13px;background:#101a2b}
-.message.me{margin-left:auto;background:#38e8ff12}
-.message small{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}
-.composer{display:flex;gap:8px}
-.gameGrid{grid-template-columns:repeat(2,1fr)}
-.game{min-height:170px}
-.gameIcon{font-size:38px}
+
+.badge{
+font-size:10px;
+padding:5px 8px;
+border-radius:99px;
+background:#ffffff0c;
+color:var(--muted)
+}
+
+.badge.green{
+color:#71f5b0;
+background:#39e58c15
+}
+
+.badge.yellow{
+color:#ffe27b;
+background:#ffd44715
+}
+
+.roomCard{
+padding:15px;
+border:1px solid var(--line);
+border-radius:14px;
+background:#09101b
+}
+
+.roomTop{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px
+}
+
+.roomGame{
+font-size:18px;
+font-weight:900
+}
+
+.roomInfo{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:9px
+}
+
+.roomActions{
+margin-top:12px;
+display:flex;
+gap:8px
+}
+
+.messages{
+height:460px;
+overflow:auto
+}
+
+.message{
+max-width:78%;
+padding:10px 12px;
+margin:8px 0;
+border:1px solid var(--line);
+border-radius:13px;
+background:#101a2b
+}
+
+.message.me{
+margin-left:auto;
+background:#38e8ff12
+}
+
+.message small{
+display:block;
+color:var(--muted);
+font-size:10px;
+margin-bottom:4px
+}
+
+.composer{
+display:flex;
+gap:8px
+}
+
+.gameGrid{
+grid-template-columns:repeat(2,1fr)
+}
+
+.game{
+min-height:170px
+}
+
+.gameIcon{
+font-size:38px
+}
+
 .targetArea{
-height:300px;position:relative;overflow:hidden;border:1px dashed #334866;
-border-radius:14px;background:#070d17
+height:300px;
+position:relative;
+overflow:hidden;
+border:1px dashed #334866;
+border-radius:14px;
+background:#070d17
 }
+
 .target{
-position:absolute;width:45px;height:45px;border-radius:50%;border:0;
+position:absolute;
+width:45px;
+height:45px;
+border-radius:50%;
+border:0;
 background:radial-gradient(circle,#fff 0 8%,#ff647f 9% 38%,#8b142c 39% 100%);
 box-shadow:0 0 25px #ff5577aa
 }
-.ttt{display:grid;grid-template-columns:repeat(3,80px);gap:7px;justify-content:center;margin:15px 0}
-.tttCell{
-width:80px;height:80px;border:1px solid var(--line);border-radius:11px;
-background:#080f1b;color:#fff;font-size:32px
-}
-.console{
-height:520px;overflow:auto;padding:13px;border:1px solid #1e2b3d;
-border-radius:15px;background:#020509;font:12px monospace
-}
-.log{margin:3px 0}.in{color:#64e7c7}.out{color:#63d7ff}.warn{color:#ffd447}.err{color:#ff637f}
-.drawGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-.canvas{width:100%;height:460px;background:#fff;border-radius:14px;display:block;touch-action:none}
-.tools{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
-.color{width:30px;height:30px;border-radius:50%;border:2px solid transparent}
-.color.selected{border-color:#fff}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.compare img{width:100%;background:#fff;border-radius:12px}
-.ranking{display:grid;gap:7px}
-.rank{display:flex;justify-content:space-between;padding:9px;border:1px solid var(--line);border-radius:10px}
 
-#resultOverlay,#nameOverlay,#matchOverlay,#inviteOverlay{
-position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-z-index:1000;background:#02050ccc;backdrop-filter:blur(15px)
+.ttt{
+display:grid;
+grid-template-columns:repeat(3,80px);
+gap:7px;
+justify-content:center;
+margin:15px 0
 }
-#resultOverlay.show,#nameOverlay.show,#matchOverlay.show,#inviteOverlay.show{display:flex}
+
+.tttCell{
+width:80px;
+height:80px;
+border:1px solid var(--line);
+border-radius:11px;
+background:#080f1b;
+color:#fff;
+font-size:32px
+}
+
+.console{
+height:520px;
+overflow:auto;
+padding:13px;
+border:1px solid #1e2b3d;
+border-radius:15px;
+background:#020509;
+font:12px monospace
+}
+
+.log{
+margin:3px 0
+}
+
+.in{color:#64e7c7}
+.out{color:#63d7ff}
+.warn{color:#ffd447}
+.err{color:#ff637f}
+
+.drawGrid{
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:14px
+}
+
+.canvas{
+width:100%;
+height:460px;
+background:#fff;
+border-radius:14px;
+display:block;
+touch-action:none
+}
+
+.tools{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+margin:10px 0
+}
+
+.color{
+width:30px;
+height:30px;
+border-radius:50%;
+border:2px solid transparent
+}
+
+.color.selected{
+border-color:#fff
+}
+
+.compare{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.compare img{
+width:100%;
+background:#fff;
+border-radius:12px
+}
+
+.ranking{
+display:grid;
+gap:7px
+}
+
+.rank{
+display:flex;
+justify-content:space-between;
+padding:9px;
+border:1px solid var(--line);
+border-radius:10px
+}
+
+#resultOverlay,
+#nameOverlay,
+#matchOverlay,
+#roomOverlay{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+z-index:1000;
+background:#02050ccc;
+backdrop-filter:blur(15px)
+}
+
+#resultOverlay.show,
+#nameOverlay.show,
+#matchOverlay.show,
+#roomOverlay.show{
+display:flex
+}
 
 .overlayBox{
-width:min(600px,92%);padding:35px 25px;text-align:center;
-border:1px solid var(--line);border-radius:27px;background:#0b1321;
-box-shadow:0 30px 100px #0009;animation:pop .45s ease
+width:min(600px,92%);
+padding:35px 25px;
+text-align:center;
+border:1px solid var(--line);
+border-radius:27px;
+background:#0b1321;
+box-shadow:0 30px 100px #0009;
+animation:pop .45s ease
 }
-.resultIcon{font-size:75px}.resultTitle{font-size:48px;font-weight:900;margin:10px 0}
-.resultName{font-size:30px;color:var(--cyan);font-weight:900}
-.resultSub{color:var(--muted);margin:10px 0 25px}
-.matchPlayers{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;gap:10px;margin:25px 0}
-.matchPlayer{padding:20px;border:1px solid var(--line);border-radius:16px}
-.vs{font-weight:900;color:var(--purple);font-size:20px}
 
-.inviteIcon{
-font-size:70px;
-animation:float 1.8s ease-in-out infinite
+.resultIcon{
+font-size:75px
 }
-.inviteName{
-font-size:32px;
+
+.resultTitle{
+font-size:48px;
 font-weight:900;
-color:var(--cyan)
+margin:10px 0
 }
-.waitingPulse{
-display:inline-block;
-width:10px;height:10px;border-radius:50%;
-background:var(--green);
-box-shadow:0 0 0 0 #39e58c;
-animation:pulse 1.5s infinite
+
+.resultName{
+font-size:30px;
+color:var(--cyan);
+font-weight:900
+}
+
+.resultSub{
+color:var(--muted);
+margin:10px 0 25px
+}
+
+.matchPlayers{
+display:grid;
+grid-template-columns:1fr 50px 1fr;
+align-items:center;
+gap:10px;
+margin:25px 0
+}
+
+.matchPlayer{
+padding:20px;
+border:1px solid var(--line);
+border-radius:16px
+}
+
+.vs{
+font-weight:900;
+color:var(--purple);
+font-size:20px
 }
 
 .confetti{
-position:fixed;top:-20px;width:8px;height:14px;z-index:2000;
-animation:fall linear forwards;pointer-events:none
+position:fixed;
+top:-20px;
+width:8px;
+height:14px;
+z-index:2000;
+animation:fall linear forwards;
+pointer-events:none
 }
+
 .toast{
-position:fixed;right:18px;bottom:18px;padding:12px 15px;
-border:1px solid var(--line);border-radius:12px;background:#0d1727;
-transform:translateY(100px);opacity:0;transition:.25s;z-index:3000
+position:fixed;
+right:18px;
+bottom:18px;
+padding:12px 15px;
+border:1px solid var(--line);
+border-radius:12px;
+background:#0d1727;
+transform:translateY(100px);
+opacity:0;
+transition:.25s;
+z-index:3000
 }
-.toast.show{transform:none;opacity:1}
+
+.toast.show{
+transform:none;
+opacity:1
+}
+
+.readyBox{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin:20px 0
+}
+
+.readyPlayer{
+padding:16px;
+border:1px solid var(--line);
+border-radius:14px
+}
+
+.ready{
+border-color:#1f674b;
+background:#39e58c12
+}
+
+.roomBigTitle{
+font-size:32px;
+font-weight:900;
+margin:5px 0
+}
+
+.countdown{
+font-size:65px;
+font-weight:900;
+color:var(--cyan)
+}
 
 @keyframes pop{
-from{transform:scale(.7);opacity:0}
-to{transform:scale(1);opacity:1}
+from{
+transform:scale(.7);
+opacity:0
 }
+to{
+transform:scale(1);
+opacity:1
+}
+}
+
 @keyframes fall{
-to{transform:translateY(110vh) translateX(var(--x)) rotate(720deg);opacity:0}
+to{
+transform:translateY(110vh) translateX(var(--x)) rotate(720deg);
+opacity:0
 }
-@keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-10px)}
-}
-@keyframes pulse{
-70%{box-shadow:0 0 0 12px transparent}
-100%{box-shadow:0 0 0 0 transparent}
 }
 
 @media(max-width:900px){
-.app{grid-template-columns:1fr}
-.sidebar{
-position:fixed;bottom:0;top:auto;height:auto;width:100%;padding:6px;
-z-index:50;border:0;border-top:1px solid var(--line)
+
+.app{
+grid-template-columns:1fr
 }
-.logo,.sub,.status{display:none}
-.nav{margin:0;grid-template-columns:repeat(6,1fr);gap:3px}
-.nav button{text-align:center;padding:9px 3px;font-size:10px}
-main{padding:15px 15px 80px}
-.stats,.two,.three,.gameGrid,.drawGrid{grid-template-columns:1fr}
-.roomCode{font-size:34px}
-.matchPlayers{grid-template-columns:1fr}
-.vs{display:none}
+
+.sidebar{
+position:fixed;
+bottom:0;
+top:auto;
+height:auto;
+width:100%;
+padding:6px;
+z-index:50;
+border:0;
+border-top:1px solid var(--line)
+}
+
+.logo,
+.sub,
+.status{
+display:none
+}
+
+.nav{
+margin:0;
+grid-template-columns:repeat(6,1fr);
+gap:3px
+}
+
+.nav button{
+text-align:center;
+padding:9px 3px;
+font-size:10px
+}
+
+main{
+padding:15px 15px 80px
+}
+
+.stats,
+.two,
+.three,
+.gameGrid,
+.drawGrid{
+grid-template-columns:1fr
+}
+
+.roomBigTitle{
+font-size:25px
+}
+
+.matchPlayers{
+grid-template-columns:1fr
+}
+
+.vs{
+display:none
+}
+
+.readyBox{
+grid-template-columns:1fr
+}
 }
 </style>
 </head>
@@ -218,8 +709,13 @@ main{padding:15px 15px 80px}
 
 <aside class="sidebar">
 
-<div class="logo">THOMY <span>// ARCADE</span></div>
-<div class="sub">ESP32 REMOTE CONTROL</div>
+<div class="logo">
+THOMY <span>// ARCADE</span>
+</div>
+
+<div class="sub">
+ESP32 REMOTE CONTROL
+</div>
 
 <nav class="nav">
 <button class="active" data-view="home">🏠 Inicio</button>
@@ -231,11 +727,20 @@ main{padding:15px 15px 80px}
 </nav>
 
 <div class="status">
+
 <span id="mqttDot" class="dot"></span>
-<b id="mqttText">Offline</b><br>
+
+<b id="mqttText">
+Offline
+</b>
+
+<br>
+
 <small class="muted">
-<span id="onlineCount">0</span> jugadores online
+<span id="onlineCount">0</span>
+jugadores online
 </small>
+
 </div>
 
 </aside>
@@ -243,19 +748,27 @@ main{padding:15px 15px 80px}
 <main>
 
 <div class="top">
+
 <div class="muted">
-THOMY // ARCADE / <b id="pageName">INICIO</b>
-</div>
-<div>👤 <b id="usernameLabel">Jugador</b></div>
+THOMY // ARCADE /
+<b id="pageName">INICIO</b>
 </div>
 
-<!-- HOME -->
+<div>
+👤 <b id="usernameLabel">Jugador</b>
+</div>
+
+</div>
+
+<!-- ================= HOME ================= -->
 
 <section id="home" class="view active">
 
 <div class="hero">
 
-<div class="eyebrow">ONLINE MULTIPLAYER</div>
+<div class="eyebrow">
+ONLINE MULTIPLAYER
+</div>
 
 <h1>
 ESP32<br>
@@ -263,21 +776,24 @@ ESP32<br>
 </h1>
 
 <p>
-Entrá, elegí un jugador y jugá.
-Sin códigos, sin salas complicadas.
+Entrá, elegí una partida y jugá.
+Sin códigos de sala.
 </p>
 
 <div class="actions">
 
-<button class="btn primary" onclick="showView('arcade')">
+<button class="btn primary"
+onclick="showView('arcade')">
 🎮 Jugar
 </button>
 
-<button class="btn" onclick="showView('draw')">
+<button class="btn"
+onclick="showView('draw')">
 🎨 Dibujar
 </button>
 
-<button class="btn" onclick="send('PING')">
+<button class="btn"
+onclick="send('PING')">
 📡 Ping ESP32
 </button>
 
@@ -313,10 +829,12 @@ Sin códigos, sin salas complicadas.
 
 <div class="card">
 
-<h3>👥 Jugadores disponibles</h3>
+<h3>
+👥 Jugadores disponibles
+</h3>
 
 <p class="muted">
-Los jugadores que aparecen acá están disponibles para jugar.
+Jugadores conectados ahora mismo.
 </p>
 
 <div id="homePlayers" class="players"></div>
@@ -325,17 +843,21 @@ Los jugadores que aparecen acá están disponibles para jugar.
 
 <div class="card">
 
-<h3>🏆 Mi perfil</h3>
+<h3>
+🏆 Mi perfil
+</h3>
 
-<div class="big cyan" id="profileName">
+<div class="big cyan"
+id="profileName">
 Jugador
 </div>
 
 <p class="muted">
-Tus puntos se calculan automáticamente según tus partidas.
+Tus puntos de las partidas.
 </p>
 
-<button class="btn" onclick="changeName()">
+<button class="btn"
+onclick="changeName()">
 ✏️ Cambiar nombre
 </button>
 
@@ -345,7 +867,8 @@ Tus puntos se calculan automáticamente según tus partidas.
 
 </section>
 
-<!-- CHAT -->
+
+<!-- ================= CHAT ================= -->
 
 <section id="chat" class="view">
 
@@ -364,7 +887,9 @@ maxlength="240"
 placeholder="Escribí un mensaje..."
 >
 
-<button class="btn primary" onclick="sendChat()">
+<button
+class="btn primary"
+onclick="sendChat()">
 Enviar
 </button>
 
@@ -374,96 +899,131 @@ Enviar
 
 </section>
 
-<!-- ARCADE -->
+
+<!-- ================= ARCADE ================= -->
 
 <section id="arcade" class="view">
 
 <h2>🎮 Arcade</h2>
 
-<div class="card" id="matchPanel">
+<div class="card">
 
-<div class="label">SALA MULTIJUGADOR</div>
+<div class="label">
+PARTIDAS ONLINE
+</div>
 
-<h2 id="matchTitle">
-Elegí un juego
-</h2>
+<div class="roomBigTitle">
+Jugá contra alguien
+</div>
 
-<p id="matchDescription" class="muted">
-Primero elegí qué juego querés jugar.
-Después elegí un jugador online.
-La página crea la sala automáticamente.
+<p class="muted">
+Creá una partida o uníte automáticamente a una que ya esté abierta.
 </p>
 
-<div id="matchPlayers" class="players"></div>
+<div class="actions">
 
-<div id="matchActions" class="actions"></div>
+<button
+class="btn primary"
+onclick="openCreateRoom()">
+➕ CREAR PARTIDA
+</button>
+
+<button
+class="btn"
+onclick="refreshRooms()">
+🔄 ACTUALIZAR
+</button>
 
 </div>
 
-<div class="grid gameGrid" style="margin-top:15px">
+</div>
+
+
+<div class="card" style="margin-top:15px">
+
+<div style="display:flex;justify-content:space-between;align-items:center">
+
+<div>
+<h3 style="margin:0">
+🎮 Partidas disponibles
+</h3>
+
+<p class="muted">
+Las salas aparecen automáticamente.
+</p>
+</div>
+
+<div class="badge green">
+SIN CÓDIGOS
+</div>
+
+</div>
+
+<div
+id="roomsList"
+class="players"
+style="margin-top:15px">
+</div>
+
+</div>
+
+
+<div
+class="grid gameGrid"
+style="margin-top:15px">
 
 <div class="card game">
 
 <div class="gameIcon">🎯</div>
 
-<h3>Caza el objetivo</h3>
+<h3>
+Caza el objetivo
+</h3>
 
 <p class="muted">
 20 segundos. Más objetivos = ganador.
 </p>
 
-<button
-class="btn primary"
-onclick="requestGame('target')"
->
-JUGAR
-</button>
-
 </div>
+
 
 <div class="card game">
 
 <div class="gameIcon">⚡</div>
 
-<h3>Reflejos</h3>
+<h3>
+Reflejos
+</h3>
 
 <p class="muted">
-La página mide automáticamente quién reaccionó primero.
+El menor tiempo gana.
 </p>
 
-<button
-class="btn primary"
-onclick="requestGame('reaction')"
->
-JUGAR
-</button>
-
 </div>
+
 
 <div class="card game">
 
 <div class="gameIcon">⭕</div>
 
-<h3>Tres en línea</h3>
+<h3>
+Tres en línea
+</h3>
 
 <p class="muted">
-La página controla los turnos y determina automáticamente quién gana.
+La página detecta victoria o empate.
 </p>
 
-<button
-class="btn primary"
-onclick="requestGame('ttt')"
->
-JUGAR
-</button>
-
 </div>
+
 
 <div class="card game">
 
 <div class="gameIcon">🧠</div>
 
-<h3>Adiviná el número</h3>
+<h3>
+Adiviná el número
+</h3>
 
 <p class="muted">
 Modo individual.
@@ -482,47 +1042,65 @@ placeholder="1-100"
 
 <button
 class="btn"
-onclick="guessNumber()"
->
+onclick="guessNumber()">
 Probar
 </button>
 
 </div>
 
-<small id="guessResult" class="muted"></small>
+<small
+id="guessResult"
+class="muted">
+</small>
 
 </div>
 
 </div>
+
 
 <div class="grid two" style="margin-top:15px">
 
 <div class="card">
 
-<h3>🎯 Campo</h3>
+<h3>
+🎯 Campo
+</h3>
 
-<div id="targetArea" class="targetArea">
+<div
+id="targetArea"
+class="targetArea">
 
 <div
 class="muted"
-style="position:absolute;inset:45% 0;text-align:center"
->
+style="position:absolute;inset:45% 0;text-align:center">
+
 Esperando partida...
+
 </div>
 
 </div>
 
 <div style="margin-top:8px">
-<b id="targetScore">0</b> puntos
+
+<b id="targetScore">
+0
+</b>
+puntos
+
 </div>
 
 </div>
+
 
 <div class="card">
 
-<h3>🏆 Ranking</h3>
+<h3>
+🏆 Ranking
+</h3>
 
-<div id="ranking" class="ranking">
+<div
+id="ranking"
+class="ranking">
 
 <div class="muted">
 Todavía no hay resultados.
@@ -536,74 +1114,87 @@ Todavía no hay resultados.
 
 </section>
 
-<!-- DRAW -->
+
+<!-- ================= DRAW ================= -->
 
 <section id="draw" class="view">
 
 <div class="card">
 
-<div class="label">DUELO DE DIBUJO</div>
+<div class="label">
+DUELO DE DIBUJO
+</div>
 
 <h2 id="drawWord">
 Esperando partida...
 </h2>
 
-<p id="drawStatus" class="muted">
-Elegí "Dibujar" desde el Arcade para comenzar.
+<p
+id="drawStatus"
+class="muted">
+Entrá a una partida de dibujo desde Arcade.
 </p>
 
-<div id="drawTimer">60s</div>
+<div id="drawTimer">
+60s
+</div>
 
 <div class="tools">
 
-<button class="btn" onclick="clearCanvas()">
+<button
+class="btn"
+onclick="clearCanvas()">
 Limpiar
 </button>
 
-<button class="btn primary" onclick="finishDrawing()">
+<button
+class="btn primary"
+onclick="finishDrawing()">
 ✓ Terminé
 </button>
 
 <label class="btn">
+
 Tamaño
+
 <input
 id="brushSize"
 type="range"
 min="2"
 max="30"
-value="6"
->
+value="6">
+
 </label>
 
 <button
 class="color selected"
 style="background:#111"
-onclick="setColor('#111',this)"
-></button>
+onclick="setColor('#111',this)">
+</button>
 
 <button
 class="color"
 style="background:#ef4444"
-onclick="setColor('#ef4444',this)"
-></button>
+onclick="setColor('#ef4444',this)">
+</button>
 
 <button
 class="color"
 style="background:#2563eb"
-onclick="setColor('#2563eb',this)"
-></button>
+onclick="setColor('#2563eb',this)">
+</button>
 
 <button
 class="color"
 style="background:#16a34a"
-onclick="setColor('#16a34a',this)"
-></button>
+onclick="setColor('#16a34a',this)">
+</button>
 
 <button
 class="color"
 style="background:#facc15"
-onclick="setColor('#facc15',this)"
-></button>
+onclick="setColor('#facc15',this)">
+</button>
 
 </div>
 
@@ -611,29 +1202,42 @@ onclick="setColor('#facc15',this)"
 id="canvas"
 class="canvas"
 width="900"
-height="520"
-></canvas>
+height="520">
+</canvas>
 
 </div>
 
+
 <div class="card" style="margin-top:15px">
 
-<h3>🏆 Comparación automática</h3>
+<h3>
+🏆 Comparación automática
+</h3>
 
 <p class="muted">
-La página determina automáticamente el resultado.
+El resultado se determina automáticamente cuando ambos terminan.
 </p>
 
 <div class="compare">
 
 <div>
-<div class="label">TU DIBUJO</div>
+
+<div class="label">
+TU DIBUJO
+</div>
+
 <img id="myDrawing">
+
 </div>
 
 <div>
-<div class="label">RIVAL</div>
+
+<div class="label">
+RIVAL
+</div>
+
 <img id="otherDrawing">
+
 </div>
 
 </div>
@@ -642,19 +1246,26 @@ La página determina automáticamente el resultado.
 
 </section>
 
-<!-- ESP32 -->
+
+<!-- ================= ESP ================= -->
 
 <section id="esp" class="view">
 
-<h2>⚡ Control ESP32</h2>
+<h2>
+⚡ Control ESP32
+</h2>
 
 <div class="grid three">
 
 <div class="card">
 
-<h3>🟢 ON</h3>
+<h3>
+🟢 ON
+</h3>
 
-<button class="btn primary" onclick="send('ON')">
+<button
+class="btn primary"
+onclick="send('ON')">
 ON
 </button>
 
@@ -662,9 +1273,13 @@ ON
 
 <div class="card">
 
-<h3>🔴 OFF</h3>
+<h3>
+🔴 OFF
+</h3>
 
-<button class="btn danger" onclick="send('OFF')">
+<button
+class="btn danger"
+onclick="send('OFF')">
 OFF
 </button>
 
@@ -672,9 +1287,13 @@ OFF
 
 <div class="card">
 
-<h3>📡 PING</h3>
+<h3>
+📡 PING
+</h3>
 
-<button class="btn" onclick="send('PING')">
+<button
+class="btn"
+onclick="send('PING')">
 PING
 </button>
 
@@ -682,9 +1301,14 @@ PING
 
 </div>
 
-<div class="card" style="margin-top:15px">
 
-<h3>💬 Mensaje al ESP32</h3>
+<div
+class="card"
+style="margin-top:15px">
+
+<h3>
+💬 Mensaje al ESP32
+</h3>
 
 <div class="composer">
 
@@ -694,7 +1318,9 @@ class="input"
 placeholder="Mensaje..."
 >
 
-<button class="btn primary" onclick="sendEspMsg()">
+<button
+class="btn primary"
+onclick="sendEspMsg()">
 Enviar
 </button>
 
@@ -704,39 +1330,49 @@ Enviar
 
 </section>
 
-<!-- CONSOLE -->
+
+<!-- ================= CONSOLE ================= -->
 
 <section id="console" class="view">
 
 <div style="display:flex;justify-content:space-between">
 
-<h2>🖥️ Consola</h2>
+<h2>
+🖥️ Consola
+</h2>
 
 <button
 class="btn"
-onclick="document.getElementById('consoleLog').innerHTML=''"
->
+onclick="document.getElementById('consoleLog').innerHTML=''">
 Limpiar
 </button>
 
 </div>
 
-<div id="consoleLog" class="console"></div>
+<div
+id="consoleLog"
+class="console">
+</div>
 
 </section>
 
 </main>
 </div>
 
-<!-- NOMBRE -->
+
+<!-- ================= NAME ================= -->
 
 <div id="nameOverlay">
 
 <div class="overlayBox">
 
-<div style="font-size:55px">👋</div>
+<div style="font-size:55px">
+👋
+</div>
 
-<h1>Bienvenido</h1>
+<h1>
+Bienvenido
+</h1>
 
 <p class="muted">
 Antes de entrar elegí cómo querés aparecer.
@@ -750,12 +1386,13 @@ placeholder="Tu nombre..."
 style="text-align:center;font-size:20px"
 >
 
-<div class="actions" style="justify-content:center">
+<div
+class="actions"
+style="justify-content:center">
 
 <button
 class="btn primary"
-onclick="saveFirstName()"
->
+onclick="saveFirstName()">
 🚀 Entrar
 </button>
 
@@ -765,41 +1402,57 @@ onclick="saveFirstName()"
 
 </div>
 
-<!-- INVITACION -->
 
-<div id="inviteOverlay">
+<!-- ================= CREATE ROOM ================= -->
+
+<div id="roomOverlay">
 
 <div class="overlayBox">
 
-<div class="inviteIcon">🎮</div>
-
-<div class="eyebrow">PARTIDA DISPONIBLE</div>
+<div style="font-size:55px">
+🎮
+</div>
 
 <h1>
-<span id="inviteName" class="inviteName">
-Jugador
-</span>
-te quiere desafiar
+Crear partida
 </h1>
 
-<p id="inviteGameText" class="muted">
-Quiere jugar con vos.
+<p class="muted">
+Elegí el juego.
 </p>
 
-<div class="actions" style="justify-content:center">
+<div
+class="actions"
+style="justify-content:center">
 
 <button
-class="btn danger"
-onclick="rejectInvite()"
->
-❌ Ahora no
+class="btn primary"
+onclick="createRoom('target')">
+🎯 Caza el objetivo
 </button>
 
 <button
 class="btn primary"
-onclick="acceptInvite()"
->
-🎮 UNIRME
+onclick="createRoom('reaction')">
+⚡ Reflejos
+</button>
+
+<button
+class="btn primary"
+onclick="createRoom('ttt')">
+⭕ Tres en línea
+</button>
+
+<button
+class="btn primary"
+onclick="createRoom('draw')">
+🎨 Dibujo
+</button>
+
+<button
+class="btn"
+onclick="closeCreateRoom()">
+Cancelar
 </button>
 
 </div>
@@ -808,25 +1461,29 @@ onclick="acceptInvite()"
 
 </div>
 
-<!-- SALA -->
+
+<!-- ================= MATCH ================= -->
 
 <div id="matchOverlay">
 
 <div class="overlayBox">
 
-<div style="font-size:55px">🎮</div>
+<div style="font-size:55px">
+🎮
+</div>
 
-<div class="eyebrow">SALA PRIVADA</div>
-
-<h1 id="roomTitle">
-Esperando jugadores
+<h1>
+PARTIDA
 </h1>
 
-<div class="matchPlayers">
+<div
+class="matchPlayers">
 
 <div class="matchPlayer">
 
-<div class="avatar" id="matchMeAvatar">
+<div
+class="avatar"
+id="matchMeAvatar">
 T
 </div>
 
@@ -835,10 +1492,9 @@ Vos
 </h3>
 
 <span
-id="matchMeStatus"
-class="badge green"
->
-CONECTADO
+id="myReadyBadge"
+class="badge">
+NO LISTO
 </span>
 
 </div>
@@ -849,7 +1505,9 @@ VS
 
 <div class="matchPlayer">
 
-<div class="avatar" id="matchRivalAvatar">
+<div
+class="avatar"
+id="matchRivalAvatar">
 ?
 </div>
 
@@ -858,9 +1516,8 @@ Rival
 </h3>
 
 <span
-id="matchRivalStatus"
-class="badge yellow"
->
+id="rivalReadyBadge"
+class="badge">
 ESPERANDO
 </span>
 
@@ -871,43 +1528,69 @@ ESPERANDO
 <p
 id="matchCountdown"
 class="cyan"
-style="font-size:25px;font-weight:900"
->
-Esperando al rival...
+style="font-size:25px;font-weight:900">
+Esperando...
 </p>
 
+<div class="actions" style="justify-content:center">
+
+<button
+id="readyButton"
+class="btn primary"
+onclick="toggleReady()">
+✅ ESTOY LISTO
+</button>
+
+<button
+class="btn danger"
+onclick="leaveMatch()">
+Salir
+</button>
+
+</div>
+
 </div>
 
 </div>
 
-<!-- RESULTADO -->
+
+<!-- ================= RESULT ================= -->
 
 <div id="resultOverlay">
 
 <div class="overlayBox">
 
-<div id="resultIcon" class="resultIcon">
+<div
+id="resultIcon"
+class="resultIcon">
 🏆
 </div>
 
-<div id="resultTitle" class="resultTitle">
+<div
+id="resultTitle"
+class="resultTitle">
 ¡VICTORIA!
 </div>
 
-<div id="resultName" class="resultName">
+<div
+id="resultName"
+class="resultName">
 Jugador
 </div>
 
-<div id="resultSub" class="resultSub">
+<div
+id="resultSub"
+class="resultSub">
 Resultado calculado automáticamente.
 </div>
 
-<div class="actions" style="justify-content:center">
+<div
+class="actions"
+style="justify-content:center">
 
 <button
 class="btn primary"
-onclick="closeResult()"
->
+onclick="closeResult()">
 🔄 Seguir jugando
 </button>
 
@@ -917,51 +1600,111 @@ onclick="closeResult()"
 
 </div>
 
+
 <div id="toast" class="toast"></div>
+
 
 <script>
 
 /* =========================================================
-   CONFIG
+   MQTT
 ========================================================= */
 
-const MQTT_BROKER="wss://broker.hivemq.com:8884/mqtt";
+const MQTT_BROKER =
+"wss://broker.hivemq.com:8884/mqtt";
 
-const COMMAND_TOPIC="thomy/esp32c3/comandos";
-const STATE_TOPIC="thomy/esp32c3/estado";
+const COMMAND_TOPIC =
+"thomy/esp32c3/comandos";
 
-const LOBBY="thomy/esp32c3/v2/lobby";
+const STATE_TOPIC =
+"thomy/esp32c3/estado";
 
-const CHAT_TOPIC="thomy/esp32c3/v2/chat";
+const LOBBY =
+"thomy/esp32c3/v3/lobby";
 
-const ROOM_PREFIX="thomy/esp32c3/v2/room/";
+const CHAT_TOPIC =
+"thomy/esp32c3/v3/chat";
 
-const playerId=
+const ROOM_PREFIX =
+"thomy/esp32c3/v3/room/";
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+const playerId =
 crypto.randomUUID ?
 crypto.randomUUID() :
 Math.random().toString(36)+Date.now();
 
-let username=
-localStorage.getItem("nexusUsername")||"";
+let username =
+localStorage.getItem("nexusUsername") || "";
 
-let client;
-let connected=false;
-
-let onlinePlayers=new Map();
-
-let match=null;
-
-let selectedGame="target";
-
-let pendingInvite=null;
-
-let readyPlayers=new Set();
-
-let ranking={};
+let client = null;
+let connected = false;
 
 
 /* =========================================================
-   NOMBRE
+   PRESENCE
+========================================================= */
+
+let onlinePlayers = new Map();
+
+
+/* =========================================================
+   ROOMS
+========================================================= */
+
+let rooms = new Map();
+
+let match = null;
+
+let myReady = false;
+let rivalReady = false;
+
+let matchResultShown = false;
+
+
+/* =========================================================
+   GAMES
+========================================================= */
+
+let selectedGame = null;
+
+let targetScore = 0;
+let targetResults = {};
+let targetStart = 0;
+let targetTimer = null;
+
+let reactionGoTime = 0;
+let reactionResults = {};
+let reactionArmed = false;
+
+let tttState = {
+board:Array(9).fill(""),
+turn:0
+};
+
+let canvas;
+let ctx;
+let drawing = false;
+let drawColor = "#111";
+let drawRound = "";
+let drawResults = {};
+let drawDeadline = 0;
+let drawTimerInterval = null;
+
+
+/* =========================================================
+   RANKING
+========================================================= */
+
+let ranking = {};
+
+
+/* =========================================================
+   NAME
 ========================================================= */
 
 function openName(){
@@ -970,20 +1713,18 @@ document
 .getElementById("nameOverlay")
 .classList.add("show");
 
-setTimeout(
-()=>{
+setTimeout(()=>{
 document
 .getElementById("firstNameInput")
 .focus();
-},
-100
-);
+},100);
 
 }
 
+
 function saveFirstName(){
 
-const value=
+const value =
 document
 .getElementById("firstNameInput")
 .value
@@ -998,20 +1739,20 @@ return;
 
 }
 
-username=value;
+username = value;
 
 localStorage.setItem(
 "nexusUsername",
 username
 );
 
-document
-.getElementById("usernameLabel")
-.textContent=username;
+document.getElementById(
+"usernameLabel"
+).textContent = username;
 
-document
-.getElementById("profileName")
-.textContent=username;
+document.getElementById(
+"profileName"
+).textContent = username;
 
 document
 .getElementById("nameOverlay")
@@ -1021,11 +1762,12 @@ announcePresence();
 
 }
 
+
 function changeName(){
 
-document
-.getElementById("firstNameInput")
-.value=username;
+document.getElementById(
+"firstNameInput"
+).value = username;
 
 openName();
 
@@ -1033,7 +1775,7 @@ openName();
 
 
 /* =========================================================
-   NAVEGACION
+   NAVIGATION
 ========================================================= */
 
 document
@@ -1046,119 +1788,177 @@ showView(button.dataset.view);
 
 });
 
+
 function showView(view){
 
 document
 .querySelectorAll(".view")
-.forEach(v=>v.classList.remove("active"));
+.forEach(v=>{
+v.classList.remove("active");
+});
 
-document
-.getElementById(view)
-.classList.add("active");
+const element =
+document.getElementById(view);
+
+if(element)
+element.classList.add("active");
 
 document
 .querySelectorAll(".nav button")
-.forEach(b=>
+.forEach(b=>{
 b.classList.toggle(
 "active",
 b.dataset.view===view
-));
+);
+});
 
-document
-.getElementById("pageName")
-.textContent=view.toUpperCase();
+document.getElementById(
+"pageName"
+).textContent =
+view.toUpperCase();
 
 }
 
 
 /* =========================================================
-   MQTT
+   MQTT CONNECT
 ========================================================= */
 
 function connectMQTT(){
 
-log("Conectando MQTT...","out");
+log(
+"Conectando MQTT...",
+"out"
+);
 
-client=mqtt.connect(
+client = mqtt.connect(
 MQTT_BROKER,
 {
 clientId:
-"THOMY_"+playerId.replaceAll("-","").slice(0,20),
+"THOMY_"+playerId
+.replaceAll("-","")
+.slice(0,20),
+
 clean:true,
+
 reconnectPeriod:3000
 }
 );
 
+
 client.on("connect",()=>{
 
-connected=true;
+connected = true;
 
 document
 .getElementById("mqttDot")
 .classList.add("online");
 
-document
-.getElementById("mqttText")
-.textContent="Online";
+document.getElementById(
+"mqttText"
+).textContent="Online";
 
-document
-.getElementById("statMqtt")
-.textContent="ON";
+document.getElementById(
+"statMqtt"
+).textContent="ON";
 
-client.subscribe(COMMAND_TOPIC);
-client.subscribe(STATE_TOPIC);
-client.subscribe(LOBBY);
-client.subscribe(CHAT_TOPIC);
+
+/*
+   SUSCRIBIMOS TODO ANTES
+   DE ENVIAR PRESENCIA
+*/
+
+client.subscribe(
+COMMAND_TOPIC
+);
+
+client.subscribe(
+STATE_TOPIC
+);
+
+client.subscribe(
+LOBBY
+);
+
+client.subscribe(
+CHAT_TOPIC
+);
+
 
 announcePresence();
 
-log("MQTT CONECTADO","in");
+setTimeout(
+announcePresence,
+500
+);
+
+log(
+"MQTT CONECTADO",
+"in"
+);
+
+refreshRooms();
 
 });
 
+
 client.on("message",(topic,payload)=>{
 
-const raw=payload.toString();
+const raw =
+payload.toString();
 
 log(
 "IN "+topic+" ← "+raw,
 "in"
 );
 
-handleMQTT(topic,raw);
+handleMQTT(
+topic,
+raw
+);
 
 });
 
+
 client.on("close",()=>{
 
-connected=false;
+connected = false;
 
 document
 .getElementById("mqttDot")
 .classList.remove("online");
 
-document
-.getElementById("mqttText")
-.textContent="Offline";
+document.getElementById(
+"mqttText"
+).textContent="Offline";
 
-document
-.getElementById("statMqtt")
-.textContent="OFF";
+document.getElementById(
+"statMqtt"
+).textContent="OFF";
 
 });
 
-client.on("error",e=>
+
+client.on("error",e=>{
+
 log(
 "MQTT ERROR: "+e.message,
 "err"
-)
 );
+
+});
 
 }
 
+
+/* =========================================================
+   MQTT PUBLISH
+========================================================= */
+
 function publish(topic,data){
 
-if(!connected)return;
+if(!connected)
+return;
 
 client.publish(
 topic,
@@ -1167,38 +1967,41 @@ JSON.stringify(data)
 
 }
 
-function subscribe(topic){
-
-if(connected)
-client.subscribe(topic);
-
-}
-
 
 /* =========================================================
-   PRESENCIA
+   PRESENCE
 ========================================================= */
 
 function announcePresence(){
 
-if(!username||!connected)return;
+if(!username || !connected)
+return;
 
 publish(
 LOBBY,
 {
 type:"presence",
+
 id:playerId,
+
 user:username,
+
 ts:Date.now(),
+
 busy:!!match
 }
 );
 
 }
 
+
+/*
+   Cada 2.5 segundos
+*/
+
 setInterval(
 announcePresence,
-3500
+2500
 );
 
 
@@ -1208,11 +2011,16 @@ announcePresence,
 
 function handleLobby(data){
 
-/* PRESENCIA */
+if(!data || !data.type)
+return;
+
+
+/* ---------- PRESENCE ---------- */
 
 if(data.type==="presence"){
 
-if(data.id===playerId)return;
+if(data.id===playerId)
+return;
 
 onlinePlayers.set(
 data.id,
@@ -1220,7 +2028,7 @@ data.id,
 id:data.id,
 user:data.user,
 seen:Date.now(),
-busy:data.busy
+busy:!!data.busy
 }
 );
 
@@ -1231,13 +2039,82 @@ return;
 }
 
 
-/* INVITACION */
+/* ---------- ROOM ---------- */
 
-if(data.type==="invite"){
+if(data.type==="room"){
 
-if(data.target===playerId){
+if(data.hostId===playerId)
+return;
 
-receiveInvite(data);
+rooms.set(
+data.roomId,
+{
+roomId:data.roomId,
+hostId:data.hostId,
+hostName:data.hostName,
+game:data.game,
+state:data.state,
+seen:Date.now()
+}
+);
+
+renderRooms();
+
+return;
+
+}
+
+
+/* ---------- ROOM REMOVE ---------- */
+
+if(data.type==="roomClosed"){
+
+rooms.delete(
+data.roomId
+);
+
+renderRooms();
+
+return;
+
+}
+
+
+/* ---------- PLAYER JOIN ---------- */
+
+if(data.type==="roomJoin"){
+
+if(!match)
+return;
+
+if(data.roomId!==match.id)
+return;
+
+if(data.guestId===playerId)
+return;
+
+if(match.host===playerId){
+
+match.guest=data.guestId;
+
+publishRoom({
+type:"roomState",
+roomId:match.id,
+host:{
+id:match.host,
+user:username,
+ready:myReady
+},
+guest:{
+id:match.guest,
+user:data.guestName,
+ready:false
+},
+game:match.game,
+state:"waiting"
+});
+
+showMatchFound();
 
 }
 
@@ -1246,35 +2123,17 @@ return;
 }
 
 
-/* ACEPTACION */
+/* ---------- ROOM LEAVE ---------- */
 
-if(data.type==="inviteAccept"){
+if(data.type==="roomLeave"){
 
-if(data.target===playerId){
+if(data.roomId){
 
-createMatch(
-data.from,
-data.game,
-data.user
+rooms.delete(
+data.roomId
 );
 
-}
-
-return;
-
-}
-
-
-/* RECHAZO */
-
-if(data.type==="decline"){
-
-if(data.target===playerId){
-
-toast(
-(data.user||"El jugador")+
-" no quiso jugar."
-);
+renderRooms();
 
 }
 
@@ -1286,18 +2145,22 @@ return;
 
 
 /* =========================================================
-   LISTA DE JUGADORES
+   PLAYER RENDER
 ========================================================= */
 
 function renderPlayers(){
 
-const now=Date.now();
+const now = Date.now();
+
 
 for(
-const [id,p] of onlinePlayers
+const [id,p]
+of onlinePlayers
 ){
 
-if(now-p.seen>10000){
+if(
+now-p.seen > 8000
+){
 
 onlinePlayers.delete(id);
 
@@ -1305,15 +2168,23 @@ onlinePlayers.delete(id);
 
 }
 
-document
-.getElementById("onlineCount")
-.textContent=onlinePlayers.size;
 
-document
-.getElementById("statUsers")
-.textContent=onlinePlayers.size;
+const count =
+onlinePlayers.size;
 
-const players=
+
+document.getElementById(
+"onlineCount"
+).textContent =
+count;
+
+document.getElementById(
+"statUsers"
+).textContent =
+count;
+
+
+const players =
 [...onlinePlayers.values()]
 .filter(
 p=>
@@ -1321,30 +2192,35 @@ p.id!==playerId &&
 !p.busy
 );
 
-const boxes=[
-document.getElementById("homePlayers"),
-document.getElementById("matchPlayers")
+
+const containers = [
+
+document.getElementById(
+"homePlayers"
+)
+
 ];
 
-boxes.forEach(box=>{
 
-if(!box)return;
+containers.forEach(box=>{
+
+if(!box)
+return;
+
 
 if(!players.length){
 
-box.innerHTML=
-`
-<div class="muted">
-No hay jugadores disponibles ahora.
-</div>
-`;
+box.innerHTML =
+'<div class="muted">No hay otros jugadores conectados.</div>';
 
 return;
 
 }
 
-box.innerHTML=
-players.map(p=>`
+
+box.innerHTML =
+players
+.map(p=>`
 
 <div class="player">
 
@@ -1358,7 +2234,9 @@ p.user.charAt(0).toUpperCase()
 
 <div>
 
-<b>${escapeHTML(p.user)}</b>
+<b>
+${escapeHTML(p.user)}
+</b>
 
 <br>
 
@@ -1370,27 +2248,188 @@ ONLINE
 
 </div>
 
+<span class="badge">
+Disponible
+</span>
+
+</div>
+
+`)
+.join("");
+
+});
+
+}
+
+
+/* =========================================================
+   ROOMS
+========================================================= */
+
+function gameName(game){
+
+if(game==="target")
+return "🎯 Caza el objetivo";
+
+if(game==="reaction")
+return "⚡ Reflejos";
+
+if(game==="ttt")
+return "⭕ Tres en línea";
+
+if(game==="draw")
+return "🎨 Duelo de dibujo";
+
+return "🎮 Juego";
+
+}
+
+
+function refreshRooms(){
+
+if(!connected)
+return;
+
+renderRooms();
+
+}
+
+
+function renderRooms(){
+
+const box =
+document.getElementById(
+"roomsList"
+);
+
+if(!box)
+return;
+
+
+const now = Date.now();
+
+
+for(
+const [id,r]
+of rooms
+){
+
+if(
+now-r.seen > 8000
+){
+
+rooms.delete(id);
+
+}
+
+}
+
+
+const list =
+[...rooms.values()]
+.filter(
+r=>
+r.state==="open" &&
+r.hostId!==playerId
+);
+
+
+if(!list.length){
+
+box.innerHTML = `
+
+<div
+class="muted"
+style="padding:15px;text-align:center">
+
+🎮 No hay partidas abiertas.<br>
+
+<span style="font-size:12px">
+Creá una y esperá a que alguien se una.
+</span>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+box.innerHTML =
+list.map(room=>`
+
+<div class="roomCard">
+
+<div class="roomTop">
+
+<div>
+
+<div class="roomGame">
+${gameName(room.game)}
+</div>
+
+<div class="muted">
+Creada por
+<b>
+${escapeHTML(room.hostName)}
+</b>
+</div>
+
+</div>
+
+<span class="badge green">
+🟢 ABIERTA
+</span>
+
+</div>
+
+<div class="roomInfo">
+
+<span class="badge">
+👤 ${escapeHTML(room.hostName)}
+</span>
+
+<span class="badge">
+1 / 2 jugadores
+</span>
+
+</div>
+
+<div class="roomActions">
+
 <button
 class="btn primary"
-onclick="invitePlayer('${p.id}')"
->
-🎮 JUGAR
+onclick="joinRoom('${room.roomId}')">
+
+🎮 UNIRME
+
 </button>
 
 </div>
 
-`).join("");
+</div>
 
-});
+`)
+.join("");
 
 }
 
 
 /* =========================================================
-   ELEGIR JUEGO
+   CREATE ROOM
 ========================================================= */
 
-function requestGame(game){
+function openCreateRoom(){
+
+if(!username){
+
+openName();
+
+return;
+
+}
 
 if(match){
 
@@ -1402,284 +2441,106 @@ return;
 
 }
 
-selectedGame=game;
-
-showView("arcade");
-
-const names={
-target:"🎯 Caza el objetivo",
-reaction:"⚡ Reflejos",
-ttt:"⭕ Tres en línea"
-};
-
 document
-.getElementById("matchTitle")
-.textContent=
-"Elegí contra quién jugar";
-
-document
-.getElementById("matchDescription")
-.textContent=
-"Elegí UN JUGADOR de la lista. Se le enviará una invitación. Si acepta, la sala se crea automáticamente.";
-
-document
-.getElementById("matchPlayers")
-.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
-renderPlayers();
-
-toast(
-"Juego seleccionado: "+
-names[game]
-);
-
-}
-
-
-/* =========================================================
-   INVITAR
-========================================================= */
-
-function invitePlayer(targetId){
-
-if(match){
-
-toast(
-"Ya estás en una partida."
-);
-
-return;
-
-}
-
-const target=
-onlinePlayers.get(targetId);
-
-if(!target){
-
-toast(
-"El jugador ya no está disponible."
-);
-
-renderPlayers();
-
-return;
-
-}
-
-publish(
-LOBBY,
-{
-type:"invite",
-from:playerId,
-user:username,
-target:targetId,
-game:selectedGame,
-ts:Date.now()
-}
-);
-
-toast(
-"Invitación enviada a "+
-target.user
-);
-
-document
-.getElementById("matchTitle")
-.textContent=
-"Invitación enviada";
-
-document
-.getElementById("matchDescription")
-.textContent=
-"Esperando que "+
-target.user+
-" acepte la partida...";
-
-document
-.getElementById("matchPlayers")
-.innerHTML=
-`
-<div class="player">
-
-<div class="playerLeft">
-
-<div class="avatar">
-${escapeHTML(
-target.user.charAt(0).toUpperCase()
-)}
-</div>
-
-<div>
-<b>${escapeHTML(target.user)}</b>
-<br>
-<span class="badge yellow">
-ESPERANDO RESPUESTA
-</span>
-</div>
-
-</div>
-
-</div>
-`;
-
-}
-
-
-/* =========================================================
-   RECIBIR INVITACION
-========================================================= */
-
-function receiveInvite(data){
-
-if(match)return;
-
-pendingInvite=data;
-
-const names={
-target:"🎯 Caza el objetivo",
-reaction:"⚡ Reflejos",
-ttt:"⭕ Tres en línea",
-draw:"🎨 Duelo de dibujo"
-};
-
-document
-.getElementById("inviteName")
-.textContent=data.user;
-
-document
-.getElementById("inviteGameText")
-.textContent=
-"Quiere jugar: "+
-(names[data.game]||"🎮 Arcade");
-
-document
-.getElementById("inviteOverlay")
+.getElementById("roomOverlay")
 .classList.add("show");
 
-beep(700,.12);
-
 }
 
-function acceptInvite(){
 
-if(!pendingInvite)return;
-
-const invite=pendingInvite;
-
-pendingInvite=null;
+function closeCreateRoom(){
 
 document
-.getElementById("inviteOverlay")
-.classList.remove("show");
-
-publish(
-LOBBY,
-{
-type:"inviteAccept",
-from:playerId,
-user:username,
-target:invite.from,
-game:invite.game,
-ts:Date.now()
-}
-);
-
-createMatch(
-invite.from,
-invite.game,
-invite.user
-);
-
-}
-
-function rejectInvite(){
-
-if(!pendingInvite)return;
-
-publish(
-LOBBY,
-{
-type:"decline",
-from:playerId,
-user:username,
-target:pendingInvite.from
-}
-);
-
-pendingInvite=null;
-
-document
-.getElementById("inviteOverlay")
+.getElementById("roomOverlay")
 .classList.remove("show");
 
 }
 
 
-/* =========================================================
-   CREAR SALA
-========================================================= */
+function createRoom(game){
 
-function createMatch(
-rivalId,
-game,
-rivalName
-){
+if(!connected){
 
-if(match)return;
+toast(
+"Esperá a que MQTT esté conectado."
+);
 
-const matchId=
-"match_"+
+return;
+
+}
+
+if(match){
+
+toast(
+"Ya estás en una partida."
+);
+
+return;
+
+}
+
+closeCreateRoom();
+
+
+const roomId =
+"room_"+
 Date.now()+"_"+
 Math.random()
 .toString(36)
-.slice(2,7);
+.slice(2,8);
 
-match={
-id:matchId,
-game,
+
+match = {
+
+id:roomId,
+
 host:playerId,
-guest:rivalId,
-rivalName:rivalName||getPlayerName(rivalId),
-state:"waiting"
+
+guest:null,
+
+game:game,
+
+state:"open"
+
 };
 
-readyPlayers=new Set();
 
-subscribe(
-ROOM_PREFIX+match.id
-);
+selectedGame = game;
 
-showMatchFound();
+myReady = false;
+rivalReady = false;
+
+rooms.delete(roomId);
+
+subscribeRoom(roomId);
+
 
 publish(
 LOBBY,
 {
-type:"matchCreated",
-id:match.id,
-host:match.host,
-guest:match.guest,
-game:match.game,
+type:"room",
+
+roomId:roomId,
+
+hostId:playerId,
+
+hostName:username,
+
+game:game,
+
+state:"open",
+
 ts:Date.now()
 }
 );
 
-setTimeout(()=>{
 
-if(!match)return;
+showMatchFound();
 
-publishRoom(
-{
-type:"playerReady",
-id:playerId,
-user:username
-}
+toast(
+"Partida creada. Esperando rival..."
 );
 
-},150);
 
 announcePresence();
 
@@ -1687,70 +2548,140 @@ announcePresence();
 
 
 /* =========================================================
-   SALA
+   JOIN ROOM
 ========================================================= */
 
-function showMatchFound(){
+function joinRoom(roomId){
 
-const rivalId=
-playerId===match.host?
-match.guest:
-match.host;
+if(match){
 
-const rivalName=
-match.rivalName||
-getPlayerName(rivalId)||
-"Rival";
+toast(
+"Ya estás en una partida."
+);
 
-document
-.getElementById("matchMeName")
-.textContent=username;
-
-document
-.getElementById("matchMeAvatar")
-.textContent=
-username.charAt(0).toUpperCase();
-
-document
-.getElementById("matchRivalName")
-.textContent=rivalName;
-
-document
-.getElementById("matchRivalAvatar")
-.textContent=
-rivalName.charAt(0).toUpperCase();
-
-document
-.getElementById("matchMeStatus")
-.textContent="CONECTADO";
-
-document
-.getElementById("matchRivalStatus")
-.textContent="CONECTADO";
-
-document
-.getElementById("matchRivalStatus")
-.className="badge green";
-
-document
-.getElementById("roomTitle")
-textContent=
-"¡Sala creada!";
-
-document
-.getElementById("matchCountdown")
-textContent=
-"Esperando al otro jugador...";
-
-document
-.getElementById("matchOverlay")
-.classList.add("show");
+return;
 
 }
 
+
+const room =
+rooms.get(roomId);
+
+if(!room){
+
+toast(
+"La partida ya no está disponible."
+);
+
+rooms.delete(roomId);
+
+renderRooms();
+
+return;
+
+}
+
+
+match = {
+
+id:roomId,
+
+host:room.hostId,
+
+guest:playerId,
+
+game:room.game,
+
+state:"waiting"
+
+};
+
+
+selectedGame =
+room.game;
+
+myReady = false;
+rivalReady = false;
+
+
+subscribeRoom(roomId);
+
+
+publishRoom({
+
+type:"roomJoin",
+
+roomId:roomId,
+
+guestId:playerId,
+
+guestName:username,
+
+ts:Date.now()
+
+});
+
+
+publishRoom({
+
+type:"roomState",
+
+roomId:roomId,
+
+host:{
+id:room.hostId,
+user:room.hostName,
+ready:false
+},
+
+guest:{
+id:playerId,
+user:username,
+ready:false
+},
+
+game:room.game,
+
+state:"waiting"
+
+});
+
+
+showMatchFound();
+
+rooms.delete(roomId);
+
+renderRooms();
+
+announcePresence();
+
+}
+
+
+/* =========================================================
+   ROOM SUBSCRIBE
+========================================================= */
+
+function subscribeRoom(roomId){
+
+if(!connected)
+return;
+
+client.subscribe(
+ROOM_PREFIX+roomId
+);
+
+}
+
+
+/* =========================================================
+   ROOM PUBLISH
+========================================================= */
+
 function publishRoom(data){
 
-if(!match)return;
+if(!match)
+return;
 
 publish(
 ROOM_PREFIX+match.id,
@@ -1761,129 +2692,398 @@ data
 
 
 /* =========================================================
-   MENSAJES DE SALA
+   MATCH SCREEN
+========================================================= */
+
+function showMatchFound(){
+
+if(!match)
+return;
+
+
+showView("arcade");
+
+
+const rivalId =
+playerId===match.host ?
+match.guest :
+match.host;
+
+
+let rivalName =
+"Esperando...";
+
+
+if(rivalId){
+
+if(
+rivalId===playerId
+){
+
+rivalName=username;
+
+}else{
+
+rivalName =
+onlinePlayers.get(
+rivalId
+)?.user ||
+"Rival";
+
+}
+
+}
+
+
+document.getElementById(
+"matchMeName"
+).textContent =
+username;
+
+document.getElementById(
+"matchMeAvatar"
+).textContent =
+username
+.charAt(0)
+.toUpperCase();
+
+
+document.getElementById(
+"matchRivalName"
+).textContent =
+rivalName;
+
+document.getElementById(
+"matchRivalAvatar"
+).textContent =
+rivalName==="Esperando..."
+?
+"?"
+:
+rivalName
+.charAt(0)
+.toUpperCase();
+
+
+updateReadyUI();
+
+
+document.getElementById(
+"matchCountdown"
+).textContent =
+match.guest ?
+"Los dos deben estar listos."
+:
+"Esperando que alguien se una...";
+
+
+document
+.getElementById("matchOverlay")
+.classList.add("show");
+
+}
+
+
+/* =========================================================
+   READY
+========================================================= */
+
+function toggleReady(){
+
+if(!match)
+return;
+
+if(!match.guest){
+
+toast(
+"Esperá a que se una otro jugador."
+);
+
+return;
+
+}
+
+myReady = !myReady;
+
+publishRoom({
+
+type:"ready",
+
+id:playerId,
+
+user:username,
+
+ready:myReady
+
+});
+
+
+updateReadyUI();
+
+checkBothReady();
+
+}
+
+
+function updateReadyUI(){
+
+const myBadge =
+document.getElementById(
+"myReadyBadge"
+);
+
+const rivalBadge =
+document.getElementById(
+"rivalReadyBadge"
+);
+
+
+if(myReady){
+
+myBadge.textContent =
+"✓ LISTO";
+
+myBadge.className =
+"badge green";
+
+}else{
+
+myBadge.textContent =
+"NO LISTO";
+
+myBadge.className =
+"badge";
+
+}
+
+
+if(rivalReady){
+
+rivalBadge.textContent =
+"✓ LISTO";
+
+rivalBadge.className =
+"badge green";
+
+}else{
+
+rivalBadge.textContent =
+"ESPERANDO";
+
+rivalBadge.className =
+"badge yellow";
+
+}
+
+
+const button =
+document.getElementById(
+"readyButton"
+);
+
+button.textContent =
+myReady ?
+"❌ NO ESTOY LISTO" :
+"✅ ESTOY LISTO";
+
+}
+
+
+/* =========================================================
+   CHECK READY
+========================================================= */
+
+function checkBothReady(){
+
+if(
+!match ||
+!match.guest ||
+!myReady ||
+!rivalReady
+)
+return;
+
+
+/*
+   SOLAMENTE EL HOST
+   inicia la partida.
+*/
+
+if(match.host!==playerId)
+return;
+
+
+match.state =
+"starting";
+
+
+publishRoom({
+
+type:"start",
+
+game:match.game,
+
+at:Date.now()+2500
+
+});
+
+}
+
+
+/* =========================================================
+   ROOM MESSAGE
 ========================================================= */
 
 function handleRoom(data){
 
-if(!match)return;
+if(!match)
+return;
+
+if(data.roomId &&
+data.roomId!==match.id)
+return;
 
 
-/* JUGADOR LISTO */
+/* ---------- STATE ---------- */
 
-if(data.type==="playerReady"){
+if(data.type==="roomState"){
 
-readyPlayers.add(data.id);
+if(data.host){
 
-if(data.id!==playerId){
+match.host =
+data.host.id;
 
-document
-.getElementById("matchRivalStatus")
-.textContent="LISTO";
+if(data.host.id!==playerId){
 
-document
-.getElementById("matchRivalStatus")
-.className="badge green";
+document.getElementById(
+"matchRivalName"
+).textContent =
+data.host.user;
 
 }
 
-if(
-readyPlayers.has(match.host)&&
-readyPlayers.has(match.guest)
-){
+}
 
-if(match.host===playerId){
+if(data.guest){
 
-setTimeout(()=>{
+match.guest =
+data.guest.id;
 
-if(!match)return;
+if(data.guest.id!==playerId){
 
-publishRoom(
-{
-type:"begin",
+document.getElementById(
+"matchRivalName"
+).textContent =
+data.guest.user;
+
+}
+
+}
+
+myReady =
+playerId===data.host?.id ?
+!!data.host.ready :
+!!data.guest?.ready;
+
+rivalReady =
+playerId===data.host?.id ?
+!!data.guest?.ready :
+!!data.host?.ready;
+
+updateReadyUI();
+
+return;
+
+}
+
+
+/* ---------- JOIN ---------- */
+
+if(data.type==="roomJoin"){
+
+if(match.host!==playerId)
+return;
+
+if(data.guestId===playerId)
+return;
+
+match.guest =
+data.guestId;
+
+match.state =
+"waiting";
+
+
+rivalReady=false;
+
+showMatchFound();
+
+
+publishRoom({
+
+type:"roomState",
+
+roomId:match.id,
+
+host:{
+id:match.host,
+user:username,
+ready:myReady
+},
+
+guest:{
+id:match.guest,
+user:data.guestName,
+ready:false
+},
+
 game:match.game,
-at:Date.now()+3200
+
+state:"waiting"
+
+});
+
+
+announcePresence();
+
+return;
+
 }
+
+
+/* ---------- READY ---------- */
+
+if(data.type==="ready"){
+
+if(data.id===playerId)
+return;
+
+rivalReady =
+!!data.ready;
+
+updateReadyUI();
+
+checkBothReady();
+
+return;
+
+}
+
+
+/* ---------- START ---------- */
+
+if(data.type==="start"){
+
+startCountdown(
+data.at
 );
 
-},300);
-
-}
-
-}
-
 return;
 
 }
 
 
-/* COMIENZO */
-
-if(data.type==="begin"){
-
-const delay=
-Math.max(
-0,
-data.at-Date.now()
-);
-
-document
-.getElementById("matchCountdown")
-textContent="3";
-
-setTimeout(()=>{
-if(match)
-document
-.getElementById("matchCountdown")
-.textContent="2";
-},delay/3);
-
-setTimeout(()=>{
-if(match)
-document
-.getElementById("matchCountdown")
-.textContent="1";
-},delay*2/3);
-
-setTimeout(()=>{
-
-if(!match)return;
-
-document
-.getElementById("matchCountdown")
-.textContent="🔥 ¡YA!";
-
-setTimeout(()=>{
-
-if(!match)return;
-
-document
-.getElementById("matchOverlay")
-.classList.remove("show");
-
-startMatchGame();
-
-},500);
-
-},delay);
-
-return;
-
-}
-
-
-/* RESULTADO */
-
-if(data.type==="gameResult"){
-
-showGameResult(data);
-
-return;
-
-}
-
-
-/* TARGET */
+/* ---------- TARGET ---------- */
 
 if(data.type==="targetFinished"){
 
@@ -1894,7 +3094,7 @@ return;
 }
 
 
-/* REACTION */
+/* ---------- REACTION ---------- */
 
 if(data.type==="reactionGo"){
 
@@ -1913,7 +3113,7 @@ return;
 }
 
 
-/* TTT */
+/* ---------- TTT ---------- */
 
 if(data.type==="tttState"){
 
@@ -1924,7 +3124,7 @@ return;
 }
 
 
-/* DRAW */
+/* ---------- DRAW ---------- */
 
 if(data.type==="drawRound"){
 
@@ -1942,260 +3142,107 @@ return;
 
 }
 
+
+/* ---------- RESULT ---------- */
+
+if(data.type==="gameResult"){
+
+showGameResult(data);
+
+return;
+
+}
+
 }
 
 
 /* =========================================================
-   INICIAR JUEGO
+   START COUNTDOWN
+========================================================= */
+
+function startCountdown(at){
+
+if(!match)
+return;
+
+
+const overlay =
+document.getElementById(
+"matchOverlay"
+);
+
+overlay.classList.add("show");
+
+
+const delay =
+Math.max(
+0,
+at-Date.now()
+);
+
+
+const countdown =
+document.getElementById(
+"matchCountdown"
+);
+
+
+countdown.textContent="3";
+
+
+setTimeout(()=>{
+countdown.textContent="2";
+},Math.max(0,delay-1600));
+
+
+setTimeout(()=>{
+countdown.textContent="1";
+},Math.max(0,delay-800));
+
+
+setTimeout(()=>{
+
+countdown.textContent =
+"🔥 ¡YA!";
+
+setTimeout(()=>{
+
+overlay.classList.remove("show");
+
+startMatchGame();
+
+},400);
+
+},delay);
+
+}
+
+
+/* =========================================================
+   START GAME
 ========================================================= */
 
 function startMatchGame(){
 
-if(!match)return;
+if(!match)
+return;
+
+
+match.state =
+"playing";
+
 
 if(match.game==="target")
 startTargetMultiplayer();
 
-else if(match.game==="reaction")
+if(match.game==="reaction")
 startReactionMultiplayer();
 
-else if(match.game==="ttt")
+if(match.game==="ttt")
 startTTTMultiplayer();
 
-else if(match.game==="draw")
+if(match.game==="draw")
 startDrawMultiplayer();
-
-}
-
-
-/* =========================================================
-   RESULTADO AUTOMATICO
-========================================================= */
-
-function determineWinner(a,b){
-
-if(a.score>b.score)return a.id;
-
-if(b.score>a.score)return b.id;
-
-return null;
-
-}
-
-function finalizeResults(results){
-
-if(!match)return;
-
-if(match.host!==playerId)return;
-
-const ids=Object.keys(results);
-
-if(ids.length<2)return;
-
-const a=results[ids[0]];
-const b=results[ids[1]];
-
-const winner=
-determineWinner(a,b);
-
-publishRoom(
-{
-type:"gameResult",
-winner,
-results,
-reason:match.game,
-finalizedBy:playerId,
-ts:Date.now()
-}
-);
-
-}
-
-
-/* =========================================================
-   MOSTRAR RESULTADO
-========================================================= */
-
-function showGameResult(data){
-
-if(!match)return;
-
-const results=data.results||{};
-
-const winnerId=data.winner;
-
-const ids=Object.keys(results);
-
-if(!ids.length)return;
-
-const winner=
-winnerId?
-results[winnerId]?.user:
-null;
-
-const loserId=
-winnerId?
-ids.find(id=>id!==winnerId):
-null;
-
-const loser=
-loserId?
-results[loserId]?.user:
-null;
-
-
-/* SUMAR RANKING */
-
-for(const id of ids){
-
-const player=results[id];
-
-if(!player)continue;
-
-let points=0;
-
-if(winnerId===id)
-points=100;
-
-else if(!winnerId)
-points=50;
-
-addScore(
-player.user,
-points
-);
-
-}
-
-
-/* EMPATE */
-
-if(!winnerId){
-
-document
-.getElementById("resultIcon")
-.textContent="🤝";
-
-document
-.getElementById("resultTitle")
-.textContent="¡EMPATE!";
-
-document
-.getElementById("resultName")
-.textContent="Los dos";
-
-document
-.getElementById("resultSub")
-.textContent=
-"🤖 La página comparó los resultados automáticamente.";
-
-document
-.getElementById("resultOverlay")
-.classList.add("show");
-
-beep(550,.12);
-
-setTimeout(
-()=>beep(700,.12),
-120
-);
-
-}
-
-/* GANADOR */
-
-else{
-
-const iAmWinner=
-winnerId===playerId;
-
-document
-.getElementById("resultIcon")
-.textContent=
-iAmWinner?
-"🏆":
-"💥";
-
-document
-.getElementById("resultTitle")
-.textContent=
-iAmWinner?
-"¡GANASTE!":
-"PERDISTE";
-
-document
-.getElementById("resultName")
-.textContent=
-winner;
-
-document
-.getElementById("resultSub")
-.textContent=
-iAmWinner?
-"🤖 La página determinó automáticamente que ganaste."
-:
-"🏆 El ganador fue determinado automáticamente.";
-
-document
-.getElementById("resultOverlay")
-.classList.add("show");
-
-if(iAmWinner){
-
-confetti();
-
-victorySound();
-
-}else{
-
-beep(220,.25);
-
-}
-
-}
-
-match.state="finished";
-
-announcePresence();
-
-}
-
-
-/* =========================================================
-   CERRAR RESULTADO
-========================================================= */
-
-function closeResult(){
-
-document
-.getElementById("resultOverlay")
-.classList.remove("show");
-
-if(match){
-
-const oldRoom=match.id;
-
-match=null;
-
-readyPlayers.clear();
-
-announcePresence();
-
-}
-
-showView("arcade");
-
-document
-.getElementById("matchTitle")
-.textContent=
-"Elegí un juego";
-
-document
-.getElementById("matchDescription")
-.textContent=
-"Elegí un juego y después un jugador online.";
-
-renderPlayers();
 
 }
 
@@ -2204,65 +3251,82 @@ renderPlayers();
    TARGET
 ========================================================= */
 
-let targetScore=0;
-let targetResults={};
-let targetStart=0;
-let targetTimer=null;
-let targetFinished=false;
-
 function startTargetMultiplayer(){
 
 showView("arcade");
 
+
 targetScore=0;
+
 targetResults={};
-targetFinished=false;
 
-document
-.getElementById("targetScore")
-.textContent="0";
 
-const area=
-document.getElementById("targetArea");
+document.getElementById(
+"targetScore"
+).textContent="0";
+
+
+const area =
+document.getElementById(
+"targetArea"
+);
 
 area.innerHTML="";
 
-targetStart=Date.now();
+
+targetStart =
+Date.now();
+
 
 spawnTargetMulti();
 
-clearInterval(targetTimer);
 
-targetTimer=
-setInterval(()=>{
-
-if(!match)return;
-
-if(Date.now()-targetStart>=20000){
-
-clearInterval(targetTimer);
-
-if(targetFinished)return;
-
-targetFinished=true;
-
-publishRoom(
-{
-type:"targetFinished",
-id:playerId,
-user:username,
-score:targetScore
-}
+clearInterval(
+targetTimer
 );
 
-area.innerHTML=
-`
+
+targetTimer =
+setInterval(()=>{
+
+if(
+Date.now()-targetStart >=
+20000
+){
+
+clearInterval(
+targetTimer
+);
+
+publishRoom({
+
+type:"targetFinished",
+
+id:playerId,
+
+user:username,
+
+score:targetScore,
+
+ts:Date.now()
+
+});
+
+
+area.innerHTML=`
+
 <div
 class="muted"
-style="position:absolute;inset:45% 0;text-align:center"
->
-✓ Terminaste — esperando al rival...
+style="
+position:absolute;
+inset:45% 0;
+text-align:center
+">
+
+Esperando resultado...
+
 </div>
+
 `;
 
 }
@@ -2271,46 +3335,65 @@ style="position:absolute;inset:45% 0;text-align:center"
 
 }
 
+
+/* =========================================================
+   SPAWN TARGET
+========================================================= */
+
 function spawnTargetMulti(){
 
-if(!match)return;
+const area =
+document.getElementById(
+"targetArea"
+);
 
-const area=
-document.getElementById("targetArea");
 
-const target=
+if(!area)
+return;
+
+
+const target =
 document.createElement("button");
 
-target.className="target";
+target.className =
+"target";
 
-target.style.left=
-Math.random()*
+
+target.style.left =
+Math.random() *
 Math.max(
 1,
 area.clientWidth-55
 )+"px";
 
-target.style.top=
-Math.random()*
+
+target.style.top =
+Math.random() *
 Math.max(
 1,
 area.clientHeight-55
 )+"px";
 
+
 target.onclick=()=>{
 
-if(!match)return;
-
-if(Date.now()-targetStart>=20000)
+if(
+Date.now()-targetStart>=20000
+)
 return;
+
 
 targetScore++;
 
-document
-.getElementById("targetScore")
-.textContent=targetScore;
+
+document.getElementById(
+"targetScore"
+).textContent =
+targetScore;
+
 
 beep(850,.035);
+
 
 target.remove();
 
@@ -2318,25 +3401,78 @@ spawnTargetMulti();
 
 };
 
-area.appendChild(target);
+
+area.appendChild(
+target
+);
 
 }
+
+
+/* =========================================================
+   TARGET RESULT
+========================================================= */
 
 function handleTargetFinished(data){
 
 targetResults[data.id]={
 id:data.id,
 user:data.user,
-score:data.score
+score:Number(data.score)
 };
 
+
 if(
-Object.keys(targetResults).length===2
+Object.keys(targetResults).length>=2
 ){
 
-finalizeResults(
-targetResults
+const players =
+Object.values(targetResults);
+
+
+const sorted =
+players.sort(
+(a,b)=>b.score-a.score
 );
+
+
+let winner=null;
+
+if(
+sorted[0].score >
+sorted[1].score
+){
+
+winner =
+sorted[0].id;
+
+}
+
+
+const results={};
+
+players.forEach(p=>{
+
+results[p.id]={
+id:p.id,
+user:p.user,
+score:p.score
+};
+
+});
+
+
+publishRoom({
+
+type:"gameResult",
+
+winner:winner,
+
+results:results,
+
+reason:"target"
+
+});
 
 }
 
@@ -2344,142 +3480,225 @@ targetResults
 
 
 /* =========================================================
-   REFLEJOS
+   REACTION
 ========================================================= */
-
-let reactionGoTime=0;
-let reactionResults={};
-let reactionArmed=false;
-let reactionWaiting=false;
 
 function startReactionMultiplayer(){
 
-reactionResults={};
-reactionArmed=false;
-reactionWaiting=true;
-reactionGoTime=0;
-
 showView("arcade");
 
-const area=
-document.getElementById("targetArea");
 
-area.innerHTML=
-`
+reactionResults={};
+
+reactionArmed=false;
+
+reactionGoTime=0;
+
+
+const area =
+document.getElementById(
+"targetArea"
+);
+
+
+area.innerHTML=`
+
 <div
 class="muted"
-style="position:absolute;inset:40% 0;text-align:center;font-size:22px"
->
-⚡ Esperá la señal...
+style="
+position:absolute;
+inset:45% 0;
+text-align:center;
+font-size:22px">
+
+Esperá...
+
 </div>
+
 `;
+
 
 if(match.host===playerId){
 
 setTimeout(()=>{
 
-if(!match)return;
+publishRoom({
 
-publishRoom(
-{
 type:"reactionGo",
+
 at:Date.now()
-}
-);
 
-},1500+Math.random()*3000);
+});
+
+},1500+
+Math.random()*3000);
 
 }
 
 }
+
+
+/* =========================================================
+   REACTION GO
+========================================================= */
 
 function handleReactionGo(data){
 
-if(!match)return;
-
-reactionGoTime=data.at;
+reactionGoTime =
+Date.now();
 
 reactionArmed=true;
-reactionWaiting=false;
 
-const area=
-document.getElementById("targetArea");
 
-area.innerHTML=
-`
+const area =
+document.getElementById(
+"targetArea"
+);
+
+
+area.innerHTML=`
+
 <button
 id="reactionButton"
 style="
 position:absolute;
-inset:20%;
+inset:25%;
 font-size:30px;
 font-weight:900;
 border:0;
 border-radius:20px;
 background:#39e58c;
-color:#04120b
-"
->
+color:#04120b">
+
 ¡AHORA!
+
 </button>
+
 `;
 
-beep(1100,.1);
+
+beep(
+1100,
+.1
+);
+
 
 document
-.getElementById("reactionButton")
+.getElementById(
+"reactionButton"
+)
 .onclick=()=>{
 
-if(!reactionArmed)return;
+if(!reactionArmed)
+return;
 
 reactionArmed=false;
 
-const ms=
+
+const ms =
 Math.max(
 0,
-performance.timeOrigin+
-performance.now()-
-reactionGoTime
+Date.now()-reactionGoTime
 );
 
-publishRoom(
-{
+
+publishRoom({
+
 type:"reactionResult",
+
 id:playerId,
+
 user:username,
-ms:Math.round(ms),
+
+ms:ms,
+
 score:Math.max(
 1,
-1000-Math.round(ms)
+1000-ms
 )
-}
-);
+
+});
+
 
 document
-.getElementById("reactionButton")
-.textContent=
-Math.round(ms)+" ms";
+.getElementById(
+"reactionButton"
+)
+.textContent =
+ms+" ms";
 
 };
 
 }
+
+
+/* =========================================================
+   REACTION RESULT
+========================================================= */
 
 function handleReactionResult(data){
 
 reactionResults[data.id]={
 id:data.id,
 user:data.user,
-score:data.score,
-ms:data.ms
+score:Number(data.score),
+ms:Number(data.ms)
 };
 
+
 if(
-Object.keys(reactionResults).length===2
+Object.keys(reactionResults).length>=2
 ){
 
-finalizeResults(
-reactionResults
+const players =
+Object.values(reactionResults);
+
+
+players.sort(
+(a,b)=>a.ms-b.ms
 );
+
+
+let winner=null;
+
+
+if(
+players[0].ms <
+players[1].ms
+){
+
+winner =
+players[0].id;
+
+}
+
+
+const results={};
+
+
+players.forEach(p=>{
+
+results[p.id]={
+id:p.id,
+user:p.user,
+score:p.score,
+ms:p.ms
+};
+
+});
+
+
+publishRoom({
+
+type:"gameResult",
+
+winner:winner,
+
+results:results,
+
+reason:"reaction"
+
+});
 
 }
 
@@ -2487,125 +3706,156 @@ reactionResults
 
 
 /* =========================================================
-   TRES EN LINEA
+   TTT
 ========================================================= */
-
-let tttState={
-board:Array(9).fill(""),
-turn:0
-};
 
 function startTTTMultiplayer(){
 
 showView("arcade");
+
 
 tttState={
 board:Array(9).fill(""),
 turn:0
 };
 
+
 renderTTT();
+
 
 if(match.host===playerId){
 
-publishRoom(
-{
+publishRoom({
+
 type:"tttState",
+
 board:tttState.board,
+
 turn:0
-}
-);
+
+});
 
 }
 
 }
+
+
+/* =========================================================
+   TTT RENDER
+========================================================= */
 
 function renderTTT(){
 
-const box=
-document.getElementById("targetArea");
+const box =
+document.getElementById(
+"targetArea"
+);
 
 box.innerHTML="";
 
-const info=
-document.createElement("div");
 
-info.style.textAlign="center";
-info.style.marginBottom="8px";
-info.className="muted";
+const grid =
+document.createElement(
+"div"
+);
 
-const myIndex=
-playerId===match?.host?0:1;
+grid.className =
+"ttt";
 
-info.textContent=
-tttState.turn===myIndex?
-"🟢 Es tu turno":
-"⏳ Turno del rival";
 
-box.appendChild(info);
+for(
+let i=0;
+i<9;
+i++
+){
 
-const grid=
-document.createElement("div");
+const b =
+document.createElement(
+"button"
+);
 
-grid.className="ttt";
+b.className =
+"tttCell";
 
-for(let i=0;i<9;i++){
-
-const b=
-document.createElement("button");
-
-b.className="tttCell";
-
-b.textContent=
+b.textContent =
 tttState.board[i];
 
-b.onclick=()=>tttMove(i);
+b.onclick=()=>{
+tttMove(i);
+};
 
 grid.appendChild(b);
 
 }
 
-box.appendChild(grid);
+
+box.appendChild(
+grid
+);
 
 }
 
+
+/* =========================================================
+   TTT MOVE
+========================================================= */
+
 function tttMove(cell){
 
-if(!match)return;
-
-const myIndex=
-playerId===match.host?0:1;
-
-if(tttState.turn!==myIndex)
+if(!match)
 return;
 
-if(tttState.board[cell])
+
+const myIndex =
+playerId===match.host ?
+0 :
+1;
+
+
+if(
+tttState.turn!==myIndex
+)
 return;
 
-const symbol=
-myIndex===0?"X":"O";
 
-const newBoard=
-[...tttState.board];
+if(
+tttState.board[cell]
+)
+return;
 
-newBoard[cell]=symbol;
 
-const winner=
-checkWinner(newBoard);
+const symbol =
+myIndex===0 ?
+"X" :
+"O";
+
+
+tttState.board[cell] =
+symbol;
+
+
+const winner =
+checkWinner(
+tttState.board
+);
+
 
 if(winner){
 
-const winnerId=
-winner==="X"?
-match.host:
+const winnerId =
+winner==="X" ?
+match.host :
 match.guest;
 
-const loserId=
-winnerId===match.host?
-match.guest:
+
+const loserId =
+winnerId===match.host ?
+match.guest :
 match.host;
 
+
 const results={};
+
 
 results[winnerId]={
 id:winnerId,
@@ -2613,95 +3863,106 @@ user:getPlayerName(winnerId),
 score:100
 };
 
+
 results[loserId]={
 id:loserId,
 user:getPlayerName(loserId),
 score:0
 };
 
-tttState.board=newBoard;
+
+publishRoom({
+
+type:"gameResult",
+
+winner:winnerId,
+
+results:results,
+
+reason:"ttt"
+
+});
+
 
 renderTTT();
-
-if(match.host===playerId){
-
-publishRoom(
-{
-type:"gameResult",
-winner:winnerId,
-results,
-reason:"ttt"
-}
-);
-
-}
 
 return;
 
 }
 
-if(newBoard.every(x=>x)){
 
-tttState.board=newBoard;
+if(
+tttState.board.every(x=>x)
+){
 
-renderTTT();
+publishRoom({
 
-const results={
+type:"gameResult",
+
+winner:null,
+
+results:{
+
 [match.host]:{
 id:match.host,
 user:getPlayerName(match.host),
 score:50
 },
+
 [match.guest]:{
 id:match.guest,
 user:getPlayerName(match.guest),
 score:50
 }
-};
 
-if(match.host===playerId){
+},
 
-publishRoom(
-{
-type:"gameResult",
-winner:null,
-results,
 reason:"ttt"
-}
-);
 
-}
+});
 
 return;
 
 }
 
-tttState.board=newBoard;
-tttState.turn=1-tttState.turn;
 
-publishRoom(
-{
+tttState.turn =
+1-tttState.turn;
+
+
+publishRoom({
+
 type:"tttState",
+
 board:tttState.board,
+
 turn:tttState.turn
-}
-);
+
+});
 
 }
+
+
+/* =========================================================
+   TTT STATE
+========================================================= */
 
 function handleTTTState(data){
 
-tttState.board=
-Array.isArray(data.board)?
-data.board:
-Array(9).fill("");
+tttState.board =
+data.board;
 
-tttState.turn=
-Number(data.turn)||0;
+tttState.turn =
+data.turn;
 
 renderTTT();
 
 }
+
+
+/* =========================================================
+   TTT WINNER
+========================================================= */
 
 function checkWinner(board){
 
@@ -2716,16 +3977,24 @@ const lines=[
 [2,4,6]
 ];
 
-for(const [a,b,c] of lines){
+
+for(
+const [a,b,c]
+of lines
+){
 
 if(
-board[a]&&
-board[a]===board[b]&&
+board[a] &&
+board[a]===board[b] &&
 board[a]===board[c]
-)
+){
+
 return board[a];
 
 }
+
+}
+
 
 return null;
 
@@ -2733,137 +4002,19 @@ return null;
 
 
 /* =========================================================
-   DIBUJO
+   DRAW
 ========================================================= */
-
-let canvas;
-let ctx;
-let drawing=false;
-let drawColor="#111";
-let drawRound="";
-let drawResults={};
-
-function initCanvas(){
-
-canvas=
-document.getElementById("canvas");
-
-ctx=
-canvas.getContext("2d");
-
-clearCanvas();
-
-canvas.addEventListener(
-"pointerdown",
-e=>{
-drawing=true;
-drawPoint(e);
-}
-);
-
-canvas.addEventListener(
-"pointermove",
-e=>{
-if(drawing)drawPoint(e);
-}
-);
-
-canvas.addEventListener(
-"pointerup",
-()=>{
-drawing=false;
-ctx.beginPath();
-}
-);
-
-canvas.addEventListener(
-"pointerleave",
-()=>{
-drawing=false;
-ctx.beginPath();
-}
-);
-
-}
-
-function drawPoint(e){
-
-const rect=
-canvas.getBoundingClientRect();
-
-const x=
-(e.clientX-rect.left)*
-canvas.width/
-rect.width;
-
-const y=
-(e.clientY-rect.top)*
-canvas.height/
-rect.height;
-
-ctx.lineWidth=
-Number(
-document
-.getElementById("brushSize")
-.value
-);
-
-ctx.lineCap="round";
-ctx.strokeStyle=drawColor;
-ctx.lineTo(x,y);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(x,y);
-
-}
-
-function clearCanvas(){
-
-if(!ctx)return;
-
-ctx.fillStyle="#fff";
-
-ctx.fillRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-}
-
-function setColor(color,b){
-
-drawColor=color;
-
-document
-.querySelectorAll(".color")
-.forEach(
-x=>x.classList.remove("selected")
-);
-
-b.classList.add("selected");
-
-}
 
 function startDrawMultiplayer(){
 
 showView("draw");
 
+
 drawResults={};
 
-document
-.getElementById("myDrawing")
-.src="";
 
-document
-.getElementById("otherDrawing")
-.src="";
+clearCanvas();
 
-document
-.getElementById("drawStatus")
-.textContent=
-"Preparando el desafío...";
 
 if(match.host===playerId){
 
@@ -2880,50 +4031,114 @@ const words=[
 "SUBMARINO"
 ];
 
-const word=
+
+const word =
 words[
 Math.floor(
 Math.random()*words.length
 )
 ];
 
-drawRound=
+
+drawRound =
 Date.now().toString(36);
 
-publishRoom(
-{
+
+drawDeadline =
+Date.now()+60000;
+
+
+publishRoom({
+
 type:"drawRound",
+
 round:drawRound,
-word,
-deadline:Date.now()+60000
+
+word:word,
+
+deadline:drawDeadline
+
+});
+
 }
+
+}
+
+
+/* =========================================================
+   DRAW ROUND
+========================================================= */
+
+function handleDrawRoom(data){
+
+drawRound =
+data.round;
+
+drawDeadline =
+data.deadline;
+
+
+document.getElementById(
+"drawWord"
+).textContent =
+data.word;
+
+
+document.getElementById(
+"drawStatus"
+).textContent =
+"🎨 ¡Dibujen!";
+
+
+clearCanvas();
+
+
+clearInterval(
+drawTimerInterval
+);
+
+
+drawTimerInterval =
+setInterval(()=>{
+
+const left =
+Math.max(
+0,
+Math.ceil(
+(drawDeadline-Date.now())/1000
+)
+);
+
+
+document.getElementById(
+"drawTimer"
+).textContent =
+left+"s";
+
+
+if(left<=0){
+
+clearInterval(
+drawTimerInterval
 );
 
 }
 
-}
-
-function handleDrawRoom(data){
-
-drawRound=data.round;
-
-document
-.getElementById("drawWord")
-.textContent=
-"🎨 Dibujá: "+data.word;
-
-document
-.getElementById("drawStatus")
-.textContent=
-"Los dos dibujan el mismo objeto. Cuando termines tocá 'Terminé'.";
-
-clearCanvas();
+},250);
 
 }
+
+
+/* =========================================================
+   FINISH DRAW
+========================================================= */
 
 function finishDrawing(){
 
-if(!match||!drawRound){
+if(
+!match ||
+!drawRound
+){
 
 toast(
 "No hay una partida de dibujo."
@@ -2933,131 +4148,422 @@ return;
 
 }
 
-if(
-drawResults[playerId]
-){
 
-toast(
-"Ya enviaste tu dibujo."
-);
-
-return;
-
-}
-
-const image=
+const image =
 canvas.toDataURL(
 "image/jpeg",
 .45
 );
 
-publishRoom(
-{
+
+publishRoom({
+
 type:"drawSubmit",
+
 round:drawRound,
+
 id:playerId,
+
 user:username,
-image,
+
+image:image,
+
 ts:Date.now()
-}
-);
 
-document
-.getElementById("myDrawing")
-.src=image;
+});
 
-document
-.getElementById("drawStatus")
-.textContent=
+
+document.getElementById(
+"myDrawing"
+).src=image;
+
+
+document.getElementById(
+"drawStatus"
+).textContent =
 "✓ Enviado. Esperando al rival...";
 
 }
 
+
+/* =========================================================
+   DRAW SUBMIT
+========================================================= */
+
 function handleDrawSubmit(data){
 
-if(data.round!==drawRound)
+if(
+data.round!==drawRound
+)
 return;
 
-drawResults[data.id]=data;
 
-if(data.id===playerId){
+drawResults[data.id]=
+data;
 
-document
-.getElementById("myDrawing")
-.src=data.image;
+
+if(
+data.id===playerId
+){
+
+document.getElementById(
+"myDrawing"
+).src =
+data.image;
 
 }else{
 
-document
-.getElementById("otherDrawing")
-.src=data.image;
+document.getElementById(
+"otherDrawing"
+).src =
+data.image;
 
 }
 
+
 if(
-Object.keys(drawResults).length===2
+Object.keys(drawResults).length>=2
 ){
 
-const list=
-Object.values(drawResults)
-.sort(
+const list =
+Object.values(drawResults);
+
+
+list.sort(
 (a,b)=>
-(a.ts||Date.now())-
-(b.ts||Date.now())
+Number(a.ts)-Number(b.ts)
 );
 
-const first=list[0];
-const second=list[1];
+
+const first =
+list[0];
+
+const second =
+list[1];
+
 
 let winner=null;
 
+
 /*
-La página decide:
-si uno terminó al menos 1 segundo antes,
-gana ese jugador.
-Si terminaron prácticamente juntos,
-empate.
+   El que termina primero gana.
 */
 
 if(
-(second.ts-first.ts)>=1000
+Number(first.ts) <
+Number(second.ts)
 ){
 
-winner=first.id;
+winner =
+first.id;
 
 }
 
+
 const results={};
 
-for(const p of list){
+
+list.forEach(p=>{
 
 results[p.id]={
 id:p.id,
 user:p.user,
-score:
-p.id===winner?
-100:
-winner?
-0:
+score:p.id===winner ?
+100 :
 50
 };
 
+});
+
+
+publishRoom({
+
+type:"gameResult",
+
+winner:winner,
+
+results:results,
+
+reason:"draw"
+
+});
+
 }
 
-if(match.host===playerId){
+}
 
-publishRoom(
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showGameResult(data){
+
+if(matchResultShown)
+return;
+
+matchResultShown=true;
+
+
+const results =
+data.results || {};
+
+const winnerId =
+data.winner;
+
+
+if(!winnerId){
+
+document.getElementById(
+"resultIcon"
+).textContent="🤝";
+
+document.getElementById(
+"resultTitle"
+).textContent="¡EMPATE!";
+
+document.getElementById(
+"resultName"
+).textContent="Nadie gana";
+
+document.getElementById(
+"resultSub"
+).textContent=
+"Los dos estuvieron iguales.";
+
+document.getElementById(
+"resultOverlay"
+).classList.add("show");
+
+
+beep(550,.15);
+
+setTimeout(()=>{
+beep(700,.15);
+},160);
+
+
+finishMatchAfterResult();
+
+return;
+
+}
+
+
+const winner =
+results[winnerId]?.user ||
+getPlayerName(winnerId);
+
+
+const iAmWinner =
+winnerId===playerId;
+
+
+document.getElementById(
+"resultIcon"
+).textContent =
+iAmWinner ?
+"🏆" :
+"💥";
+
+
+document.getElementById(
+"resultTitle"
+).textContent =
+iAmWinner ?
+"¡GANASTE!" :
+"PERDISTE";
+
+
+document.getElementById(
+"resultName"
+).textContent =
+winner;
+
+
+document.getElementById(
+"resultSub"
+).textContent =
+iAmWinner ?
+"🔥 La página determinó que sos el ganador." :
+"El resultado fue determinado automáticamente.";
+
+
+document.getElementById(
+"resultOverlay"
+).classList.add("show");
+
+
+if(iAmWinner){
+
+confetti();
+
+victorySound();
+
+}else{
+
+beep(220,.25);
+
+}
+
+
+for(
+const id in results
+){
+
+const p =
+results[id];
+
+addScore(
+p.user,
+Number(p.score)||0
+);
+
+}
+
+
+finishMatchAfterResult();
+
+}
+
+
+/* =========================================================
+   FINISH MATCH
+========================================================= */
+
+function finishMatchAfterResult(){
+
+setTimeout(()=>{
+
+if(!match)
+return;
+
+
+const oldRoom =
+match.id;
+
+
+if(connected){
+
+client.unsubscribe(
+ROOM_PREFIX+oldRoom
+);
+
+
+publish(
+LOBBY,
 {
-type:"gameResult",
-winner,
-results,
-reason:"draw"
+type:"roomClosed",
+roomId:oldRoom,
+ts:Date.now()
 }
 );
 
 }
 
+
+match=null;
+
+myReady=false;
+
+rivalReady=false;
+
+matchResultShown=false;
+
+selectedGame=null;
+
+announcePresence();
+
+
+},1800);
+
 }
+
+
+/* =========================================================
+   LEAVE MATCH
+========================================================= */
+
+function leaveMatch(){
+
+if(!match)
+return;
+
+
+const oldRoom =
+match.id;
+
+
+if(connected){
+
+publish(
+LOBBY,
+{
+type:"roomClosed",
+roomId:oldRoom,
+ts:Date.now()
+}
+);
+
+publishRoom({
+
+type:"roomLeave",
+
+roomId:oldRoom,
+
+id:playerId
+
+});
+
+
+client.unsubscribe(
+ROOM_PREFIX+oldRoom
+);
+
+}
+
+
+match=null;
+
+myReady=false;
+
+rivalReady=false;
+
+matchResultShown=false;
+
+selectedGame=null;
+
+
+document
+.getElementById("matchOverlay")
+.classList.remove("show");
+
+
+announcePresence();
+
+showView("arcade");
+
+toast(
+"Saliste de la partida."
+);
+
+}
+
+
+/* =========================================================
+   PLAYER NAME
+========================================================= */
+
+function getPlayerName(id){
+
+if(id===playerId)
+return username;
+
+
+return (
+onlinePlayers.get(id)?.user ||
+"Rival"
+);
 
 }
 
@@ -3068,13 +4574,19 @@ reason:"draw"
 
 function sendChat(){
 
-const input=
-document.getElementById("chatInput");
+const input =
+document.getElementById(
+"chatInput"
+);
 
-const text=
+
+const text =
 input.value.trim();
 
-if(!text)return;
+
+if(!text)
+return;
+
 
 publish(
 CHAT_TOPIC,
@@ -3082,46 +4594,68 @@ CHAT_TOPIC,
 type:"chat",
 id:playerId,
 user:username,
-text,
+text:text,
 ts:Date.now()
 }
 );
 
+
 input.value="";
 
 }
+
 
 document
 .getElementById("chatInput")
 .addEventListener(
 "keydown",
 e=>{
+
 if(e.key==="Enter")
 sendChat();
+
 }
 );
 
+
 function handleChat(data){
 
-const box=
-document.getElementById("messages");
+if(!data)
+return;
 
-const div=
-document.createElement("div");
 
-div.className=
+const box =
+document.getElementById(
+"messages"
+);
+
+
+const div =
+document.createElement(
+"div"
+);
+
+
+div.className =
 "message "+
-(data.id===playerId?"me":"");
+(
+data.id===playerId ?
+"me" :
+""
+);
 
-div.innerHTML=
+
+div.innerHTML =
 "<small>"+
 escapeHTML(data.user)+
 "</small>"+
 escapeHTML(data.text);
 
+
 box.appendChild(div);
 
-box.scrollTop=
+
+box.scrollTop =
 box.scrollHeight;
 
 }
@@ -3143,10 +4677,12 @@ return;
 
 }
 
+
 client.publish(
 COMMAND_TOPIC,
 command
 );
+
 
 log(
 "ESP32 ← "+command,
@@ -3155,19 +4691,27 @@ log(
 
 }
 
+
 function sendEspMsg(){
 
-const input=
-document.getElementById("espMsg");
+const input =
+document.getElementById(
+"espMsg"
+);
 
-const value=
+
+const value =
 input.value.trim();
 
-if(!value)return;
+
+if(!value)
+return;
+
 
 send(
 "MSG:"+value
 );
+
 
 input.value="";
 
@@ -3175,48 +4719,59 @@ input.value="";
 
 
 /* =========================================================
-   NUMERO
+   NUMBER GAME
 ========================================================= */
 
-let numberSecret=
-Math.floor(Math.random()*100)+1;
+let numberSecret =
+Math.floor(
+Math.random()*100
+)+1;
 
 let numberAttempts=0;
 
+
 function guessNumber(){
 
-const value=
+const value =
 Number(
-document
-.getElementById("guess")
-.value
+document.getElementById(
+"guess"
+).value
 );
 
-const result=
-document
-.getElementById("guessResult");
+
+const result =
+document.getElementById(
+"guessResult"
+);
+
 
 if(
-!value||
-value<1||
+!value ||
+value<1 ||
 value>100
 ){
 
-result.textContent=
+result.textContent =
 "Usá un número del 1 al 100.";
 
 return;
 
 }
 
+
 numberAttempts++;
 
-if(value===numberSecret){
 
-result.textContent=
+if(
+value===numberSecret
+){
+
+result.textContent =
 "🎉 ¡Ganaste en "+
 numberAttempts+
 " intentos!";
+
 
 showWinner(
 username,
@@ -3225,16 +4780,19 @@ null,
 "La página confirmó el resultado."
 );
 
-numberSecret=
-Math.floor(Math.random()*100)+1;
+
+numberSecret =
+Math.floor(
+Math.random()*100
+)+1;
 
 numberAttempts=0;
 
 }else{
 
-result.textContent=
-value<numberSecret?
-"⬆ Más alto":
+result.textContent =
+value<numberSecret ?
+"⬆ Más alto" :
 "⬇ Más bajo";
 
 }
@@ -3248,58 +4806,53 @@ value<numberSecret?
 
 function addScore(user,score){
 
-ranking[user]=
+ranking[user] =
 (ranking[user]||0)+score;
 
 renderRanking();
 
 }
 
+
 function renderRanking(){
 
-const box=
-document.getElementById("ranking");
+const box =
+document.getElementById(
+"ranking"
+);
 
-const list=
-Object
-.entries(ranking)
+
+const list =
+Object.entries(ranking)
 .sort(
 (a,b)=>b[1]-a[1]
 );
 
+
 if(!list.length){
 
-box.innerHTML=
-`
-<div class="muted">
-Todavía no hay resultados.
-</div>
-`;
+box.innerHTML =
+'<div class="muted">Todavía no hay resultados.</div>';
 
 return;
 
 }
 
-box.innerHTML=
+
+box.innerHTML =
 list
 .slice(0,10)
 .map(
 (x,i)=>
-`
-<div class="rank">
-
+`<div class="rank">
 <span>
-${i===0?"👑 ":""}
-#${i+1}
+${i===0?"👑 ":""}#${i+1}
 ${escapeHTML(x[0])}
 </span>
-
 <b>
 ${x[1]} pts
 </b>
-
-</div>
-`
+</div>`
 )
 .join("");
 
@@ -3307,7 +4860,7 @@ ${x[1]} pts
 
 
 /* =========================================================
-   RESULTADO SOLO
+   INDIVIDUAL WINNER
 ========================================================= */
 
 function showWinner(
@@ -3317,33 +4870,38 @@ title,
 subtitle
 ){
 
-document
-.getElementById("resultIcon")
-.textContent=
-winner===username?
-"🏆":
+document.getElementById(
+"resultIcon"
+).textContent =
+winner===username ?
+"🏆" :
 "💥";
 
-document
-.getElementById("resultTitle")
-.textContent=
-winner===username?
-"¡GANASTE!":
+
+document.getElementById(
+"resultTitle"
+).textContent =
+winner===username ?
+"¡GANASTE!" :
 title;
 
-document
-.getElementById("resultName")
-.textContent=
+
+document.getElementById(
+"resultName"
+).textContent =
 winner;
 
-document
-.getElementById("resultSub")
-.textContent=
+
+document.getElementById(
+"resultSub"
+).textContent =
 subtitle;
 
-document
-.getElementById("resultOverlay")
-.classList.add("show");
+
+document.getElementById(
+"resultOverlay"
+).classList.add("show");
+
 
 if(winner===username)
 confetti();
@@ -3352,23 +4910,349 @@ confetti();
 
 
 /* =========================================================
-   UTILIDADES
+   CLOSE RESULT
 ========================================================= */
 
-function getPlayerName(id){
+function closeResult(){
 
-if(id===playerId)
-return username;
+document
+.getElementById("resultOverlay")
+.classList.remove("show");
 
-return onlinePlayers.get(id)?.user||
-(match?.rivalName)||
-"Rival";
+
+announcePresence();
+
+showView("arcade");
 
 }
 
+
+/* =========================================================
+   CONFETTI
+========================================================= */
+
+function confetti(){
+
+for(
+let i=0;
+i<80;
+i++
+){
+
+const c =
+document.createElement(
+"div"
+);
+
+c.className =
+"confetti";
+
+
+c.style.left =
+Math.random()*100+
+"vw";
+
+
+c.style.background =
+[
+"#38e8ff",
+"#8b5cf6",
+"#39e58c",
+"#ff5577",
+"#ffd447",
+"#fff"
+][
+Math.floor(
+Math.random()*6
+)
+];
+
+
+c.style.setProperty(
+"--x",
+(Math.random()*300-150)+"px"
+);
+
+
+c.style.animationDuration =
+(1.7+
+Math.random()*2)+
+"s";
+
+
+document.body.appendChild(c);
+
+
+setTimeout(
+()=>{
+c.remove();
+},
+4000
+);
+
+}
+
+}
+
+
+/* =========================================================
+   SOUNDS
+========================================================= */
+
+function victorySound(){
+
+beep(523,.1);
+
+setTimeout(
+()=>{
+beep(659,.1);
+},
+100
+);
+
+setTimeout(
+()=>{
+beep(784,.18);
+},
+210
+);
+
+}
+
+
+function beep(
+f=600,
+d=.08
+){
+
+try{
+
+const a =
+new AudioContext();
+
+const o =
+a.createOscillator();
+
+const g =
+a.createGain();
+
+
+o.frequency.value =
+f;
+
+g.gain.value =
+.035;
+
+
+o.connect(g);
+
+g.connect(
+a.destination
+);
+
+
+o.start();
+
+
+g.gain.exponentialRampToValueAtTime(
+.0001,
+a.currentTime+d
+);
+
+
+o.stop(
+a.currentTime+d
+);
+
+}catch(e){}
+
+}
+
+
+/* =========================================================
+   DRAW CANVAS
+========================================================= */
+
+function initCanvas(){
+
+canvas =
+document.getElementById(
+"canvas"
+);
+
+ctx =
+canvas.getContext(
+"2d"
+);
+
+
+clearCanvas();
+
+
+canvas.addEventListener(
+"pointerdown",
+e=>{
+
+drawing=true;
+
+drawPoint(e);
+
+}
+);
+
+
+canvas.addEventListener(
+"pointermove",
+e=>{
+
+if(drawing)
+drawPoint(e);
+
+}
+);
+
+
+canvas.addEventListener(
+"pointerup",
+()=>{
+
+drawing=false;
+
+ctx.beginPath();
+
+}
+);
+
+
+canvas.addEventListener(
+"pointerleave",
+()=>{
+
+drawing=false;
+
+ctx.beginPath();
+
+}
+);
+
+}
+
+
+/* =========================================================
+   DRAW POINT
+========================================================= */
+
+function drawPoint(e){
+
+const rect =
+canvas.getBoundingClientRect();
+
+
+const x =
+(e.clientX-rect.left)*
+canvas.width/
+rect.width;
+
+
+const y =
+(e.clientY-rect.top)*
+canvas.height/
+rect.height;
+
+
+ctx.lineWidth =
+Number(
+document.getElementById(
+"brushSize"
+).value
+);
+
+
+ctx.lineCap =
+"round";
+
+
+ctx.strokeStyle =
+drawColor;
+
+
+ctx.lineTo(
+x,
+y
+);
+
+ctx.stroke();
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+y
+);
+
+}
+
+
+/* =========================================================
+   CLEAR CANVAS
+========================================================= */
+
+function clearCanvas(){
+
+if(!ctx)
+return;
+
+
+ctx.fillStyle="#fff";
+
+ctx.fillRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+}
+
+
+/* =========================================================
+   COLOR
+========================================================= */
+
+function setColor(
+color,
+b
+){
+
+drawColor =
+color;
+
+
+document
+.querySelectorAll(".color")
+.forEach(
+x=>
+x.classList.remove(
+"selected"
+)
+);
+
+
+b.classList.add(
+"selected"
+);
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
 function escapeHTML(text){
 
-return String(text).replace(
+return String(text)
+.replace(
 /[&<>"']/g,
 c=>({
 "&":"&amp;",
@@ -3383,162 +5267,13 @@ c=>({
 
 
 /* =========================================================
-   CONFETI
-========================================================= */
-
-function confetti(){
-
-for(let i=0;i<80;i++){
-
-const c=
-document.createElement("div");
-
-c.className="confetti";
-
-c.style.left=
-Math.random()*100+"vw";
-
-c.style.background=[
-"#38e8ff",
-"#8b5cf6",
-"#39e58c",
-"#ff5577",
-"#ffd447",
-"#fff"
-][
-Math.floor(Math.random()*6)
-];
-
-c.style.setProperty(
-"--x",
-(Math.random()*300-150)+"px"
-);
-
-c.style.animationDuration=
-(1.7+Math.random()*2)+"s";
-
-document.body.appendChild(c);
-
-setTimeout(
-()=>c.remove(),
-4000
-);
-
-}
-
-}
-
-function victorySound(){
-
-beep(523,.1);
-
-setTimeout(
-()=>beep(659,.1),
-100
-);
-
-setTimeout(
-()=>beep(784,.18),
-210
-);
-
-}
-
-function beep(f=600,d=.08){
-
-try{
-
-const a=new AudioContext();
-
-const o=a.createOscillator();
-
-const g=a.createGain();
-
-o.frequency.value=f;
-
-g.gain.value=.035;
-
-o.connect(g);
-
-g.connect(a.destination);
-
-o.start();
-
-g.gain.exponentialRampToValueAtTime(
-.0001,
-a.currentTime+d
-);
-
-o.stop(
-a.currentTime+d
-);
-
-}catch(e){}
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer=null;
-
-function toast(text){
-
-const box=
-document.getElementById("toast");
-
-box.textContent=text;
-
-box.classList.add("show");
-
-clearTimeout(toastTimer);
-
-toastTimer=
-setTimeout(
-()=>{
-box.classList.remove("show");
-},
-2500
-);
-
-}
-
-
-/* =========================================================
-   CONSOLA
-========================================================= */
-
-function log(text,type=""){
-
-const box=
-document.getElementById("consoleLog");
-
-if(!box)return;
-
-const div=
-document.createElement("div");
-
-div.className=
-"log "+type;
-
-div.textContent=
-"["+new Date().toLocaleTimeString()+"] "+text;
-
-box.appendChild(div);
-
-box.scrollTop=
-box.scrollHeight;
-
-}
-
-
-/* =========================================================
    MQTT HANDLER
 ========================================================= */
 
-function handleMQTT(topic,raw){
+function handleMQTT(
+topic,
+raw
+){
 
 if(topic===LOBBY){
 
@@ -3554,15 +5289,18 @@ return;
 
 }
 
+
 if(topic===STATE_TOPIC){
 
-document
-.getElementById("statEsp")
-.textContent=raw;
+document.getElementById(
+"statEsp"
+).textContent =
+raw;
 
 return;
 
 }
+
 
 if(topic===CHAT_TOPIC){
 
@@ -3578,9 +5316,11 @@ return;
 
 }
 
+
 if(
-match&&
-topic===ROOM_PREFIX+match.id
+match &&
+topic===
+ROOM_PREFIX+match.id
 ){
 
 try{
@@ -3597,21 +5337,72 @@ JSON.parse(raw)
 
 
 /* =========================================================
-   RELOJ / PRESENCIA
+   CONSOLE
 ========================================================= */
 
-const sessionStart=Date.now();
+function log(
+text,
+type=""
+){
+
+const box =
+document.getElementById(
+"consoleLog"
+);
+
+
+if(!box)
+return;
+
+
+const div =
+document.createElement(
+"div"
+);
+
+
+div.className =
+"log "+
+type;
+
+
+div.textContent =
+"["+new Date()
+.toLocaleTimeString()+
+"] "+text;
+
+
+box.appendChild(
+div
+);
+
+
+box.scrollTop =
+box.scrollHeight;
+
+}
+
+
+/* =========================================================
+   SESSION TIMER
+========================================================= */
+
+const sessionStart =
+Date.now();
+
 
 setInterval(()=>{
 
-const s=
+const s =
 Math.floor(
 (Date.now()-sessionStart)/1000
 );
 
-document
-.getElementById("statTime")
-.textContent=
+
+document.getElementById(
+"statTime"
+).textContent =
+
 String(
 Math.floor(s/60)
 ).padStart(2,"0")+
@@ -3620,18 +5411,22 @@ String(
 s%60
 ).padStart(2,"0");
 
+
 renderPlayers();
+
+renderRooms();
 
 },1000);
 
 
 /* =========================================================
-   INICIO
+   START
 ========================================================= */
 
 initCanvas();
 
 connectMQTT();
+
 
 if(!username){
 
@@ -3642,18 +5437,21 @@ openName,
 
 }else{
 
-document
-.getElementById("usernameLabel")
-.textContent=username;
+document.getElementById(
+"usernameLabel"
+).textContent =
+username;
 
-document
-.getElementById("profileName")
-.textContent=username;
+document.getElementById(
+"profileName"
+).textContent =
+username;
 
 }
 
+
 log(
-"THOMY ARCADE // SALAS MULTIJUGADOR ONLINE",
+"THOMY ARCADE // MULTIPLAYER ONLINE",
 "in"
 );
 
