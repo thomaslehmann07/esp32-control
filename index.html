@@ -14,17 +14,13 @@
 
 body{
   font-family:Arial,Helvetica,sans-serif;
-  background:#08090d;
+  background:#0b0f19;
   color:#fff;
   min-height:100vh;
 }
 
-button,input{
-  font:inherit;
-}
-
 button{
-  cursor:pointer;
+  font-family:inherit;
 }
 
 .app{
@@ -32,29 +28,28 @@ button{
   min-height:100vh;
 }
 
-/* SIDEBAR */
+/* ================= SIDEBAR ================= */
 
 .sidebar{
-  width:240px;
-  background:#101218;
-  border-right:1px solid #242731;
-  padding:25px 15px;
+  width:230px;
+  background:#111827;
+  border-right:1px solid #252d3d;
+  padding:20px 15px;
   position:fixed;
   left:0;
   top:0;
   bottom:0;
-  z-index:10;
 }
 
 .logo{
   font-size:22px;
-  font-weight:900;
-  margin-bottom:35px;
-  padding:0 10px;
+  font-weight:800;
+  padding:10px;
+  margin-bottom:25px;
 }
 
 .logo span{
-  color:#6d7cff;
+  color:#6d5dfc;
 }
 
 .nav{
@@ -66,79 +61,75 @@ button{
 .nav button{
   border:0;
   background:transparent;
-  color:#9297a5;
-  padding:13px 15px;
-  border-radius:10px;
+  color:#9ca3af;
   text-align:left;
-  font-weight:700;
+  padding:13px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:15px;
+  transition:.2s;
 }
 
 .nav button:hover,
 .nav button.active{
-  background:#1b1e28;
+  background:#1c2435;
   color:#fff;
 }
 
-.status{
+.user-box{
   position:absolute;
   bottom:20px;
-  left:20px;
-  right:20px;
-  padding:12px;
-  background:#171a22;
-  border-radius:10px;
+  left:15px;
+  right:15px;
+  background:#171e2c;
+  border-radius:12px;
+  padding:13px;
+}
+
+.user-name{
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.status{
   font-size:12px;
-  color:#888e9d;
+  color:#ef4444;
 }
 
-.dot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#555;
-  margin-right:7px;
+.status.online{
+  color:#22c55e;
 }
 
-.dot.online{
-  background:#35d07f;
-}
-
-/* MAIN */
+/* ================= MAIN ================= */
 
 .main{
-  margin-left:240px;
-  width:calc(100% - 240px);
+  margin-left:230px;
+  width:calc(100% - 230px);
   min-height:100vh;
 }
 
 .topbar{
-  height:70px;
-  border-bottom:1px solid #242731;
+  height:65px;
+  border-bottom:1px solid #252d3d;
   display:flex;
   align-items:center;
-  padding:0 30px;
   justify-content:space-between;
-  background:#0c0d12;
-  position:sticky;
-  top:0;
-  z-index:5;
+  padding:0 30px;
+  background:#0e131e;
 }
 
-.pageName{
-  font-weight:800;
+.top-title{
+  font-weight:bold;
   font-size:18px;
 }
 
-.userName{
-  color:#8e94a5;
+.top-user{
+  color:#9ca3af;
   font-size:14px;
 }
 
 .content{
   padding:30px;
-  max-width:1300px;
-  margin:auto;
 }
 
 .view{
@@ -149,44 +140,38 @@ button{
   display:block;
 }
 
-/* CARDS */
+/* ================= HOME ================= */
 
 .hero{
-  background:linear-gradient(135deg,#171a2a,#10121a);
-  border:1px solid #292d3b;
-  border-radius:20px;
+  background:linear-gradient(135deg,#171d32,#111827);
+  border:1px solid #252d3d;
+  border-radius:18px;
   padding:35px;
   margin-bottom:25px;
 }
 
 .hero h1{
-  font-size:38px;
+  font-size:34px;
   margin-bottom:10px;
 }
 
 .hero p{
-  color:#9298a8;
-  max-width:700px;
+  color:#9ca3af;
+  max-width:650px;
   line-height:1.6;
 }
 
-.grid{
+.cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
+  gap:18px;
 }
 
 .card{
-  background:#111319;
-  border:1px solid #252934;
+  background:#111827;
+  border:1px solid #252d3d;
   border-radius:15px;
   padding:22px;
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-2px);
-  border-color:#444b60;
 }
 
 .card h3{
@@ -194,509 +179,380 @@ button{
 }
 
 .card p{
-  color:#858b9b;
-  font-size:14px;
+  color:#9ca3af;
   line-height:1.5;
-  margin-bottom:17px;
+  font-size:14px;
 }
 
-.cardIcon{
-  font-size:35px;
-  margin-bottom:15px;
-}
+/* ================= CHAT ================= */
 
-.primary{
-  border:0;
-  background:#6675ff;
-  color:#fff;
-  padding:11px 17px;
-  border-radius:9px;
-  font-weight:800;
-}
-
-.primary:hover{
-  background:#7986ff;
-}
-
-.secondary{
-  border:1px solid #303542;
-  background:#181b23;
-  color:#fff;
-  padding:11px 17px;
-  border-radius:9px;
-  font-weight:700;
-}
-
-.danger{
-  background:#e74c3c;
-  color:#fff;
-  border:0;
-  padding:11px 17px;
-  border-radius:9px;
-  font-weight:800;
-}
-
-/* HOME */
-
-.homeStats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-  margin-top:20px;
-}
-
-.stat{
-  background:#111319;
-  border:1px solid #252934;
-  border-radius:15px;
-  padding:20px;
-}
-
-.statValue{
-  font-size:28px;
-  font-weight:900;
-  margin-bottom:5px;
-}
-
-.statLabel{
-  color:#7e8492;
-  font-size:13px;
-}
-
-/* CHAT */
-
-.chatBox{
-  height:600px;
-  display:flex;
-  flex-direction:column;
-  background:#111319;
-  border:1px solid #252934;
+.chat-box{
+  background:#111827;
+  border:1px solid #252d3d;
   border-radius:15px;
   overflow:hidden;
 }
 
-.messages{
-  flex:1;
+.chat-messages{
+  height:450px;
   overflow-y:auto;
   padding:20px;
 }
 
-.message{
-  margin-bottom:13px;
+.chat-message{
+  margin-bottom:14px;
 }
 
-.message strong{
-  color:#7482ff;
+.chat-name{
+  color:#8b7cff;
+  font-weight:bold;
+  font-size:13px;
 }
 
-.message span{
-  color:#d4d7df;
+.chat-text{
+  color:#ddd;
+  margin-top:3px;
+  word-break:break-word;
 }
 
-.chatInput{
+.chat-input{
   display:flex;
-  gap:10px;
-  padding:15px;
-  border-top:1px solid #252934;
+  border-top:1px solid #252d3d;
 }
 
-.chatInput input{
+.chat-input input{
   flex:1;
-  background:#191c24;
-  border:1px solid #303542;
+  background:#0d131f;
   color:#fff;
-  padding:12px;
-  border-radius:9px;
+  border:0;
+  padding:15px;
   outline:none;
 }
 
-/* ARCADE */
-
-.sectionTitle{
-  margin-bottom:18px;
+.chat-input button{
+  background:#6d5dfc;
+  border:0;
+  color:#fff;
+  padding:0 22px;
+  cursor:pointer;
 }
 
-.sectionTitle h2{
-  margin-bottom:5px;
+/* ================= ARCADE ================= */
+
+.arcade-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
 }
 
-.sectionTitle p{
-  color:#858b9b;
+.game-card{
+  background:#111827;
+  border:1px solid #252d3d;
+  border-radius:16px;
+  padding:22px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.game-card:hover{
+  transform:translateY(-3px);
+  border-color:#6d5dfc;
+}
+
+.game-icon{
+  font-size:38px;
+  margin-bottom:12px;
+}
+
+.game-card h3{
+  margin-bottom:8px;
+}
+
+.game-card p{
+  color:#9ca3af;
   font-size:14px;
+  line-height:1.5;
 }
 
-.arcadeTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-  gap:15px;
-}
+/* ================= ROOMS ================= */
 
 .rooms{
-  margin-top:25px;
+  margin-top:30px;
+}
+
+.rooms h2{
+  margin-bottom:15px;
+}
+
+.room-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .room{
-  background:#111319;
-  border:1px solid #252934;
-  border-radius:13px;
-  padding:17px;
+  background:#111827;
+  border:1px solid #252d3d;
+  padding:15px;
+  border-radius:12px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:10px;
   gap:15px;
 }
 
-.roomInfo strong{
+.room-info strong{
   display:block;
-  margin-bottom:5px;
+  margin-bottom:4px;
 }
 
-.roomInfo small{
-  color:#858b9b;
+.room-info span{
+  color:#9ca3af;
+  font-size:13px;
 }
 
 .room button{
-  white-space:nowrap;
+  background:#6d5dfc;
+  color:white;
+  border:0;
+  border-radius:8px;
+  padding:9px 15px;
+  cursor:pointer;
 }
 
-/* ACTIVE GAME */
-
-.gameScreen{
-  min-height:calc(100vh - 130px);
+.no-rooms{
+  color:#777;
+  padding:20px 0;
 }
 
-.activeGameHeader{
-  background:#111319;
-  border:1px solid #292d3b;
-  border-radius:18px;
-  padding:20px 25px;
-  margin-bottom:20px;
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
+/* ================= ACTIVE GAME ================= */
 
-.activeGameIcon{
-  font-size:40px;
-}
-
-.activeGameHeader h1{
-  font-size:27px;
-}
-
-.activeGameStatus{
-  color:#8d93a3;
-  margin-top:4px;
-}
-
-.gameArea{
-  background:#111319;
-  border:1px solid #292d3b;
+.game-screen{
+  background:#111827;
+  border:1px solid #252d3d;
   border-radius:18px;
   padding:25px;
-  min-height:500px;
-  position:relative;
+  text-align:center;
 }
 
-.targetArea{
-  min-height:390px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+.game-screen h1{
+  margin-bottom:8px;
+}
+
+.game-status{
+  color:#9ca3af;
+  margin-bottom:20px;
+}
+
+.target-area{
+  width:100%;
+  height:400px;
+  background:#0b101a;
+  border-radius:15px;
   position:relative;
   overflow:hidden;
-  background:#090b10;
-  border-radius:15px;
-  border:1px solid #252934;
 }
 
-.target{
-  width:80px;
-  height:80px;
+#target{
+  width:65px;
+  height:65px;
   border-radius:50%;
-  background:#ff4757;
+  background:#ef4444;
   position:absolute;
   cursor:pointer;
   display:none;
-  box-shadow:0 0 30px rgba(255,71,87,.35);
 }
 
-.gameScore{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:15px;
-  color:#9ba0ae;
+.ttt-area{
+  display:none;
+  width:330px;
+  margin:25px auto;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
 }
 
-.gameScore strong{
-  color:#fff;
-  font-size:20px;
+.ttt-cell{
+  height:100px;
+  background:#1a2232;
+  border:1px solid #30394d;
+  border-radius:10px;
+  font-size:40px;
+  color:white;
+  cursor:pointer;
 }
 
 .ranking{
-  margin-top:20px;
-  background:#0b0d12;
-  border:1px solid #252934;
-  border-radius:12px;
-  padding:15px;
+  margin-top:25px;
+  color:#ddd;
 }
 
-.ranking h3{
-  margin-bottom:10px;
-}
+/* ================= DRAW ================= */
 
-.rankRow{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #20232c;
-  color:#b8bcc7;
-}
-
-.backGame{
-  margin-top:18px;
-}
-
-/* TIC TAC TOE */
-
-.ttt{
-  width:min(420px,100%);
-  margin:30px auto;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-
-.ttt button{
-  aspect-ratio:1;
-  background:#191c24;
-  border:1px solid #303542;
-  color:#fff;
-  font-size:55px;
-  font-weight:900;
-  border-radius:12px;
-}
-
-.ttt button:hover{
-  background:#20242e;
-}
-
-/* DRAW */
-
-.drawLayout{
-  display:grid;
-  grid-template-columns:1fr 280px;
-  gap:20px;
-}
-
-.canvasBox{
-  background:#111319;
-  border:1px solid #292d3b;
-  border-radius:15px;
-  padding:15px;
-}
-
-.canvas{
-  width:100%;
-  height:550px;
-  background:#fff;
-  border-radius:10px;
-  display:block;
-  cursor:crosshair;
-  touch-action:none;
-}
-
-.drawControls{
-  background:#111319;
-  border:1px solid #292d3b;
+.draw-container{
+  background:#111827;
+  border:1px solid #252d3d;
   border-radius:15px;
   padding:20px;
 }
 
-.drawControls h3{
-  margin-bottom:15px;
+#canvas{
+  display:block;
+  width:100%;
+  max-width:800px;
+  height:450px;
+  background:white;
+  border-radius:10px;
+  margin:auto;
+  touch-action:none;
+  cursor:crosshair;
 }
 
-.drawInfo{
-  color:#858b9b;
-  font-size:14px;
-  line-height:1.5;
-  margin-bottom:20px;
+.draw-controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
 }
 
-/* ESP */
+.draw-controls button{
+  padding:10px 18px;
+  border:0;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ================= ESP ================= */
+
+.esp-panel{
+  background:#111827;
+  border:1px solid #252d3d;
+  border-radius:15px;
+  padding:20px;
+}
+
+.esp-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:20px 0;
+}
+
+.esp-buttons button{
+  border:0;
+  padding:12px 20px;
+  border-radius:8px;
+  background:#6d5dfc;
+  color:#fff;
+  cursor:pointer;
+}
 
 .console{
-  background:#050607;
-  border:1px solid #292d3b;
-  border-radius:15px;
-  padding:20px;
-  min-height:400px;
+  background:#05070b;
+  border-radius:10px;
+  padding:15px;
+  height:300px;
+  overflow-y:auto;
   font-family:monospace;
-  color:#50fa7b;
-  white-space:pre-wrap;
-  overflow:auto;
+  font-size:13px;
+  color:#8ef58e;
 }
 
-.espButtons{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-}
+/* ================= MODALS ================= */
 
-/* MODALS */
-
-.overlay{
+.modal{
+  display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.78);
-  backdrop-filter:blur(8px);
-  display:none;
+  background:rgba(0,0,0,.7);
   align-items:center;
   justify-content:center;
   z-index:100;
-  padding:20px;
 }
 
-.overlay.show{
+.modal.active{
   display:flex;
 }
 
-.modal{
-  width:min(550px,100%);
-  background:#111319;
-  border:1px solid #303542;
-  border-radius:20px;
-  padding:28px;
-  box-shadow:0 30px 100px rgba(0,0,0,.5);
+.modal-box{
+  background:#111827;
+  border:1px solid #30394d;
+  border-radius:16px;
+  width:min(430px,90%);
+  padding:25px;
 }
 
-.modal h2{
-  margin-bottom:10px;
+.modal-box h2{
+  margin-bottom:15px;
 }
 
-.modal p{
-  color:#858b9b;
-  line-height:1.5;
-  margin-bottom:20px;
+.modal-box p{
+  color:#9ca3af;
+  margin-bottom:18px;
 }
 
-.modal input{
+.modal-box input{
   width:100%;
-  background:#191c24;
-  border:1px solid #303542;
+  background:#0b101a;
+  border:1px solid #30394d;
   color:#fff;
   padding:13px;
-  border-radius:9px;
+  border-radius:8px;
   outline:none;
   margin-bottom:15px;
 }
 
-.modalButtons{
+.modal-buttons{
   display:flex;
+  justify-content:flex-end;
   gap:10px;
-  flex-wrap:wrap;
 }
 
-.gameChoice{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:20px;
+.modal-buttons button{
+  border:0;
+  padding:10px 17px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-.gameChoice button{
-  background:#191c24;
-  border:1px solid #303542;
+.primary{
+  background:#6d5dfc;
   color:#fff;
-  padding:17px;
-  border-radius:11px;
-  font-weight:800;
-  text-align:left;
 }
 
-.gameChoice button:hover{
-  border-color:#6675ff;
-  background:#202430;
-}
-
-.matchBig{
-  text-align:center;
-  padding:30px 10px;
-}
-
-.matchBigIcon{
-  font-size:55px;
-  margin-bottom:15px;
-}
-
-.matchBig h2{
-  font-size:30px;
-}
-
-.matchCountdown{
-  font-size:90px;
-  font-weight:900;
-  margin-top:15px;
-  color:#7482ff;
-}
-
-.result{
-  text-align:center;
-  padding:25px;
-}
-
-.resultIcon{
-  font-size:70px;
-  margin-bottom:10px;
-}
-
-.result h2{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.result p{
-  margin-bottom:25px;
-}
-
-/* NUMBER */
-
-.numberGame{
-  margin-top:20px;
-  background:#111319;
-  border:1px solid #292d3b;
-  border-radius:15px;
-  padding:25px;
-}
-
-.numberGame input{
-  width:160px;
-  background:#191c24;
-  border:1px solid #303542;
+.secondary{
+  background:#252d3d;
   color:#fff;
-  padding:12px;
-  border-radius:9px;
-  outline:none;
-  margin-right:8px;
 }
 
-.numberMessage{
-  margin-top:15px;
-  color:#9da3b1;
+/* ================= WAITING ================= */
+
+.waiting-box{
+  text-align:center;
 }
 
-/* MOBILE */
+.waiting-spinner{
+  width:45px;
+  height:45px;
+  border:4px solid #30394d;
+  border-top-color:#6d5dfc;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:20px auto;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:800px){
 
   .sidebar{
     width:70px;
-    padding:20px 8px;
+    padding:15px 8px;
   }
 
   .logo{
@@ -705,29 +561,20 @@ button{
   }
 
   .logo span{
-    font-size:20px;
+    font-size:22px;
   }
 
   .nav button{
     font-size:0;
     text-align:center;
-    padding:14px 5px;
   }
 
-  .nav button:first-letter{
+  .nav button::first-letter{
     font-size:20px;
   }
 
-  .status{
-    font-size:0;
-    left:25px;
-    right:auto;
-    padding:0;
-    background:none;
-  }
-
-  .status .dot{
-    margin:0;
+  .user-box{
+    display:none;
   }
 
   .main{
@@ -742,31 +589,6 @@ button{
   .topbar{
     padding:0 18px;
   }
-
-  .hero h1{
-    font-size:29px;
-  }
-
-  .homeStats{
-    grid-template-columns:1fr;
-  }
-
-  .drawLayout{
-    grid-template-columns:1fr;
-  }
-
-  .canvas{
-    height:400px;
-  }
-
-  .gameChoice{
-    grid-template-columns:1fr;
-  }
-
-  .room{
-    flex-direction:column;
-    align-items:flex-start;
-  }
 }
 </style>
 </head>
@@ -775,53 +597,64 @@ button{
 
 <div class="app">
 
+  <!-- ================= SIDEBAR ================= -->
+
   <aside class="sidebar">
 
     <div class="logo">
       ESP32 <span>REMOTE</span>
     </div>
 
-    <div class="nav">
+    <nav class="nav">
 
-      <button id="navHome" onclick="showView('home')">
+      <button class="active" onclick="showView('home',this)">
         🏠 Inicio
       </button>
 
-      <button id="navChat" onclick="showView('chat')">
+      <button onclick="showView('chat',this)">
         💬 Chat
       </button>
 
-      <button id="navArcade" onclick="showView('arcade')">
+      <button onclick="showView('arcade',this)">
         🎮 Arcade
       </button>
 
-      <button id="navDraw" onclick="showView('draw')">
-        🎨 Dibujar
+      <button onclick="showView('draw',this)">
+        🎨 Dibujo
       </button>
 
-      <button id="navEsp" onclick="showView('esp')">
+      <button onclick="showView('esp',this)">
         ⚡ ESP32
       </button>
 
-    </div>
+    </nav>
 
-    <div class="status">
-      <span id="statusDot" class="dot"></span>
-      <span id="statusText">Desconectado</span>
+    <div class="user-box">
+
+      <div class="user-name" id="sidebarUser">
+        Sin nombre
+      </div>
+
+      <div class="status" id="connectionStatus">
+        ● Desconectado
+      </div>
+
     </div>
 
   </aside>
 
 
+  <!-- ================= MAIN ================= -->
+
   <main class="main">
 
     <header class="topbar">
 
-      <div id="pageName" class="pageName">
-        INICIO
+      <div class="top-title" id="topTitle">
+        Inicio
       </div>
 
-      <div id="topUser" class="userName">
+      <div class="top-user" id="topUser">
         Sin nombre
       </div>
 
@@ -830,61 +663,53 @@ button{
 
     <div class="content">
 
-      <!-- HOME -->
+      <!-- ================= HOME ================= -->
 
       <section id="home" class="view active">
 
         <div class="hero">
 
-          <h1>
-            ESP32 Remote 🎮
-          </h1>
+          <h1>ESP32 Remote 🎮</h1>
 
           <p>
-            Controlá tu ESP32-C3, chateá y jugá partidas
-            multijugador directamente desde el navegador.
+            Controlá tu ESP32, chateá con otras personas y jugá
+            minijuegos multijugador directamente desde el navegador.
           </p>
 
         </div>
 
 
-        <div class="homeStats">
+        <div class="cards">
 
-          <div class="stat">
+          <div class="card">
 
-            <div id="onlineCount" class="statValue">
-              0
-            </div>
+            <h3>🌐 Multijugador</h3>
 
-            <div class="statLabel">
-              Jugadores online
-            </div>
+            <p>
+              Jugá contra otras personas conectadas al sistema.
+            </p>
 
           </div>
 
 
-          <div class="stat">
+          <div class="card">
 
-            <div id="roomCount" class="statValue">
-              0
-            </div>
+            <h3>⚡ ESP32</h3>
 
-            <div class="statLabel">
-              Salas abiertas
-            </div>
+            <p>
+              Enviá comandos directamente a tu ESP32 mediante MQTT.
+            </p>
 
           </div>
 
 
-          <div class="stat">
+          <div class="card">
 
-            <div id="espStatus" class="statValue">
-              OFF
-            </div>
+            <h3>💬 Chat</h3>
 
-            <div class="statLabel">
-              ESP32
-            </div>
+            <p>
+              Hablá con todos los usuarios conectados.
+            </p>
 
           </div>
 
@@ -893,42 +718,28 @@ button{
       </section>
 
 
-      <!-- CHAT -->
+      <!-- ================= CHAT ================= -->
 
       <section id="chat" class="view">
 
-        <div class="sectionTitle">
+        <h1>💬 Chat</h1>
 
-          <h2>
-            Chat global 💬
-          </h2>
+        <br>
 
-          <p>
-            Todos los jugadores conectados pueden verlo.
-          </p>
+        <div class="chat-box">
 
-        </div>
+          <div class="chat-messages" id="chatMessages"></div>
 
-
-        <div class="chatBox">
-
-          <div id="messages" class="messages"></div>
-
-
-          <div class="chatInput">
+          <div class="chat-input">
 
             <input
-              id="chatMessage"
-              type="text"
+              id="chatInput"
               placeholder="Escribí un mensaje..."
-              maxlength="250"
-              onkeydown="if(event.key==='Enter')sendChat()"
+              maxlength="300"
+              onkeydown="if(event.key==='Enter') sendChat()"
             >
 
-            <button
-              class="primary"
-              onclick="sendChat()"
-            >
+            <button onclick="sendChat()">
               Enviar
             </button>
 
@@ -939,222 +750,121 @@ button{
       </section>
 
 
-      <!-- ARCADE -->
+      <!-- ================= ARCADE ================= -->
 
       <section id="arcade" class="view">
 
-        <div class="arcadeTop">
+        <h1>🎮 Arcade</h1>
 
-          <div class="sectionTitle">
-
-            <h2>
-              Arcade 🎮
-            </h2>
-
-            <p>
-              Creá una sala o unite a una partida abierta.
-            </p>
-
-          </div>
+        <p style="color:#9ca3af;margin-top:8px">
+          Creá una sala o uníte a una partida disponible.
+        </p>
 
 
-          <button
-            class="primary"
-            onclick="openCreateRoom()"
+        <br>
+
+
+        <div class="arcade-grid">
+
+          <div
+            class="game-card"
+            onclick="openCreateRoom('target')"
           >
-            + Crear sala
-          </button>
 
-        </div>
-
-
-        <div class="grid">
-
-          <div class="card">
-
-            <div class="cardIcon">
+            <div class="game-icon">
               🎯
             </div>
 
-            <h3>
-              Caza el objetivo
-            </h3>
+            <h3>Caza el objetivo</h3>
 
             <p>
-              Tocá el objetivo tantas veces como puedas.
-              El jugador con más puntos gana.
+              Tocá el objetivo lo más rápido posible.
             </p>
-
-            <button
-              class="secondary"
-              onclick="openCreateRoom('target')"
-            >
-              Crear partida
-            </button>
 
           </div>
 
 
-          <div class="card">
+          <div
+            class="game-card"
+            onclick="openCreateRoom('reaction')"
+          >
 
-            <div class="cardIcon">
+            <div class="game-icon">
               ⚡
             </div>
 
-            <h3>
-              Reflejos
-            </h3>
+            <h3>Reflejos</h3>
 
             <p>
               Esperá la señal y reaccioná lo más rápido posible.
             </p>
 
-            <button
-              class="secondary"
-              onclick="openCreateRoom('reaction')"
-            >
-              Crear partida
-            </button>
-
           </div>
-
-
-          <div class="card">
-
-            <div class="cardIcon">
-              ❌
-            </div>
-
-            <h3>
-              Tres en línea
-            </h3>
-
-            <p>
-              Clásico tres en línea para dos jugadores.
-            </p>
-
-            <button
-              class="secondary"
-              onclick="openCreateRoom('ttt')"
-            >
-              Crear partida
-            </button>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="cardIcon">
-              🧠
-            </div>
-
-            <h3>
-              Adiviná el número
-            </h3>
-
-            <p>
-              Juego individual. Intentá descubrir el número secreto.
-            </p>
-
-            <button
-              class="secondary"
-              onclick="startNumberGame()"
-            >
-              Jugar
-            </button>
-
-          </div>
-
-
-          <div class="card">
-
-            <div class="cardIcon">
-              🎨
-            </div>
-
-            <h3>
-              Duelo de dibujo
-            </h3>
-
-            <p>
-              Dibujen y comparen sus obras en tiempo real.
-            </p>
-
-            <button
-              class="secondary"
-              onclick="openCreateRoom('draw')"
-            >
-              Crear partida
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <!-- ROOMS -->
-
-        <div class="rooms">
-
-          <div class="sectionTitle">
-
-            <h2>
-              Salas disponibles
-            </h2>
-
-            <p>
-              Las salas abiertas aparecen automáticamente.
-            </p>
-
-          </div>
-
-
-          <div id="roomList"></div>
-
-        </div>
-
-
-        <!-- NUMBER GAME -->
-
-        <div
-          id="numberGame"
-          class="numberGame"
-          style="display:none"
-        >
-
-          <h2>
-            🧠 Adiviná el número
-          </h2>
-
-          <p style="color:#858b9b;margin:10px 0 20px">
-
-            Estoy pensando un número entre 1 y 100.
-
-          </p>
-
-
-          <input
-            id="numberInput"
-            type="number"
-            min="1"
-            max="100"
-            placeholder="Número"
-            onkeydown="if(event.key==='Enter')guessNumber()"
-          >
-
-
-          <button
-            class="primary"
-            onclick="guessNumber()"
-          >
-            Adivinar
-          </button>
 
 
           <div
-            id="numberMessage"
-            class="numberMessage"
+            class="game-card"
+            onclick="openCreateRoom('ttt')"
+          >
+
+            <div class="game-icon">
+              ❌⭕
+            </div>
+
+            <h3>Tres en línea</h3>
+
+            <p>
+              Jugá al clásico tres en línea contra otro jugador.
+            </p>
+
+          </div>
+
+
+          <div
+            class="game-card"
+            onclick="startNumberGame()"
+          >
+
+            <div class="game-icon">
+              🧠
+            </div>
+
+            <h3>Adiviná el número</h3>
+
+            <p>
+              Intentá adivinar el número secreto.
+            </p>
+
+          </div>
+
+
+          <div
+            class="game-card"
+            onclick="openCreateRoom('draw')"
+          >
+
+            <div class="game-icon">
+              🎨
+            </div>
+
+            <h3>Duelo de dibujo</h3>
+
+            <p>
+              Dibujá contra otro jugador.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="rooms">
+
+          <h2>🟢 Salas disponibles</h2>
+
+          <div
+            id="roomList"
+            class="room-list"
           ></div>
 
         </div>
@@ -1162,186 +872,83 @@ button{
       </section>
 
 
-      <!-- ACTIVE GAME -->
+      <!-- ================= ACTIVE GAME ================= -->
 
-      <section
-        id="activeGame"
-        class="view gameScreen"
-      >
+      <section id="activeGame" class="view">
 
-        <div class="activeGameHeader">
+        <div class="game-screen">
+
+          <h1 id="gameTitle">
+            🎮 Juego
+          </h1>
 
           <div
-            id="activeGameIcon"
-            class="activeGameIcon"
+            class="game-status"
+            id="gameStatus"
           >
-            🎮
+            Preparando partida...
           </div>
 
-
-          <div>
-
-            <h1 id="activeGameTitle">
-              Partida
-            </h1>
-
-            <div
-              id="activeGameStatus"
-              class="activeGameStatus"
-            >
-              Preparando partida...
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="gameArea">
-
-          <div class="gameScore">
-
-            <div>
-              Puntos:
-              <strong id="targetScore">
-                0
-              </strong>
-            </div>
-
-            <div id="gameTimer">
-              --
-            </div>
-
-          </div>
-
-
-          <!-- TARGET / REACTION -->
 
           <div
             id="targetArea"
-            class="targetArea"
+            class="target-area"
           >
 
-            <div
-              id="target"
-              class="target"
-            ></div>
-
-
-            <div
-              id="gameMessage"
-              style="color:#707687"
-            >
-              Preparando...
-            </div>
+            <div id="target"></div>
 
           </div>
 
-
-          <!-- TTT -->
 
           <div
             id="tttArea"
-            style="display:none"
+            class="ttt-area"
           >
 
-            <div class="ttt">
+            <button class="ttt-cell" data-index="0"></button>
+            <button class="ttt-cell" data-index="1"></button>
+            <button class="ttt-cell" data-index="2"></button>
 
-              <button onclick="tttMove(0)"></button>
-              <button onclick="tttMove(1)"></button>
-              <button onclick="tttMove(2)"></button>
+            <button class="ttt-cell" data-index="3"></button>
+            <button class="ttt-cell" data-index="4"></button>
+            <button class="ttt-cell" data-index="5"></button>
 
-              <button onclick="tttMove(3)"></button>
-              <button onclick="tttMove(4)"></button>
-              <button onclick="tttMove(5)"></button>
-
-              <button onclick="tttMove(6)"></button>
-              <button onclick="tttMove(7)"></button>
-              <button onclick="tttMove(8)"></button>
-
-            </div>
+            <button class="ttt-cell" data-index="6"></button>
+            <button class="ttt-cell" data-index="7"></button>
+            <button class="ttt-cell" data-index="8"></button>
 
           </div>
 
-
-          <!-- RANKING -->
 
           <div
             id="ranking"
             class="ranking"
-          >
-
-            <h3>
-              🏆 Resultados
-            </h3>
-
-            <div id="rankingContent">
-              Esperando resultados...
-            </div>
-
-          </div>
+          ></div>
 
         </div>
-
-
-        <button
-          class="secondary backGame"
-          onclick="leaveMatch()"
-        >
-          ← Salir de la partida
-        </button>
 
       </section>
 
 
-      <!-- DRAW -->
+      <!-- ================= DRAW ================= -->
 
       <section id="draw" class="view">
 
-        <div class="sectionTitle">
+        <h1>🎨 Duelo de dibujo</h1>
 
-          <h2>
-            Duelo de dibujo 🎨
-          </h2>
+        <br>
 
-          <p>
-            Dibujá mientras tu rival ve el dibujo.
-          </p>
+        <div class="draw-container">
 
-        </div>
+          <canvas id="canvas"></canvas>
 
-
-        <div class="drawLayout">
-
-          <div class="canvasBox">
-
-            <canvas
-              id="canvas"
-              class="canvas"
-            ></canvas>
-
-          </div>
-
-
-          <div class="drawControls">
-
-            <h3>
-              🎨 Tu dibujo
-            </h3>
-
-            <div class="drawInfo">
-
-              Dibujá libremente en el área blanca.
-              Tu rival recibirá tus trazos automáticamente.
-
-            </div>
-
+          <div class="draw-controls">
 
             <button
-              class="danger"
+              class="secondary"
               onclick="clearCanvas()"
             >
-              Limpiar
+              🗑️ Limpiar
             </button>
 
           </div>
@@ -1351,60 +958,50 @@ button{
       </section>
 
 
-      <!-- ESP32 -->
+      <!-- ================= ESP ================= -->
 
       <section id="esp" class="view">
 
-        <div class="sectionTitle">
+        <h1>⚡ ESP32</h1>
 
-          <h2>
-            Control del ESP32 ⚡
-          </h2>
+        <br>
+
+        <div class="esp-panel">
 
           <p>
-            Mandá comandos directamente a tu ESP32-C3.
+            Estado MQTT:
+            <strong id="espStatus">
+              Desconectado
+            </strong>
           </p>
 
-        </div>
+
+          <div class="esp-buttons">
+
+            <button onclick="sendCommand('PING')">
+              📡 PING
+            </button>
+
+            <button onclick="sendCommand('ON')">
+              🟢 ON
+            </button>
+
+            <button onclick="sendCommand('OFF')">
+              🔴 OFF
+            </button>
+
+            <button onclick="sendCommand('GAME')">
+              🎮 GAME
+            </button>
+
+          </div>
 
 
-        <div class="espButtons">
+          <div
+            class="console"
+            id="console"
+          ></div>
 
-          <button
-            class="primary"
-            onclick="sendCommand('PING')"
-          >
-            PING
-          </button>
-
-          <button
-            class="primary"
-            onclick="sendCommand('ON')"
-          >
-            ON
-          </button>
-
-          <button
-            class="secondary"
-            onclick="sendCommand('OFF')"
-          >
-            OFF
-          </button>
-
-          <button
-            class="primary"
-            onclick="sendCommand('GAME')"
-          >
-            GAME
-          </button>
-
-        </div>
-
-
-        <div
-          id="espConsole"
-          class="console"
-        >Esperando conexión...
         </div>
 
       </section>
@@ -1416,34 +1013,29 @@ button{
 </div>
 
 
-<!-- NAME MODAL -->
+<!-- ================= NAME MODAL ================= -->
 
 <div
-  id="nameOverlay"
-  class="overlay"
+  class="modal"
+  id="nameModal"
 >
 
-  <div class="modal">
+  <div class="modal-box">
 
-    <h2>
-      👋 ¿Cómo te llamás?
-    </h2>
+    <h2>👋 ¿Cómo te llamás?</h2>
 
     <p>
       Elegí el nombre que van a ver los demás jugadores.
     </p>
 
-
     <input
       id="nameInput"
-      type="text"
-      maxlength="18"
+      maxlength="20"
       placeholder="Tu nombre"
-      onkeydown="if(event.key==='Enter')saveName()"
+      onkeydown="if(event.key==='Enter') saveName()"
     >
 
-
-    <div class="modalButtons">
+    <div class="modal-buttons">
 
       <button
         class="primary"
@@ -1459,135 +1051,90 @@ button{
 </div>
 
 
-<!-- CREATE ROOM -->
+<!-- ================= ROOM MODAL ================= -->
 
 <div
-  id="createOverlay"
-  class="overlay"
+  class="modal"
+  id="roomModal"
 >
 
-  <div class="modal">
+  <div class="modal-box">
 
-    <h2>
-      🎮 Crear partida
+    <h2 id="roomModalTitle">
+      Crear sala
     </h2>
 
-    <p>
-      Elegí el juego. Otro jugador podrá ver tu sala y entrar.
+    <p id="roomModalText">
+      Vas a crear una sala para jugar.
     </p>
 
+    <div class="modal-buttons">
 
-    <div class="gameChoice">
-
-      <button onclick="createRoom('target')">
-        🎯 Caza el objetivo
+      <button
+        class="secondary"
+        onclick="closeRoomModal()"
+      >
+        Cancelar
       </button>
 
-      <button onclick="createRoom('reaction')">
-        ⚡ Reflejos
-      </button>
-
-      <button onclick="createRoom('ttt')">
-        ❌ Tres en línea
-      </button>
-
-      <button onclick="createRoom('draw')">
-        🎨 Duelo de dibujo
+      <button
+        class="primary"
+        onclick="createRoom()"
+      >
+        Crear sala
       </button>
 
     </div>
-
-
-    <button
-      class="secondary"
-      onclick="closeCreateRoom()"
-    >
-      Cancelar
-    </button>
 
   </div>
 
 </div>
 
 
-<!-- MATCH COUNTDOWN -->
+<!-- ================= WAITING MODAL ================= -->
 
 <div
-  id="matchOverlay"
-  class="overlay"
+  class="modal"
+  id="waitingModal"
 >
 
-  <div class="modal matchBig">
+  <div class="modal-box waiting-box">
 
-    <div
-      id="matchIcon"
-      class="matchBigIcon"
-    >
-      🎮
-    </div>
-
-
-    <h2 id="matchTitle">
+    <h2 id="waitingTitle">
       Esperando jugador...
     </h2>
 
+    <div class="waiting-spinner"></div>
 
-    <p id="matchSub">
-      Compartí la sala con otro jugador.
+    <p id="waitingText">
+      Compartí la sala. Cuando entre otro jugador comenzará la partida.
     </p>
 
+    <div class="modal-buttons">
 
-    <div
-      id="matchCountdown"
-      class="matchCountdown"
-    ></div>
+      <button
+        class="secondary"
+        onclick="cancelMatch()"
+      >
+        Cancelar
+      </button>
 
-  </div>
-
-</div>
-
-
-<!-- RESULT -->
-
-<div
-  id="resultOverlay"
-  class="overlay"
->
-
-  <div class="modal result">
-
-    <div
-      id="resultIcon"
-      class="resultIcon"
-    >
-      🏆
     </div>
 
-
-    <h2 id="resultTitle">
-      Resultado
-    </h2>
-
-
-    <p id="resultText"></p>
-
-
-    <button
-      class="primary"
-      onclick="closeResult()"
-    >
-      Continuar
-    </button>
-
   </div>
 
 </div>
+
+
+<!-- ================= MQTT.JS ================= -->
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 
 <script>
 
 /* =========================================================
-   MQTT
+   CONFIGURACIÓN MQTT
 ========================================================= */
 
 const MQTT_BROKER =
@@ -1609,11 +1156,6 @@ const ROOM_PREFIX =
   "thomy/esp32c3/v4/room/";
 
 
-let mqttClient = null;
-
-let connected = false;
-
-
 /* =========================================================
    IDENTIDAD
 ========================================================= */
@@ -1627,148 +1169,54 @@ localStorage.setItem(
   playerId
 );
 
-
 let username =
-  localStorage.getItem("esp32Username") ||
-  "";
+  localStorage.getItem("esp32Username") || "";
 
 
-let onlinePlayers = {};
+/* =========================================================
+   MQTT
+========================================================= */
+
+let mqttClient = null;
+
+let mqttConnected = false;
+
+
+/* =========================================================
+   JUGADORES / SALAS
+========================================================= */
+
+let players = {};
 
 let rooms = {};
 
 let match = null;
 
-let matchResultShown = false;
+let selectedGame = null;
 
 
 /* =========================================================
-   GAME STATE
+   VARIABLES DE JUEGO
 ========================================================= */
 
-let targetScore = 0;
+let targetTimer = null;
 
-let targetTime = null;
+let reactionTimer = null;
 
-let targetInterval = null;
+let reactionStart = 0;
 
-let reactionStart = null;
+let tttBoard = [];
 
-let reactionTimeout = null;
+let tttTurn = "";
 
-let countdownTimer = null;
+let mySymbol = "";
 
-
-let tttState = {
-
-  board:[
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
-  ],
-
-  turn:null,
-
-  winner:null
-
-};
-
-
-let numberSecret = 0;
-
-let numberAttempts = 0;
+let gameResultSent = false;
 
 
 /* =========================================================
-   DRAW STATE
+   CANVAS
 ========================================================= */
-
-let drawing = false;
-
-let lastX = 0;
-
-let lastY = 0;
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const statusDot =
-  document.getElementById("statusDot");
-
-const statusText =
-  document.getElementById("statusText");
-
-const pageName =
-  document.getElementById("pageName");
-
-const topUser =
-  document.getElementById("topUser");
-
-
-const nameOverlay =
-  document.getElementById("nameOverlay");
-
-const createOverlay =
-  document.getElementById("createOverlay");
-
-
-const matchOverlay =
-  document.getElementById("matchOverlay");
-
-const matchTitle =
-  document.getElementById("matchTitle");
-
-const matchSub =
-  document.getElementById("matchSub");
-
-const matchCountdown =
-  document.getElementById("matchCountdown");
-
-
-const resultOverlay =
-  document.getElementById("resultOverlay");
-
-
-const target =
-  document.getElementById("target");
-
-const targetArea =
-  document.getElementById("targetArea");
-
-const targetScoreEl =
-  document.getElementById("targetScore");
-
-
-const gameTimer =
-  document.getElementById("gameTimer");
-
-const gameMessage =
-  document.getElementById("gameMessage");
-
-
-const tttArea =
-  document.getElementById("tttArea");
-
-
-const rankingContent =
-  document.getElementById("rankingContent");
-
-
-const espConsole =
-  document.getElementById("espConsole");
-
-
-const messages =
-  document.getElementById("messages");
-
 
 const canvas =
   document.getElementById("canvas");
@@ -1776,363 +1224,364 @@ const canvas =
 const ctx =
   canvas.getContext("2d");
 
+let drawing = false;
+
 
 /* =========================================================
-   VIEW
+   NOMBRES DE JUEGO
 ========================================================= */
 
-function showView(view){
+function gameName(game){
 
-  document.querySelectorAll(".view").forEach(v=>{
+  if(game === "target")
+    return "Caza el objetivo";
 
-    v.classList.remove("active");
+  if(game === "reaction")
+    return "Reflejos";
 
-  });
+  if(game === "ttt")
+    return "Tres en línea";
 
+  if(game === "draw")
+    return "Duelo de dibujo";
+
+  if(game === "number")
+    return "Adiviná el número";
+
+  return "Juego";
+
+}
+
+
+/* =========================================================
+   CAMBIO DE VISTA
+========================================================= */
+
+function showView(view, button){
+
+  document
+    .querySelectorAll(".view")
+    .forEach(v =>
+      v.classList.remove("active")
+    );
 
   const element =
     document.getElementById(view);
 
-
-  if(element){
-
+  if(element)
     element.classList.add("active");
 
-  }
 
-
-  document.querySelectorAll(".nav button").forEach(b=>{
-
-    b.classList.remove("active");
-
-  });
-
-
-  const nav =
-    document.getElementById(
-      "nav" +
-      view.charAt(0).toUpperCase() +
-      view.slice(1)
+  document
+    .querySelectorAll(".nav button")
+    .forEach(b =>
+      b.classList.remove("active")
     );
 
-
-  if(nav){
-
-    nav.classList.add("active");
-
-  }
+  if(button)
+    button.classList.add("active");
 
 
-  const names = {
-
-    home:"INICIO",
-
-    chat:"CHAT",
-
-    arcade:"ARCADE",
-
-    activeGame:"ARCADE / PARTIDA",
-
-    draw:"DIBUJAR",
-
+  const titles = {
+    home:"Inicio",
+    chat:"Chat",
+    arcade:"Arcade",
+    activeGame:"Partida",
+    draw:"Dibujo",
     esp:"ESP32"
-
   };
 
-
-  pageName.textContent =
-    names[view] || "ESP32 REMOTE";
-
-
-  window.scrollTo({
-
-    top:0,
-
-    behavior:"smooth"
-
-  });
+  document.getElementById("topTitle").textContent =
+    titles[view] || "ESP32 Remote";
 
 }
 
 
 /* =========================================================
-   NAME
-========================================================= */
-
-function openName(){
-
-  nameOverlay.classList.add("show");
-
-
-  setTimeout(()=>{
-
-    document
-      .getElementById("nameInput")
-      .focus();
-
-  },100);
-
-}
-
-
-function saveName(){
-
-  const input =
-    document.getElementById("nameInput");
-
-
-  const value =
-    input.value.trim();
-
-
-  if(!value) return;
-
-
-  username =
-    value.substring(0,18);
-
-
-  localStorage.setItem(
-    "esp32Username",
-    username
-  );
-
-
-  topUser.textContent =
-    username;
-
-
-  nameOverlay.classList.remove("show");
-
-
-  announcePresence();
-
-  announceRoom();
-
-}
-
-
-/* =========================================================
-   MQTT CONNECT
+   MQTT CONEXIÓN
 ========================================================= */
 
 function connectMQTT(){
 
-  const clientId =
-    "web-" +
-    playerId
-      .replaceAll("-","")
-      .substring(0,12) +
-    "-" +
-    Math.random()
-      .toString(16)
-      .slice(2);
+  if(typeof mqtt === "undefined"){
+
+    console.error(
+      "MQTT.js no está cargado"
+    );
+
+    updateConnectionStatus(false);
+
+    return;
+  }
 
 
-  mqttClient =
-    mqtt.connect(
+  console.log(
+    "Conectando a MQTT..."
+  );
 
+
+  try{
+
+    mqttClient = mqtt.connect(
       MQTT_BROKER,
-
       {
-
-        clientId:clientId,
+        clientId:
+          "Web-" +
+          playerId.replace(/-/g,"").slice(0,20),
 
         clean:true,
 
-        reconnectPeriod:3000
+        reconnectPeriod:3000,
+
+        connectTimeout:10000,
+
+        keepalive:30
+      }
+    );
+
+
+    mqttClient.on(
+      "connect",
+      function(){
+
+        console.log(
+          "MQTT CONECTADO"
+        );
+
+
+        mqttConnected = true;
+
+        updateConnectionStatus(true);
+
+
+        mqttClient.subscribe(
+          [
+            COMMAND_TOPIC,
+            STATE_TOPIC,
+            LOBBY,
+            CHAT_TOPIC
+          ],
+          function(err){
+
+            if(err){
+
+              console.error(
+                "Error suscribiendo:",
+                err
+              );
+
+              return;
+            }
+
+
+            console.log(
+              "Suscripciones MQTT listas"
+            );
+
+
+            announcePresence();
+
+            announceRoom();
+
+          }
+        );
 
       }
-
     );
 
 
-  mqttClient.on("connect",()=>{
+    mqttClient.on(
+      "message",
+      function(topic, payload){
 
-    connected = true;
+        const message =
+          payload.toString();
 
-
-    statusDot.classList.add("online");
-
-    statusText.textContent =
-      "Online";
-
-
-    mqttClient.subscribe(
-      COMMAND_TOPIC
-    );
-
-    mqttClient.subscribe(
-      STATE_TOPIC
-    );
-
-    mqttClient.subscribe(
-      LOBBY
-    );
-
-    mqttClient.subscribe(
-      CHAT_TOPIC
-    );
+        console.log(
+          "MQTT:",
+          topic,
+          message
+        );
 
 
-    /*
-      Si había una partida local al reconectar,
-      volvemos a suscribirnos a su canal.
-    */
-
-    if(match){
-
-      mqttClient.subscribe(
-        ROOM_PREFIX + match.id
-      );
-
-    }
-
-
-    announcePresence();
-
-    announceRoom();
-
-
-    addConsole(
-      "MQTT conectado."
-    );
-
-  });
-
-
-  mqttClient.on("reconnect",()=>{
-
-    connected = false;
-
-    statusText.textContent =
-      "Conectando...";
-
-  });
-
-
-  mqttClient.on("close",()=>{
-
-    connected = false;
-
-    statusDot.classList.remove("online");
-
-    statusText.textContent =
-      "Desconectado";
-
-  });
-
-
-  mqttClient.on("error",(err)=>{
-
-    console.log(
-      "MQTT ERROR",
-      err
-    );
-
-  });
-
-
-  mqttClient.on(
-    "message",
-    (topic,payload)=>{
-
-      const data =
-        payload.toString();
-
-
-      if(topic === LOBBY){
+        let data = null;
 
         try{
-
-          handleLobby(
-            JSON.parse(data)
-          );
-
-        }catch(e){}
-
-        return;
-
-      }
+          data = JSON.parse(message);
+        }
+        catch(e){}
 
 
-      if(topic === CHAT_TOPIC){
+        if(topic === LOBBY){
 
-        try{
+          if(data)
+            handleLobby(data);
 
-          handleChat(
-            JSON.parse(data)
-          );
-
-        }catch(e){}
-
-        return;
-
-      }
+          return;
+        }
 
 
-      if(topic.startsWith(ROOM_PREFIX)){
+        if(topic === CHAT_TOPIC){
 
-        try{
+          if(data)
+            handleChat(data);
 
-          handleRoom(
-            JSON.parse(data)
-          );
-
-        }catch(e){}
-
-        return;
-
-      }
+          return;
+        }
 
 
-      if(topic === STATE_TOPIC){
+        if(topic === STATE_TOPIC){
 
-        handleESPState(data);
+          handleESPState(message);
 
-        return;
+          return;
+        }
+
+
+        if(topic.startsWith(ROOM_PREFIX)){
+
+          if(data)
+            handleRoom(data);
+
+          return;
+        }
 
       }
+    );
 
 
-      if(topic === COMMAND_TOPIC){
+    mqttClient.on(
+      "error",
+      function(error){
 
-        return;
+        console.error(
+          "MQTT ERROR:",
+          error
+        );
+
+        updateConnectionStatus(false);
 
       }
+    );
 
-    }
 
-  );
+    mqttClient.on(
+      "close",
+      function(){
+
+        console.log(
+          "MQTT desconectado"
+        );
+
+        mqttConnected = false;
+
+        updateConnectionStatus(false);
+
+      }
+    );
+
+
+    mqttClient.on(
+      "reconnect",
+      function(){
+
+        console.log(
+          "Intentando reconectar MQTT..."
+        );
+
+      }
+    );
+
+
+  }
+  catch(error){
+
+    console.error(
+      "Error MQTT:",
+      error
+    );
+
+    updateConnectionStatus(false);
+
+  }
 
 }
 
 
 /* =========================================================
-   MQTT PUBLISH
+   ESTADO CONEXIÓN
 ========================================================= */
 
-function publish(topic,data){
+function updateConnectionStatus(online){
+
+  const status =
+    document.getElementById(
+      "connectionStatus"
+    );
+
+  const espStatus =
+    document.getElementById(
+      "espStatus"
+    );
+
+
+  if(online){
+
+    status.textContent =
+      "● Conectado";
+
+    status.classList.add("online");
+
+    espStatus.textContent =
+      "Conectado";
+
+  }
+  else{
+
+    status.textContent =
+      "● Desconectado";
+
+    status.classList.remove("online");
+
+    espStatus.textContent =
+      "Desconectado";
+
+  }
+
+}
+
+
+/* =========================================================
+   PUBLICAR MQTT
+========================================================= */
+
+function publish(
+  topic,
+  data
+){
 
   if(
-    !connected ||
     !mqttClient ||
     !mqttClient.connected
   ){
 
-    return false;
+    console.warn(
+      "MQTT todavía no está conectado"
+    );
 
+    return false;
   }
 
 
-  mqttClient.publish(
-
-    topic,
-
+  const message =
     typeof data === "string"
       ? data
-      : JSON.stringify(data)
+      : JSON.stringify(data);
 
+
+  mqttClient.publish(
+    topic,
+    message
   );
 
 
@@ -2142,91 +1591,66 @@ function publish(topic,data){
 
 
 /* =========================================================
-   PRESENCE
+   PRESENCIA
 ========================================================= */
 
 function announcePresence(){
 
-  if(
-    !connected ||
-    !username
-  ){
-
-    return;
-
-  }
-
-
   publish(
-
     LOBBY,
-
     {
-
       type:"presence",
 
       playerId:playerId,
 
-      name:username,
+      name:
+        username ||
+        "Jugador",
 
       busy:!!match,
 
       ts:Date.now()
-
     }
-
   );
 
 }
 
 
 /* =========================================================
-   ROOM HEARTBEAT
+   SALA HOST
 ========================================================= */
 
 function announceRoom(){
 
   if(
-
-    !connected ||
-
-    !username ||
-
     !match ||
-
-    match.host !== playerId ||
-
-    match.state !== "open"
-
+    match.host !== playerId
   ){
 
     return;
-
   }
 
 
   publish(
-
     LOBBY,
-
     {
-
       type:"room",
 
       roomId:match.id,
 
-      hostId:playerId,
-
-      hostName:username,
-
       game:match.game,
 
-      state:"open",
+      host:playerId,
+
+      hostName:
+        username ||
+        "Jugador",
+
+      state:
+        match.state,
 
       ts:Date.now()
-
     }
-
   );
 
 }
@@ -2238,121 +1662,59 @@ function announceRoom(){
 
 function handleLobby(data){
 
-  if(!data) return;
+  if(!data)
+    return;
 
 
-  /* PRESENCE */
+  if(
+    data.type === "presence"
+  ){
 
-  if(data.type === "presence"){
+    players[data.playerId] = {
 
-    if(
-      !data.playerId ||
-      !data.name
-    ){
+      id:data.playerId,
 
-      return;
-
-    }
-
-
-    onlinePlayers[data.playerId] = {
-
-      name:data.name,
+      name:data.name ||
+        "Jugador",
 
       busy:!!data.busy,
 
-      ts:data.ts || Date.now()
+      ts:Date.now()
 
     };
 
+
+    renderRooms();
 
     return;
 
   }
 
 
-  /* ROOM */
-
-  if(data.type === "room"){
-
-    if(
-      !data.roomId ||
-      !data.hostId ||
-      !data.game
-    ){
-
-      return;
-
-    }
-
-
-    if(data.state !== "open"){
-
-      delete rooms[data.roomId];
-
-      return;
-
-    }
-
-
-    /*
-      No mostramos nuestra propia sala.
-    */
-
-    if(
-      data.hostId === playerId
-    ){
-
-      return;
-
-    }
-
-
-    /*
-      Si ya estamos dentro de una partida,
-      no necesitamos seguir mostrando salas.
-    */
-
-    if(match){
-
-      return;
-
-    }
-
+  if(
+    data.type === "room"
+  ){
 
     rooms[data.roomId] = {
 
-      roomId:data.roomId,
-
-      hostId:data.hostId,
-
-      hostName:data.hostName || "Jugador",
+      id:data.roomId,
 
       game:data.game,
 
-      state:"open",
+      host:data.host,
 
-      ts:data.ts || Date.now(),
+      hostName:
+        data.hostName ||
+        "Jugador",
 
-      received:Date.now()
+      state:data.state,
+
+      ts:Date.now()
 
     };
 
 
-    return;
-
-  }
-
-
-  /* ROOM CLOSED */
-
-  if(data.type === "roomClosed"){
-
-    if(data.roomId){
-
-      delete rooms[data.roomId];
-
-    }
+    renderRooms();
 
     return;
 
@@ -2362,313 +1724,214 @@ function handleLobby(data){
 
 
 /* =========================================================
-   ROOM HELPERS
-========================================================= */
-
-function gameName(game){
-
-  const names = {
-
-    target:"Caza el objetivo",
-
-    reaction:"Reflejos",
-
-    ttt:"Tres en línea",
-
-    draw:"Duelo de dibujo"
-
-  };
-
-
-  return names[game] || game;
-
-}
-
-
-function gameIcon(game){
-
-  const icons = {
-
-    target:"🎯",
-
-    reaction:"⚡",
-
-    ttt:"❌",
-
-    draw:"🎨"
-
-  };
-
-
-  return icons[game] || "🎮";
-
-}
-
-
-/* =========================================================
-   ROOM LIST
+   RENDER SALAS
 ========================================================= */
 
 function renderRooms(){
 
   const list =
-    document.getElementById("roomList");
+    document.getElementById(
+      "roomList"
+    );
 
 
   const now =
     Date.now();
 
 
-  Object.keys(rooms).forEach(id=>{
+  Object.keys(players)
+    .forEach(id => {
 
-    if(
-      now -
-      rooms[id].received >
-      8000
-    ){
+      if(
+        now -
+        players[id].ts >
+        7000
+      ){
 
-      delete rooms[id];
+        delete players[id];
 
-    }
+      }
 
-  });
+    });
+
+
+  Object.keys(rooms)
+    .forEach(id => {
+
+      if(
+        now -
+        rooms[id].ts >
+        8000
+      ){
+
+        delete rooms[id];
+
+      }
+
+    });
 
 
   const available =
-    Object.values(rooms);
+    Object.values(rooms)
+      .filter(room =>
+
+        room.host !== playerId &&
+
+        room.state === "waiting" &&
+
+        !players[room.host]?.busy
+
+      );
 
 
-  document.getElementById(
-    "roomCount"
-  ).textContent =
-    available.length;
+  if(available.length === 0){
 
-
-  if(!available.length){
-
-    list.innerHTML = `
-
-      <div class="card">
-
-        <p style="margin:0">
-
-          No hay salas abiertas en este momento.
-
-        </p>
-
-      </div>
-
-    `;
+    list.innerHTML =
+      '<div class="no-rooms">No hay jugadores/salas disponibles ahora mismo.</div>';
 
     return;
 
   }
 
 
-  list.innerHTML =
-    available.map(room=>`
-
-      <div class="room">
-
-        <div class="roomInfo">
-
-          <strong>
-
-            ${gameIcon(room.game)}
-
-            ${escapeHTML(
-              gameName(room.game)
-            )}
-
-          </strong>
-
-          <small>
-
-            ${escapeHTML(
-              room.hostName
-            )}
-
-            está esperando un jugador
-
-          </small>
-
-        </div>
+  list.innerHTML = "";
 
 
-        <button
-          class="primary"
-          onclick="joinRoom('${escapeHTML(room.roomId)}')"
-        >
+  available.forEach(room => {
 
-          Unirse
+    const div =
+      document.createElement("div");
 
-        </button>
+    div.className = "room";
+
+
+    div.innerHTML = `
+
+      <div class="room-info">
+
+        <strong>
+          ${escapeHTML(gameName(room.game))}
+        </strong>
+
+        <span>
+          👤 ${escapeHTML(room.hostName)}
+        </span>
 
       </div>
 
-    `).join("");
+      <button>
+        Unirme
+      </button>
+
+    `;
+
+
+    div
+      .querySelector("button")
+      .onclick = () =>
+        joinRoom(room.id);
+
+
+    list.appendChild(div);
+
+  });
 
 }
 
 
 /* =========================================================
-   CREATE ROOM
+   ESCAPE HTML
 ========================================================= */
 
-function openCreateRoom(game=null){
+function escapeHTML(text){
 
-  if(!username){
-
-    openName();
-
-    return;
-
-  }
-
-
-  createOverlay.classList.add(
-    "show"
-  );
-
-
-  if(game){
-
-    createRoom(game);
-
-  }
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-function closeCreateRoom(){
+/* =========================================================
+   NOMBRE
+========================================================= */
 
-  createOverlay.classList.remove(
-    "show"
-  );
+function openName(){
 
-}
-
-
-function createRoom(game){
-
-  if(!game) return;
-
-
-  if(!username){
-
-    closeCreateRoom();
-
-    openName();
-
-    return;
-
-  }
-
-
-  if(!connected){
-
-    addConsole(
-      "Esperando conexión MQTT..."
+  const modal =
+    document.getElementById(
+      "nameModal"
     );
 
+  const input =
+    document.getElementById(
+      "nameInput"
+    );
+
+
+  input.value =
+    username || "";
+
+
+  modal.classList.add("active");
+
+
+  setTimeout(
+    () => input.focus(),
+    100
+  );
+
+}
+
+
+function saveName(){
+
+  const input =
+    document.getElementById(
+      "nameInput"
+    );
+
+
+  const name =
+    input.value.trim();
+
+
+  if(!name){
+
+    input.focus();
+
     return;
-
   }
 
 
-  createOverlay.classList.remove(
-    "show"
+  username =
+    name.substring(0,20);
+
+
+  localStorage.setItem(
+    "esp32Username",
+    username
   );
 
 
-  /*
-    Si ya estábamos en una partida,
-    la cerramos antes de crear otra.
-  */
-
-  if(match){
-
-    leaveMatch();
-
-  }
+  document.getElementById(
+    "topUser"
+  ).textContent =
+    username;
 
 
-  /*
-    Limpiamos salas viejas.
-  */
-
-  rooms = {};
-
-
-  const roomId =
-
-    playerId.substring(0,8) +
-
-    "-" +
-
-    Math.random()
-      .toString(16)
-      .slice(2,8);
+  document.getElementById(
+    "sidebarUser"
+  ).textContent =
+    username;
 
 
-  match = {
-
-    id:roomId,
-
-    game:game,
-
-    host:playerId,
-
-    hostName:username,
-
-    guest:null,
-
-    guestName:null,
-
-    state:"open",
-
-    startSent:false,
-
-    resultSent:false,
-
-    targetResults:{},
-
-    reactionResults:{}
-
-  };
-
-
-  /*
-    Nos suscribimos PRIMERO al canal.
-  */
-
-  mqttClient.subscribe(
-
-    ROOM_PREFIX + roomId,
-
-    ()=>{
-
-      /*
-        Después de suscribirnos,
-        anunciamos la sala.
-      */
-
-      announceRoom();
-
-    }
-
-  );
-
-
-  /*
-    También publicamos inmediatamente.
-    El heartbeat se encargará de mantenerla.
-  */
-
-  announceRoom();
-
-
-  showMatchFound();
+  document
+    .getElementById("nameModal")
+    .classList.remove("active");
 
 
   announcePresence();
@@ -2677,12 +1940,141 @@ function createRoom(game){
 
 
 /* =========================================================
-   JOIN ROOM
+   CREAR SALA
+========================================================= */
+
+function openCreateRoom(game){
+
+  selectedGame =
+    game;
+
+
+  document.getElementById(
+    "roomModalTitle"
+  ).textContent =
+    "Crear sala";
+
+
+  document.getElementById(
+    "roomModalText"
+  ).textContent =
+    "Vas a crear una sala para " +
+    gameName(game) +
+    ".";
+
+
+  document
+    .getElementById("roomModal")
+    .classList.add("active");
+
+}
+
+
+function closeRoomModal(){
+
+  document
+    .getElementById("roomModal")
+    .classList.remove("active");
+
+}
+
+
+/* =========================================================
+   CREAR MATCH
+========================================================= */
+
+function createRoom(){
+
+  closeRoomModal();
+
+
+  if(!mqttConnected){
+
+    alert(
+      "Todavía no estás conectado a MQTT."
+    );
+
+    return;
+
+  }
+
+
+  if(!username){
+
+    openName();
+
+    return;
+
+  }
+
+
+  const roomId =
+    playerId + "-" +
+    Date.now().toString(36);
+
+
+  match = {
+
+    id:roomId,
+
+    game:selectedGame,
+
+    host:playerId,
+
+    guest:null,
+
+    state:"waiting",
+
+    startSent:false,
+
+    resultSent:false
+
+  };
+
+
+  mqttClient.subscribe(
+    ROOM_PREFIX + roomId
+  );
+
+
+  announceRoom();
+
+  announcePresence();
+
+
+  document.getElementById(
+    "waitingTitle"
+  ).textContent =
+    "Esperando jugador...";
+
+
+  document.getElementById(
+    "waitingText"
+  ).textContent =
+    "La sala está abierta. Cuando entre otro jugador comenzará automáticamente.";
+
+
+  document
+    .getElementById("waitingModal")
+    .classList.add("active");
+
+
+  showView("arcade");
+
+}
+
+
+/* =========================================================
+   UNIRSE
 ========================================================= */
 
 function joinRoom(roomId){
 
-  if(match){
+  if(!mqttConnected){
+
+    alert(
+      "Todavía no estás conectado a MQTT."
+    );
 
     return;
 
@@ -2693,11 +2085,8 @@ function joinRoom(roomId){
     rooms[roomId];
 
 
-  if(!room){
-
+  if(!room)
     return;
-
-  }
 
 
   if(!username){
@@ -2709,75 +2098,59 @@ function joinRoom(roomId){
   }
 
 
-  if(!connected){
-
-    return;
-
-  }
-
-
-  /*
-    Sacamos la sala de nuestra lista inmediatamente
-    para impedir doble click.
-  */
-
-  delete rooms[roomId];
-
-
   match = {
 
     id:roomId,
 
     game:room.game,
 
-    host:room.hostId,
-
-    hostName:room.hostName,
+    host:room.host,
 
     guest:playerId,
 
-    guestName:username,
-
-    state:"joining",
+    state:"waiting",
 
     startSent:false,
 
-    resultSent:false,
-
-    targetResults:{},
-
-    reactionResults:{}
+    resultSent:false
 
   };
 
 
   mqttClient.subscribe(
-
     ROOM_PREFIX + roomId
-
   );
 
 
   publish(
-
     ROOM_PREFIX + roomId,
-
     {
-
       type:"roomJoin",
 
       roomId:roomId,
 
       playerId:playerId,
 
-      playerName:username
-
+      name:username
     }
-
   );
 
 
-  showMatchFound();
+  document.getElementById(
+    "waitingTitle"
+  ).textContent =
+    "Entrando a la partida...";
+
+
+  document.getElementById(
+    "waitingText"
+  ).textContent =
+    "Esperando que el creador confirme la partida.";
+
+
+  document
+    .getElementById("waitingModal")
+    .classList.add("active");
 
 
   announcePresence();
@@ -2786,411 +2159,184 @@ function joinRoom(roomId){
 
 
 /* =========================================================
-   ROOM MESSAGE
+   CANCELAR MATCH
 ========================================================= */
 
-function handleRoom(data){
+function cancelMatch(){
 
-  if(!match) return;
-
-
-  if(data.roomId !== match.id){
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     HOST RECEIVES JOIN
-  ===================================================== */
-
-  if(data.type === "roomJoin"){
-
-    if(match.host !== playerId){
-
-      return;
-
-    }
-
-
-    /*
-      Impide que dos jugadores entren
-      a la misma sala.
-    */
-
-    if(
-      match.guest ||
-      match.state !== "open"
-    ){
-
-      return;
-
-    }
-
-
-    match.guest =
-      data.playerId;
-
-    match.guestName =
-      data.playerName;
-
-
-    match.state =
-      "starting";
-
-
-    /*
-      Dejamos de anunciar la sala.
-    */
+  if(match){
 
     publish(
-
-      LOBBY,
-
+      ROOM_PREFIX + match.id,
       {
-
         type:"roomClosed",
 
-        roomId:match.id
-
+        playerId:playerId
       }
-
     );
 
-
-    /*
-      Avisamos al invitado que fue aceptado.
-    */
-
-    publish(
-
-      ROOM_PREFIX + match.id,
-
-      {
-
-        type:"roomAccepted",
-
-        roomId:match.id,
-
-        hostId:playerId,
-
-        hostName:username,
-
-        guestId:data.playerId,
-
-        guestName:data.playerName
-
-      }
-
-    );
-
-
-    showMatchFound();
-
-
-    /*
-      Protección contra doble inicio.
-    */
-
-    if(match.startSent){
-
-      return;
-
-    }
-
-
-    match.startSent = true;
-
-
-    const startAt =
-      Date.now() + 3500;
-
-
-    publish(
-
-      ROOM_PREFIX + match.id,
-
-      {
-
-        type:"start",
-
-        roomId:match.id,
-
-        startAt:startAt
-
-      }
-
-    );
-
-
-    startCountdown(
-      startAt
-    );
-
-
-    return;
-
   }
 
 
-  /* =====================================================
-     GUEST RECEIVES ACCEPT
-  ===================================================== */
+  match = null;
 
-  if(data.type === "roomAccepted"){
 
-    if(
-      data.guestId !== playerId
-    ){
+  document
+    .getElementById("waitingModal")
+    .classList.remove("active");
 
-      return;
 
-    }
+  announcePresence();
 
-
-    match.host =
-      data.hostId;
-
-    match.hostName =
-      data.hostName;
-
-    match.guest =
-      playerId;
-
-    match.guestName =
-      username;
-
-    match.state =
-      "starting";
-
-
-    showMatchFound();
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     START
-  ===================================================== */
-
-  if(data.type === "start"){
-
-    if(
-      match.state === "playing"
-    ){
-
-      return;
-
-    }
-
-
-    match.state =
-      "starting";
-
-
-    startCountdown(
-      data.startAt
-    );
-
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     TARGET
-  ===================================================== */
-
-  if(data.type === "targetFinished"){
-
-    handleTargetFinished(data);
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     REACTION
-  ===================================================== */
-
-  if(data.type === "reactionFinished"){
-
-    handleReactionFinished(data);
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     TTT
-  ===================================================== */
-
-  if(data.type === "tttState"){
-
-    handleTTTState(data);
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     DRAW
-  ===================================================== */
-
-  if(data.type === "draw"){
-
-    receiveDrawing(data);
-
-    return;
-
-  }
-
-
-  if(data.type === "drawFinished"){
-
-    handleDrawingFinished(data);
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     ROOM LEAVE
-  ===================================================== */
-
-  if(data.type === "roomLeave"){
-
-    /*
-      Si el rival se fue durante la partida,
-      terminamos nuestra partida localmente.
-    */
-
-    if(
-      data.playerId !== playerId
-    ){
-
-      showGameResult(
-        true,
-        "El otro jugador abandonó la partida."
-      );
-
-    }
-
-    return;
-
-  }
-
-
-  /* =====================================================
-     ROOM CLOSED
-  ===================================================== */
-
-  if(data.type === "roomClosed"){
-
-    /*
-      Si nosotros mismos ya terminamos,
-      no hacemos nada.
-    */
-
-    if(
-      match &&
-      data.roomId === match.id
-    ){
-
-      if(
-        !matchResultShown
-      ){
-
-        match = null;
-
-        clearInterval(
-          targetInterval
-        );
-
-        clearTimeout(
-          reactionTimeout
-        );
-
-        clearCountdown();
-
-        matchOverlay.classList.remove(
-          "show"
-        );
-
-        showView("arcade");
-
-        announcePresence();
-
-      }
-
-    }
-
-
-    return;
-
-  }
+  showView("arcade");
 
 }
 
 
 /* =========================================================
-   MATCH WAITING
+   ROOM MENSAJES
 ========================================================= */
 
-function showMatchFound(){
-
-  if(!match) return;
-
-
-  matchOverlay.classList.add(
-    "show"
-  );
-
-
-  document.getElementById(
-    "matchIcon"
-  ).textContent =
-    gameIcon(match.game);
-
+function handleRoom(data){
 
   if(
-    match.state === "open"
+    !match ||
+    data.roomId !== match.id
   ){
 
-    matchTitle.textContent =
-      "Esperando jugador...";
-
-    matchSub.textContent =
-      "La sala está abierta.";
-
-  }
-
-  else{
-
-    matchTitle.textContent =
-      "¡Jugador encontrado!";
-
-    matchSub.textContent =
-      gameName(match.game) +
-      " • " +
-      (
-        match.guestName ||
-        match.hostName ||
-        username
-      );
+    return;
 
   }
 
 
-  matchCountdown.textContent = "";
+  /* ---------- JOIN ---------- */
+
+  if(
+    data.type === "roomJoin" &&
+    match.host === playerId
+  ){
+
+    if(match.guest)
+      return;
+
+
+    match.guest =
+      data.playerId;
+
+
+    match.state =
+      "starting";
+
+
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"roomAccepted",
+
+        roomId:match.id,
+
+        host:playerId,
+
+        guest:data.playerId,
+
+        game:match.game
+      }
+    );
+
+
+    startCountdown();
+
+
+    return;
+
+  }
+
+
+  /* ---------- ACCEPT ---------- */
+
+  if(
+    data.type === "roomAccepted" &&
+    data.guest === playerId
+  ){
+
+    match.host =
+      data.host;
+
+    match.guest =
+      playerId;
+
+    match.state =
+      "starting";
+
+
+    startCountdown();
+
+
+    return;
+
+  }
+
+
+  /* ---------- START ---------- */
+
+  if(
+    data.type === "start"
+  ){
+
+    match.state =
+      "playing";
+
+
+    document
+      .getElementById("waitingModal")
+      .classList.remove("active");
+
+
+    startMatchGame();
+
+
+    return;
+
+  }
+
+
+  /* ---------- GAME ---------- */
+
+  if(
+    data.type === "game"
+  ){
+
+    handleGameMessage(data);
+
+    return;
+
+  }
+
+
+  /* ---------- RESULT ---------- */
+
+  if(
+    data.type === "result"
+  ){
+
+    handleGameResult(data);
+
+    return;
+
+  }
+
+
+  /* ---------- CLOSED ---------- */
+
+  if(
+    data.type === "roomClosed"
+  ){
+
+    finishMatch();
+
+    return;
+
+  }
 
 }
 
@@ -3199,109 +2345,84 @@ function showMatchFound(){
    COUNTDOWN
 ========================================================= */
 
-function clearCountdown(){
+function startCountdown(){
 
-  if(countdownTimer){
-
-    clearInterval(
-      countdownTimer
-    );
-
-    countdownTimer = null;
-
-  }
-
-}
+  document.getElementById(
+    "waitingTitle"
+  ).textContent =
+    "¡Preparados!";
 
 
-function startCountdown(startAt){
-
-  if(!match) return;
-
-
-  clearCountdown();
+  document.getElementById(
+    "waitingText"
+  ).textContent =
+    "La partida comienza en unos segundos...";
 
 
-  matchOverlay.classList.add(
-    "show"
-  );
+  let count = 3;
 
 
-  matchTitle.textContent =
-    "🎮 La partida comienza en...";
-
-
-  matchSub.textContent =
-    gameName(match.game);
-
-
-  matchCountdown.textContent =
-    "3";
-
-
-  countdownTimer =
-    setInterval(()=>{
+  const interval =
+    setInterval(() => {
 
       if(!match){
 
-        clearCountdown();
+        clearInterval(interval);
 
         return;
 
       }
 
 
-      const remaining =
-        startAt - Date.now();
+      document.getElementById(
+        "waitingTitle"
+      ).textContent =
+        count > 0
+          ? String(count)
+          : "¡YA!";
 
 
-      if(remaining <= 0){
-
-        clearCountdown();
+      count--;
 
 
-        matchCountdown.textContent =
-          "GO!";
+      if(count < 0){
+
+        clearInterval(interval);
 
 
-        /*
-          AHORA sí:
+        if(
+          match &&
+          !match.startSent
+        ){
 
-          1. Cerramos overlay.
-          2. Abrimos la pantalla real.
-          3. Iniciamos el juego.
-        */
+          match.startSent = true;
 
-        setTimeout(()=>{
-
-          if(!match) return;
+          match.state =
+            "playing";
 
 
-          matchOverlay.classList.remove(
-            "show"
+          publish(
+            ROOM_PREFIX + match.id,
+            {
+              type:"start",
+
+              roomId:match.id
+            }
           );
+
+
+          document
+            .getElementById("waitingModal")
+            .classList.remove("active");
 
 
           startMatchGame();
 
-        },120);
-
-
-        return;
+        }
 
       }
 
-
-      const seconds =
-        Math.ceil(
-          remaining / 1000
-        );
-
-
-      matchCountdown.textContent =
-        seconds;
-
-    },50);
+    },1000);
 
 }
 
@@ -3312,44 +2433,21 @@ function startCountdown(startAt){
 
 function startMatchGame(){
 
-  if(!match) return;
-
-
-  /*
-    Evita volver a iniciar la misma partida.
-  */
-
-  if(match.state === "playing"){
-
+  if(!match)
     return;
-
-  }
-
-
-  match.state =
-    "playing";
-
-
-  matchResultShown =
-    false;
-
-
-  match.resultSent =
-    false;
-
-
-  match.targetResults = {};
-
-  match.reactionResults = {};
 
 
   if(match.game === "target"){
 
     showGameScreen(
-      "target"
+      "🎯",
+      "Caza el objetivo",
+      "Tocá el objetivo tantas veces como puedas."
     );
 
+
     startTargetGame();
+
 
     return;
 
@@ -3359,10 +2457,14 @@ function startMatchGame(){
   if(match.game === "reaction"){
 
     showGameScreen(
-      "reaction"
+      "⚡",
+      "Reflejos",
+      "Esperá a que aparezca el objetivo."
     );
 
+
     startReactionGame();
+
 
     return;
 
@@ -3372,10 +2474,14 @@ function startMatchGame(){
   if(match.game === "ttt"){
 
     showGameScreen(
-      "ttt"
+      "❌⭕",
+      "Tres en línea",
+      "Jugá tu turno."
     );
 
-    startTTTGame();
+
+    startTTT();
+
 
     return;
 
@@ -3386,10 +2492,8 @@ function startMatchGame(){
 
     showView("draw");
 
-    setTimeout(
-      initCanvas,
-      50
-    );
+    initCanvas();
+
 
     return;
 
@@ -3402,142 +2506,43 @@ function startMatchGame(){
    GAME SCREEN
 ========================================================= */
 
-function showGameScreen(game){
+function showGameScreen(
+  icon,
+  title,
+  status
+){
 
-  showView(
-    "activeGame"
-  );
-
-
-  const info = {
-
-    target:{
-
-      icon:"🎯",
-
-      title:"Caza el objetivo",
-
-      status:
-        "¡Tocá el objetivo lo más rápido posible!"
-
-    },
-
-
-    reaction:{
-
-      icon:"⚡",
-
-      title:"Reflejos",
-
-      status:
-        "Esperá la señal..."
-
-    },
-
-
-    ttt:{
-
-      icon:"❌",
-
-      title:"Tres en línea",
-
-      status:
-        "La partida está comenzando..."
-
-    }
-
-  };
-
-
-  const data =
-    info[game] || {
-
-      icon:"🎮",
-
-      title:"Partida",
-
-      status:"Jugando..."
-
-    };
+  document.getElementById(
+    "gameTitle"
+  ).textContent =
+    icon + " " + title;
 
 
   document.getElementById(
-    "activeGameIcon"
+    "gameStatus"
   ).textContent =
-    data.icon;
+    status;
 
 
   document.getElementById(
-    "activeGameTitle"
-  ).textContent =
-    data.title;
-
-
-  document.getElementById(
-    "activeGameStatus"
-  ).textContent =
-    data.status;
-
-
-  target.style.display =
+    "targetArea"
+  ).style.display =
     "none";
 
 
-  target.style.background =
-    "#ff4757";
-
-
-  targetArea.style.display =
-    "flex";
-
-
-  tttArea.style.display =
+  document.getElementById(
+    "tttArea"
+  ).style.display =
     "none";
 
 
-  gameMessage.textContent =
+  document.getElementById(
+    "ranking"
+  ).innerHTML =
     "";
 
 
-  targetScore =
-    0;
-
-
-  targetScoreEl.textContent =
-    "0";
-
-
-  gameTimer.textContent =
-    "--";
-
-
-  rankingContent.innerHTML =
-    "Esperando resultados...";
-
-
-  if(game === "ttt"){
-
-    targetArea.style.display =
-      "none";
-
-    tttArea.style.display =
-      "block";
-
-  }
-
-
-  pageName.textContent =
-    "ARCADE / " +
-    data.title;
-
-
-  window.scrollTo({
-
-    top:0,
-
-    behavior:"smooth"
-
-  });
+  showView("activeGame");
 
 }
 
@@ -3546,46 +2551,689 @@ function showGameScreen(game){
    TARGET GAME
 ========================================================= */
 
+let targetScore = 0;
+
+let opponentTargetScore = 0;
+
+
 function startTargetGame(){
 
-  clearInterval(
-    targetInterval
-  );
+  targetScore = 0;
+
+  opponentTargetScore = 0;
 
 
-  targetScore =
-    0;
+  document.getElementById(
+    "targetArea"
+  ).style.display =
+    "block";
 
 
-  targetScoreEl.textContent =
-    "0";
-
-
-  gameMessage.textContent =
-    "¡Cazá el objetivo!";
-
-
-  target.style.background =
-    "#ff4757";
-
-
-  targetTime =
-    Date.now() + 20000;
+  document.getElementById(
+    "target"
+  ).style.display =
+    "block";
 
 
   moveTarget();
 
 
-  targetInterval =
-    setInterval(()=>{
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    "Puntos: 0";
+
+
+  clearTimeout(targetTimer);
+
+
+  targetTimer =
+    setTimeout(
+      finishTargetGame,
+      30000
+    );
+
+}
+
+
+function moveTarget(){
+
+  const area =
+    document.getElementById(
+      "targetArea"
+    );
+
+
+  const target =
+    document.getElementById(
+      "target"
+    );
+
+
+  const maxX =
+    area.clientWidth -
+    target.offsetWidth;
+
+
+  const maxY =
+    area.clientHeight -
+    target.offsetHeight;
+
+
+  const x =
+    Math.random() *
+    Math.max(0,maxX);
+
+
+  const y =
+    Math.random() *
+    Math.max(0,maxY);
+
+
+  target.style.left =
+    x + "px";
+
+
+  target.style.top =
+    y + "px";
+
+}
+
+
+/* =========================================================
+   TARGET / REACTION CLICK
+========================================================= */
+
+document
+  .getElementById("target")
+  .addEventListener(
+    "click",
+    function(){
 
       if(
         !match ||
-        match.game !== "target"
+        match.state !== "playing"
       ){
 
-        clearInterval(
-          targetInterval
+        return;
+
+      }
+
+
+      if(match.game === "target"){
+
+        targetScore++;
+
+
+        document.getElementById(
+          "gameStatus"
+        ).textContent =
+          "Puntos: " +
+          targetScore;
+
+
+        publish(
+          ROOM_PREFIX + match.id,
+          {
+            type:"game",
+
+            game:"target",
+
+            action:"score",
+
+            playerId:playerId,
+
+            score:targetScore
+          }
+        );
+
+
+        moveTarget();
+
+
+        return;
+
+      }
+
+
+      if(match.game === "reaction"){
+
+        reactionClick();
+
+      }
+
+    }
+  );
+
+
+function finishTargetGame(){
+
+  if(
+    !match ||
+    match.game !== "target"
+  ){
+
+    return;
+
+  }
+
+
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"game",
+
+      game:"target",
+
+      action:"finished",
+
+      playerId:playerId,
+
+      score:targetScore
+    }
+  );
+
+
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    "Esperando resultado...";
+
+}
+
+
+/* =========================================================
+   REACTION
+========================================================= */
+
+function startReactionGame(){
+
+  document.getElementById(
+    "targetArea"
+  ).style.display =
+    "block";
+
+
+  document.getElementById(
+    "target"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    "Esperá...";
+
+
+  clearTimeout(reactionTimer);
+
+
+  reactionTimer =
+    setTimeout(() => {
+
+      if(!match)
+        return;
+
+
+      const target =
+        document.getElementById(
+          "target"
+        );
+
+
+      const area =
+        document.getElementById(
+          "targetArea"
+        );
+
+
+      const maxX =
+        area.clientWidth -
+        target.offsetWidth;
+
+
+      const maxY =
+        area.clientHeight -
+        target.offsetHeight;
+
+
+      target.style.left =
+        Math.random() *
+        Math.max(0,maxX) +
+        "px";
+
+
+      target.style.top =
+        Math.random() *
+        Math.max(0,maxY) +
+        "px";
+
+
+      target.style.display =
+        "block";
+
+
+      reactionStart =
+        performance.now();
+
+
+      document.getElementById(
+        "gameStatus"
+      ).textContent =
+        "¡AHORA!";
+
+    },1000 + Math.random()*4000);
+
+}
+
+
+function reactionClick(){
+
+  if(
+    !match ||
+    match.game !== "reaction"
+  ){
+
+    return;
+
+  }
+
+
+  if(!reactionStart)
+    return;
+
+
+  const time =
+    Math.round(
+      performance.now() -
+      reactionStart
+    );
+
+
+  reactionStart = 0;
+
+
+  clearTimeout(reactionTimer);
+
+
+  document.getElementById(
+    "target"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    time + " ms";
+
+
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"game",
+
+      game:"reaction",
+
+      action:"score",
+
+      playerId:playerId,
+
+      time:time
+    }
+  );
+
+}
+
+
+/* =========================================================
+   TTT
+========================================================= */
+
+function startTTT(){
+
+  document.getElementById(
+    "targetArea"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "tttArea"
+  ).style.display =
+    "grid";
+
+
+  tttBoard =
+    ["","","","","","","","",""];
+
+
+  if(match.host === playerId){
+
+    mySymbol = "X";
+
+    tttTurn = match.host;
+
+  }
+  else{
+
+    mySymbol = "O";
+
+    tttTurn = match.host;
+
+  }
+
+
+  renderTTT();
+
+
+  updateTTTStatus();
+
+}
+
+
+document
+  .querySelectorAll(".ttt-cell")
+  .forEach(cell => {
+
+    cell.addEventListener(
+      "click",
+      function(){
+
+        if(
+          !match ||
+          match.game !== "ttt" ||
+          match.state !== "playing"
+        ){
+
+          return;
+
+        }
+
+
+        const index =
+          Number(
+            cell.dataset.index
+          );
+
+
+        if(
+          tttTurn !== playerId ||
+          tttBoard[index] !== ""
+        ){
+
+          return;
+
+        }
+
+
+        tttBoard[index] =
+          mySymbol;
+
+
+        renderTTT();
+
+
+        const winner =
+          checkWinner(
+            tttBoard
+          );
+
+
+        publish(
+          ROOM_PREFIX + match.id,
+          {
+            type:"game",
+
+            game:"ttt",
+
+            action:"move",
+
+            playerId:playerId,
+
+            index:index,
+
+            symbol:mySymbol,
+
+            board:tttBoard,
+
+            winner:winner
+          }
+        );
+
+
+        if(winner){
+
+          finishTTT(
+            winner
+          );
+
+          return;
+
+        }
+
+
+        tttTurn =
+          match.host === playerId
+            ? match.guest
+            : match.host;
+
+
+        updateTTTStatus();
+
+      }
+    );
+
+  });
+
+
+function renderTTT(){
+
+  document
+    .querySelectorAll(".ttt-cell")
+    .forEach((cell,i)=>{
+
+      cell.textContent =
+        tttBoard[i];
+
+    });
+
+}
+
+
+function updateTTTStatus(){
+
+  if(tttTurn === playerId){
+
+    document.getElementById(
+      "gameStatus"
+    ).textContent =
+      "Tu turno (" +
+      mySymbol +
+      ")";
+
+  }
+  else{
+
+    document.getElementById(
+      "gameStatus"
+    ).textContent =
+      "Turno del otro jugador";
+
+  }
+
+}
+
+
+function checkWinner(board){
+
+  const combos = [
+
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+
+    [0,4,8],
+    [2,4,6]
+
+  ];
+
+
+  for(
+    const [a,b,c]
+    of combos
+  ){
+
+    if(
+      board[a] &&
+      board[a] === board[b] &&
+      board[a] === board[c]
+    ){
+
+      return board[a];
+
+    }
+
+  }
+
+
+  if(
+    board.every(
+      cell => cell !== ""
+    )
+  ){
+
+    return "draw";
+
+  }
+
+
+  return null;
+
+}
+
+
+function finishTTT(winner){
+
+  if(!match)
+    return;
+
+
+  let text;
+
+
+  if(winner === "draw"){
+
+    text =
+      "¡Empate!";
+
+  }
+  else if(
+    winner === mySymbol
+  ){
+
+    text =
+      "¡Ganaste!";
+
+  }
+  else{
+
+    text =
+      "Perdiste.";
+
+  }
+
+
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    text;
+
+
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"result",
+
+      game:"ttt",
+
+      winner:winner,
+
+      playerId:playerId
+    }
+  );
+
+}
+
+
+/* =========================================================
+   GAME MESSAGE
+========================================================= */
+
+function handleGameMessage(data){
+
+  if(!match)
+    return;
+
+
+  if(data.game === "target"){
+
+    if(
+      data.action === "score" &&
+      data.playerId !== playerId
+    ){
+
+      opponentTargetScore =
+        data.score || 0;
+
+    }
+
+
+    if(
+      data.action === "finished"
+    ){
+
+      opponentTargetScore =
+        data.score || 0;
+
+    }
+
+
+    return;
+
+  }
+
+
+  if(data.game === "reaction"){
+
+    return;
+
+  }
+
+
+  if(data.game === "ttt"){
+
+    if(
+      data.action === "move" &&
+      data.playerId !== playerId
+    ){
+
+      tttBoard =
+        data.board || tttBoard;
+
+
+      renderTTT();
+
+
+      if(data.winner){
+
+        finishTTT(
+          data.winner
         );
 
         return;
@@ -3593,39 +3241,689 @@ function startTargetGame(){
       }
 
 
-      const left =
-        Math.max(
-
-          0,
-
-          targetTime -
-          Date.now()
-
-        );
+      tttTurn =
+        playerId;
 
 
-      gameTimer.textContent =
-        (left / 1000)
-          .toFixed(1) +
-        " s";
+      updateTTTStatus();
 
+    }
 
-      if(left <= 0){
-
-        clearInterval(
-          targetInterval
-        );
-
-
-        target.style.display =
-          "none";
-
-
-        finishTarget();
-
-      }
-
-    },50);
+  }
 
 }
 
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function handleGameResult(data){
+
+  if(!match)
+    return;
+
+
+  if(data.game === "ttt"){
+
+    let text;
+
+
+    if(data.winner === "draw"){
+
+      text =
+        "🤝 ¡Empate!";
+
+    }
+    else if(
+      data.winner === mySymbol
+    ){
+
+      text =
+        "🏆 ¡Ganaste!";
+
+    }
+    else{
+
+      text =
+        "💀 Perdiste.";
+
+    }
+
+
+    document.getElementById(
+      "gameStatus"
+    ).textContent =
+      text;
+
+  }
+
+}
+
+
+/* =========================================================
+   FIN MATCH
+========================================================= */
+
+function finishMatch(){
+
+  clearTimeout(
+    targetTimer
+  );
+
+  clearTimeout(
+    reactionTimer
+  );
+
+
+  if(match){
+
+    try{
+
+      mqttClient.unsubscribe(
+        ROOM_PREFIX + match.id
+      );
+
+    }
+    catch(e){}
+
+  }
+
+
+  match = null;
+
+
+  document
+    .getElementById("waitingModal")
+    .classList.remove("active");
+
+
+  announcePresence();
+
+
+  setTimeout(
+    () => showView("arcade"),
+    1200
+  );
+
+}
+
+
+/* =========================================================
+   ADIVINÁ EL NÚMERO
+========================================================= */
+
+function startNumberGame(){
+
+  if(!username){
+
+    openName();
+
+    return;
+
+  }
+
+
+  showView("activeGame");
+
+
+  document.getElementById(
+    "gameTitle"
+  ).textContent =
+    "🧠 Adiviná el número";
+
+
+  document.getElementById(
+    "gameStatus"
+  ).textContent =
+    "Pensá un número entre 1 y 100.";
+
+
+  document.getElementById(
+    "targetArea"
+  ).innerHTML = `
+
+    <div style="
+      padding:50px;
+      max-width:500px;
+      margin:auto;
+    ">
+
+      <input
+        id="numberGuess"
+        type="number"
+        min="1"
+        max="100"
+        placeholder="Número"
+        style="
+          width:100%;
+          padding:15px;
+          border-radius:10px;
+          border:1px solid #333;
+          background:#111827;
+          color:white;
+          margin-bottom:15px;
+        "
+      >
+
+      <button
+        onclick="guessNumber()"
+        style="
+          padding:12px 25px;
+          border:0;
+          border-radius:8px;
+          background:#6d5dfc;
+          color:white;
+          cursor:pointer;
+        "
+      >
+        Adivinar
+      </button>
+
+      <div
+        id="numberResult"
+        style="margin-top:20px"
+      ></div>
+
+    </div>
+
+  `;
+
+
+  document.getElementById(
+    "targetArea"
+  ).style.display =
+    "block";
+
+
+  document.getElementById(
+    "tttArea"
+  ).style.display =
+    "none";
+
+
+  window.numberSecret =
+    Math.floor(
+      Math.random()*100
+    ) + 1;
+
+
+  window.numberAttempts = 0;
+
+}
+
+
+function guessNumber(){
+
+  const input =
+    document.getElementById(
+      "numberGuess"
+    );
+
+
+  const result =
+    document.getElementById(
+      "numberResult"
+    );
+
+
+  const value =
+    Number(input.value);
+
+
+  if(
+    !value ||
+    value < 1 ||
+    value > 100
+  ){
+
+    result.textContent =
+      "Poné un número entre 1 y 100.";
+
+    return;
+
+  }
+
+
+  window.numberAttempts++;
+
+
+  if(
+    value === window.numberSecret
+  ){
+
+    result.textContent =
+      "🎉 ¡Ganaste en " +
+      window.numberAttempts +
+      " intentos!";
+
+
+    sendCommand(
+      "NUMBER_WIN:" +
+      window.numberAttempts
+    );
+
+
+  }
+  else if(
+    value <
+    window.numberSecret
+  ){
+
+    result.textContent =
+      "⬆️ Es más grande.";
+
+  }
+  else{
+
+    result.textContent =
+      "⬇️ Es más chico.";
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function sendChat(){
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
+
+  const text =
+    input.value.trim();
+
+
+  if(!text)
+    return;
+
+
+  if(!mqttConnected){
+
+    addChatMessage(
+      "Sistema",
+      "No estás conectado a MQTT."
+    );
+
+    return;
+
+  }
+
+
+  publish(
+    CHAT_TOPIC,
+    {
+      type:"chat",
+
+      playerId:playerId,
+
+      name:
+        username ||
+        "Jugador",
+
+      text:text,
+
+      ts:Date.now()
+    }
+  );
+
+
+  input.value = "";
+
+}
+
+
+function handleChat(data){
+
+  if(
+    !data ||
+    data.type !== "chat"
+  ){
+
+    return;
+
+  }
+
+
+  addChatMessage(
+    data.name ||
+    "Jugador",
+
+    data.text ||
+    ""
+  );
+
+}
+
+
+function addChatMessage(
+  name,
+  text
+){
+
+  const box =
+    document.getElementById(
+      "chatMessages"
+    );
+
+
+  const div =
+    document.createElement("div");
+
+
+  div.className =
+    "chat-message";
+
+
+  div.innerHTML = `
+
+    <div class="chat-name">
+      ${escapeHTML(name)}
+    </div>
+
+    <div class="chat-text">
+      ${escapeHTML(text)}
+    </div>
+
+  `;
+
+
+  box.appendChild(div);
+
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+/* =========================================================
+   ESP32
+========================================================= */
+
+function sendCommand(command){
+
+  if(!mqttConnected){
+
+    addConsole(
+      "❌ MQTT desconectado"
+    );
+
+    return;
+
+  }
+
+
+  publish(
+    COMMAND_TOPIC,
+    command
+  );
+
+
+  addConsole(
+    "→ " + command
+  );
+
+}
+
+
+function handleESPState(data){
+
+  addConsole(
+    "← " + data
+  );
+
+}
+
+
+function addConsole(text){
+
+  const consoleBox =
+    document.getElementById(
+      "console"
+    );
+
+
+  const line =
+    document.createElement("div");
+
+
+  line.textContent =
+    "[" +
+    new Date().toLocaleTimeString() +
+    "] " +
+    text;
+
+
+  consoleBox.appendChild(line);
+
+
+  consoleBox.scrollTop =
+    consoleBox.scrollHeight;
+
+}
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+function initCanvas(){
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  const ratio =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    rect.width * ratio;
+
+
+  canvas.height =
+    rect.height * ratio;
+
+
+  ctx.setTransform(
+    1,0,0,1,0,0
+  );
+
+
+  ctx.scale(
+    ratio,
+    ratio
+  );
+
+
+  ctx.lineWidth =
+    4;
+
+
+  ctx.lineCap =
+    "round";
+
+
+  ctx.strokeStyle =
+    "#000";
+
+
+  canvas.onpointerdown =
+    startDrawing;
+
+
+  canvas.onpointermove =
+    draw;
+
+
+  canvas.onpointerup =
+    stopDrawing;
+
+
+  canvas.onpointerleave =
+    stopDrawing;
+
+}
+
+
+function startDrawing(event){
+
+  drawing = true;
+
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  ctx.beginPath();
+
+
+  ctx.moveTo(
+    event.clientX - rect.left,
+    event.clientY - rect.top
+  );
+
+}
+
+
+function draw(event){
+
+  if(!drawing)
+    return;
+
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  ctx.lineTo(
+    event.clientX - rect.left,
+    event.clientY - rect.top
+  );
+
+
+  ctx.stroke();
+
+}
+
+
+function stopDrawing(){
+
+  drawing = false;
+
+}
+
+
+function clearCanvas(){
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  ctx.clearRect(
+    0,
+    0,
+    rect.width,
+    rect.height
+  );
+
+}
+
+
+/* =========================================================
+   HEARTBEAT
+========================================================= */
+
+setInterval(
+  () => {
+
+    announceRoom();
+
+    announcePresence();
+
+    renderRooms();
+
+  },
+  2500
+);
+
+
+/* =========================================================
+   LIMPIEZA DE SALAS
+========================================================= */
+
+setInterval(
+  renderRooms,
+  1000
+);
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+document.getElementById(
+  "topUser"
+).textContent =
+  username ||
+  "Sin nombre";
+
+
+document.getElementById(
+  "sidebarUser"
+).textContent =
+  username ||
+  "Sin nombre";
+
+
+if(!username){
+
+  setTimeout(
+    () => {
+
+      openName();
+
+    },
+    400
+  );
+
+}
+
+
+connectMQTT();
+
+showView("home");
+
+
+/* =========================================================
+   RESIZE CANVAS
+========================================================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    if(
+      document
+        .getElementById("draw")
+        .classList.contains("active")
+    ){
+
+      initCanvas();
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
