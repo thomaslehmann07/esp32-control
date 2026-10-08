@@ -456,7 +456,9 @@ input:focus{
     font-size:25px;
 }
 
-/* DIBUJO */
+/* =========================================================
+   DIBUJO COMPARTIDO
+========================================================= */
 
 .drawContainer{
     text-align:center;
@@ -488,6 +490,91 @@ input:focus{
     max-width:100%;
     touch-action:none;
     cursor:crosshair;
+}
+
+/* =========================================================
+   PELEA DE DIBUJOS
+========================================================= */
+
+.fightContainer{
+    text-align:center;
+}
+
+.fightInfo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:35px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.fightObject{
+    font-size:25px;
+    font-weight:800;
+}
+
+.fightTimer{
+    font-size:25px;
+    font-weight:800;
+    color:var(--yellow);
+}
+
+#fightCanvas{
+    background:white;
+    border-radius:15px;
+    max-width:100%;
+    width:800px;
+    height:auto;
+    touch-action:none;
+    cursor:crosshair;
+}
+
+.fightWaiting{
+    margin:20px auto;
+    padding:20px;
+    max-width:700px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:15px;
+    color:var(--muted);
+    font-size:18px;
+}
+
+.fightCompare{
+    display:none;
+}
+
+.compareGrid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+    margin-top:25px;
+}
+
+.compareCard{
+    background:#0b0e17;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+}
+
+.compareCard h3{
+    margin-top:0;
+    margin-bottom:15px;
+}
+
+.compareCard img{
+    display:block;
+    width:100%;
+    background:white;
+    border-radius:12px;
+}
+
+.compareStatus{
+    margin-top:25px;
+    color:var(--muted);
+    font-size:18px;
 }
 
 .espGrid{
@@ -573,6 +660,10 @@ input:focus{
     .cards,
     .games{
         grid-template-columns:repeat(2,1fr);
+    }
+
+    .compareGrid{
+        grid-template-columns:1fr;
     }
 }
 
@@ -867,18 +958,42 @@ input:focus{
 </div>
 
 
+<!-- DIBUJO COMPARTIDO -->
+
 <div class="gameCard">
 
 <div class="gameIcon">🎨</div>
 
-<h3>Duelo de dibujo</h3>
+<h3>Dibujo compartido</h3>
 
 <p>
-    Dibujá el objeto antes de que se termine el tiempo.
+    Los dos dibujan sobre el mismo lienzo
+    y ven lo que hace el otro.
 </p>
 
 <button class="btn"
         onclick="createRoom('draw')">
+    Crear sala
+</button>
+
+</div>
+
+
+<!-- PELEA DE DIBUJOS -->
+
+<div class="gameCard">
+
+<div class="gameIcon">⚔️</div>
+
+<h3>Pelea de dibujos</h3>
+
+<p>
+    Dibujen por separado durante 2 minutos
+    y después comparen los resultados.
+</p>
+
+<button class="btn"
+        onclick="createRoom('drawfight')">
     Crear sala
 </button>
 
@@ -980,7 +1095,7 @@ input:focus{
 
 <button id="target"
         class="target"
-        onclick="hitTarget">
+        onclick="hitTarget()">
 </button>
 
 </div>
@@ -1059,7 +1174,9 @@ input:focus{
 </section>
 
 
-<!-- DRAW -->
+<!-- =====================================================
+     DIBUJO COMPARTIDO
+===================================================== -->
 
 <section id="draw" class="view">
 
@@ -1070,11 +1187,11 @@ input:focus{
 <div>
 
 <h1>
-    🎨 Duelo de dibujo
+    🎨 Dibujo compartido
 </h1>
 
 <p style="color:var(--muted)">
-    Dibujá el objeto antes de que termine el tiempo.
+    Los dos pueden dibujar sobre el mismo lienzo.
 </p>
 
 </div>
@@ -1088,7 +1205,6 @@ input:focus{
 
 
 <div class="drawContainer">
-
 
 <div class="drawInfo">
 
@@ -1120,6 +1236,145 @@ input:focus{
         onclick="clearCanvas(true)">
     🗑️ Limpiar
 </button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     PELEA DE DIBUJOS
+===================================================== -->
+
+<section id="drawfight" class="view">
+
+<div class="container">
+
+<div class="sectionTitle">
+
+<div>
+
+<h1>
+    ⚔️ Pelea de dibujos
+</h1>
+
+<p style="color:var(--muted)">
+    Cada jugador dibuja por separado.
+    Después comparan los resultados.
+</p>
+
+</div>
+
+<button class="btn red"
+        onclick="leaveMatch()">
+    Salir
+</button>
+
+</div>
+
+
+<div class="fightContainer">
+
+
+<div class="fightInfo">
+
+<div class="fightObject">
+    🎯 Dibujen:
+    <span id="fightObject">
+        -
+    </span>
+</div>
+
+<div class="fightTimer">
+    ⏱️
+    <span id="fightTimer">
+        2:00
+    </span>
+</div>
+
+</div>
+
+
+<div id="fightPlaying">
+
+<canvas id="fightCanvas"
+        width="800"
+        height="500">
+</canvas>
+
+<br><br>
+
+<button class="btn secondary"
+        onclick="clearFightCanvas()">
+    🗑️ Limpiar
+</button>
+
+<div id="fightWaiting"
+     class="fightWaiting"
+     style="display:none">
+    ⏳ Terminaste tu dibujo.<br>
+    Esperando que termine el rival...
+</div>
+
+</div>
+
+
+<div id="fightCompare"
+     class="fightCompare">
+
+<h2>
+    🖼️ ¡Tiempo terminado!
+</h2>
+
+<p style="color:var(--muted)">
+    Ahora comparen los dos dibujos.
+</p>
+
+
+<div class="compareGrid">
+
+<div class="compareCard">
+
+<h3 id="myDrawingName">
+    Tu dibujo
+</h3>
+
+<img id="myDrawingImage"
+     alt="Tu dibujo">
+
+</div>
+
+
+<div class="compareCard">
+
+<h3 id="enemyDrawingName">
+    Dibujo del rival
+</h3>
+
+<img id="enemyDrawingImage"
+     alt="Dibujo del rival">
+
+</div>
+
+</div>
+
+
+<div class="compareStatus">
+
+🏆 Comparen los dibujos y decidan quién hizo el mejor.
+
+</div>
+
+<br>
+
+<button class="btn"
+        onclick="leaveMatch()">
+    Volver al Arcade
+</button>
+
+</div>
 
 </div>
 
@@ -1983,7 +2238,8 @@ function gameName(game){
         target:"🎯 Caza el objetivo",
         reaction:"⚡ Reflejos",
         ttt:"❌ Tres en línea",
-        draw:"🎨 Duelo de dibujo"
+        draw:"🎨 Dibujo compartido",
+        drawfight:"⚔️ Pelea de dibujos"
 
     };
 
@@ -2041,7 +2297,17 @@ function createRoom(game){
 
         drawObject:null,
         drawStarted:false,
-        drawFinished:false
+        drawFinished:false,
+
+        /* PELEA DE DIBUJOS */
+
+        fightObject:null,
+        fightStarted:false,
+        fightFinished:false,
+        fightEndTime:0,
+        myFightImage:null,
+        enemyFightImage:null,
+        enemyFightName:"Rival"
 
     };
 
@@ -2122,6 +2388,7 @@ function handleRoomTopic(
         renderRooms();
 
         return;
+
     }
 
     let data;
@@ -2316,7 +2583,17 @@ function joinRoom(roomId){
 
         drawObject:null,
         drawStarted:false,
-        drawFinished:false
+        drawFinished:false,
+
+        /* PELEA DE DIBUJOS */
+
+        fightObject:null,
+        fightStarted:false,
+        fightFinished:false,
+        fightEndTime:0,
+        myFightImage:null,
+        enemyFightImage:null,
+        enemyFightName:room.hostName || "Rival"
 
     };
 
@@ -2381,6 +2658,10 @@ function handleMatchMessage(text){
         return;
 
 
+    /* =========================
+       JOIN
+    ========================= */
+
     if(data.type === "join"){
 
         if(match.host !== playerId)
@@ -2432,6 +2713,10 @@ function handleMatchMessage(text){
     }
 
 
+    /* =========================
+       ACCEPTED
+    ========================= */
+
     if(data.type === "accepted"){
 
         if(data.guest !== playerId)
@@ -2465,6 +2750,10 @@ function handleMatchMessage(text){
     }
 
 
+    /* =========================
+       TARGET
+    ========================= */
+
     if(data.type === "targetScore"){
 
         match.enemyScore =
@@ -2484,6 +2773,10 @@ function handleMatchMessage(text){
     }
 
 
+    /* =========================
+       REACTION
+    ========================= */
+
     if(data.type === "reaction"){
 
         match.enemyReaction =
@@ -2500,6 +2793,10 @@ function handleMatchMessage(text){
     }
 
 
+    /* =========================
+       TTT
+    ========================= */
+
     if(data.type === "tttMove"){
 
         applyRemoteTTTMove(
@@ -2512,7 +2809,7 @@ function handleMatchMessage(text){
 
 
     /* =====================================================
-       DIBUJO
+       DIBUJO COMPARTIDO
     ===================================================== */
 
     if(data.type === "drawStart"){
@@ -2545,6 +2842,9 @@ function handleMatchMessage(text){
 
     if(data.type === "drawLine"){
 
+        if(match.game !== "draw")
+            return;
+
         drawRemoteLine(data);
 
         return;
@@ -2552,6 +2852,9 @@ function handleMatchMessage(text){
 
 
     if(data.type === "drawClear"){
+
+        if(match.game !== "draw")
+            return;
 
         clearCanvas(false);
 
@@ -2561,6 +2864,9 @@ function handleMatchMessage(text){
 
     if(data.type === "drawFinished"){
 
+        if(match.game !== "draw")
+            return;
+
         finishDrawGame(
             false
         );
@@ -2568,6 +2874,75 @@ function handleMatchMessage(text){
         return;
     }
 
+
+    /* =====================================================
+       PELEA DE DIBUJOS
+    ===================================================== */
+
+    if(data.type === "fightStart"){
+
+        if(
+            match.game !== "drawfight"
+        )
+            return;
+
+        match.fightObject =
+            data.object;
+
+        match.fightStarted =
+            true;
+
+        match.fightFinished =
+            false;
+
+        match.fightEndTime =
+            Number(data.endTime);
+
+        document
+            .getElementById("fightObject")
+            .textContent =
+                data.object;
+
+        showView("drawfight");
+
+        prepareFightCanvas();
+
+        startFightTimer(
+            data.endTime
+        );
+
+        return;
+    }
+
+
+    if(data.type === "fightFinished"){
+
+        if(
+            match.game !== "drawfight"
+        )
+            return;
+
+        if(
+            data.playerId === playerId
+        )
+            return;
+
+        match.enemyFightImage =
+            data.image || null;
+
+        match.enemyFightName =
+            data.playerName ||
+            "Rival";
+
+        showFightComparisonIfReady();
+
+        return;
+    }
+
+
+    /* =========================
+       ROOM CLOSED
+    ========================= */
 
     if(data.type === "roomClosed"){
 
@@ -2577,6 +2952,8 @@ function handleMatchMessage(text){
         ){
 
             match = null;
+
+            clearFightTimers();
 
             document
                 .getElementById("waitingModal")
@@ -2713,6 +3090,11 @@ function startMatchGame(){
     else if(match.game === "draw"){
 
         startDraw();
+
+    }
+    else if(match.game === "drawfight"){
+
+        startDrawFight();
 
     }
 
@@ -3313,7 +3695,7 @@ function checkTTT(){
 
 
 /* =========================================================
-   DIBUJO
+   OBJETOS DE DIBUJO
 ========================================================= */
 
 const DRAW_OBJECTS = [
@@ -3352,6 +3734,10 @@ const DRAW_OBJECTS = [
 ];
 
 
+/* =========================================================
+   DIBUJO COMPARTIDO
+========================================================= */
+
 let canvas =
     document.getElementById(
         "drawCanvas"
@@ -3386,17 +3772,7 @@ function startDraw(){
     ctx =
         canvas.getContext("2d");
 
-
     clearCanvas(false);
-
-
-    /*
-       SOLAMENTE EL HOST ELIGE
-       EL OBJETO.
-
-       El invitado recibe el objeto
-       mediante drawStart.
-    */
 
     if(
         match &&
@@ -3416,10 +3792,6 @@ function startDraw(){
 
         match.drawStarted =
             true;
-
-        /*
-           2 minutos desde ahora.
-        */
 
         const endTime =
             Date.now() +
@@ -3474,7 +3846,6 @@ function startDrawTimer(
     drawEndTime =
         Number(endTime);
 
-
     function update(){
 
         if(!match){
@@ -3487,7 +3858,6 @@ function startDrawTimer(
 
         }
 
-
         const remaining =
             Math.max(
                 0,
@@ -3495,22 +3865,18 @@ function startDrawTimer(
                 Date.now()
             );
 
-
         const totalSeconds =
             Math.ceil(
                 remaining / 1000
             );
-
 
         const minutes =
             Math.floor(
                 totalSeconds / 60
             );
 
-
         const seconds =
             totalSeconds % 60;
-
 
         document
             .getElementById("drawTimer")
@@ -3519,7 +3885,6 @@ function startDrawTimer(
                 ":" +
                 String(seconds)
                     .padStart(2,"0");
-
 
         if(
             remaining <= 0
@@ -3540,9 +3905,7 @@ function startDrawTimer(
 
     }
 
-
     update();
-
 
     drawTimerInterval =
         setInterval(
@@ -3554,7 +3917,7 @@ function startDrawTimer(
 
 
 /* =========================================================
-   FINISH DRAW
+   FINISH DRAW COMPARTIDO
 ========================================================= */
 
 function finishDrawGame(
@@ -3570,7 +3933,6 @@ function finishDrawGame(
     match.drawFinished =
         true;
 
-
     if(drawTimerInterval){
 
         clearInterval(
@@ -3581,7 +3943,6 @@ function finishDrawGame(
             null;
 
     }
-
 
     if(send){
 
@@ -3598,7 +3959,6 @@ function finishDrawGame(
 
     }
 
-
     showResult(
 
         "⏱️ ¡Tiempo terminado!",
@@ -3611,7 +3971,7 @@ function finishDrawGame(
 
 
 /* =========================================================
-   CANVAS
+   CANVAS DIBUJO COMPARTIDO
 ========================================================= */
 
 function setupCanvas(){
@@ -3685,12 +4045,6 @@ function setupCanvas(){
 
             }
 
-
-            /*
-               Si ya se terminaron los 2 minutos,
-               no permitimos seguir dibujando.
-            */
-
             if(
                 Date.now() >= drawEndTime
             ){
@@ -3703,7 +4057,6 @@ function setupCanvas(){
 
             }
 
-
             const rect =
                 canvas.getBoundingClientRect();
 
@@ -3714,7 +4067,6 @@ function setupCanvas(){
             const y =
                 (e.clientY - rect.top) *
                 (canvas.height / rect.height);
-
 
             ctx.beginPath();
 
@@ -3740,6 +4092,7 @@ function setupCanvas(){
             ctx.stroke();
 
 
+            /* SOLO DIBUJO COMPARTIDO */
             publishMatch({
 
                 type:"drawLine",
@@ -3760,7 +4113,6 @@ function setupCanvas(){
                     y
 
             });
-
 
             lastX = x;
             lastY = y;
@@ -3814,7 +4166,6 @@ function clearCanvas(send){
         canvas.height
     );
 
-
     if(
         send &&
         match &&
@@ -3833,6 +4184,509 @@ function clearCanvas(send){
         });
 
     }
+
+}
+
+
+/* =========================================================
+   PELEA DE DIBUJOS
+========================================================= */
+
+let fightCanvas =
+    document.getElementById(
+        "fightCanvas"
+    );
+
+let fightCtx =
+    fightCanvas.getContext("2d");
+
+let fightDrawing = false;
+
+let fightLastX = 0;
+let fightLastY = 0;
+
+let fightTimerInterval = null;
+
+let fightEndTime = 0;
+
+
+/* =========================================================
+   START PELEA
+========================================================= */
+
+function startDrawFight(){
+
+    showView("drawfight");
+
+    prepareFightCanvas();
+
+    /*
+       IMPORTANTE:
+       SOLO EL HOST ELIGE EL OBJETO
+       Y MANDA EL MISMO END TIME A LOS DOS.
+    */
+
+    if(
+        match &&
+        match.host === playerId
+    ){
+
+        const object =
+            DRAW_OBJECTS[
+                Math.floor(
+                    Math.random() *
+                    DRAW_OBJECTS.length
+                )
+            ];
+
+        const endTime =
+            Date.now() + 120000;
+
+        match.fightObject =
+            object;
+
+        match.fightStarted =
+            true;
+
+        match.fightFinished =
+            false;
+
+        match.fightEndTime =
+            endTime;
+
+        document
+            .getElementById("fightObject")
+            .textContent =
+                object;
+
+        document
+            .getElementById("fightWaiting")
+            .style.display =
+                "none";
+
+        startFightTimer(
+            endTime
+        );
+
+        publishMatch({
+
+            type:"fightStart",
+
+            roomId:
+                match.id,
+
+            object,
+
+            endTime
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   PREPARAR CANVAS PELEA
+========================================================= */
+
+function prepareFightCanvas(){
+
+    fightCanvas =
+        document.getElementById(
+            "fightCanvas"
+        );
+
+    fightCtx =
+        fightCanvas.getContext("2d");
+
+    fightCtx.clearRect(
+        0,
+        0,
+        fightCanvas.width,
+        fightCanvas.height
+    );
+
+    document
+        .getElementById("fightPlaying")
+        .style.display =
+            "block";
+
+    document
+        .getElementById("fightCompare")
+        .style.display =
+            "none";
+
+}
+
+
+/* =========================================================
+   TIMER PELEA
+========================================================= */
+
+function startFightTimer(
+    endTime
+){
+
+    clearFightTimerOnly();
+
+    fightEndTime =
+        Number(endTime);
+
+    function update(){
+
+        if(!match){
+
+            clearFightTimerOnly();
+
+            return;
+
+        }
+
+        const remaining =
+            Math.max(
+                0,
+                fightEndTime -
+                Date.now()
+            );
+
+        const totalSeconds =
+            Math.ceil(
+                remaining / 1000
+            );
+
+        const minutes =
+            Math.floor(
+                totalSeconds / 60
+            );
+
+        const seconds =
+            totalSeconds % 60;
+
+        document
+            .getElementById("fightTimer")
+            .textContent =
+                minutes +
+                ":" +
+                String(seconds)
+                    .padStart(2,"0");
+
+        if(
+            remaining <= 0
+        ){
+
+            clearFightTimerOnly();
+
+            finishFightDrawing();
+
+        }
+
+    }
+
+    update();
+
+    fightTimerInterval =
+        setInterval(
+            update,
+            250
+        );
+
+}
+
+
+function clearFightTimerOnly(){
+
+    if(fightTimerInterval){
+
+        clearInterval(
+            fightTimerInterval
+        );
+
+        fightTimerInterval =
+            null;
+
+    }
+
+}
+
+
+function clearFightTimers(){
+
+    clearFightTimerOnly();
+
+}
+
+
+/* =========================================================
+   DIBUJAR PELEA
+========================================================= */
+
+function setupFightCanvas(){
+
+    fightCanvas.addEventListener(
+        "pointerdown",
+        e=>{
+
+            if(
+                !match ||
+                match.game !== "drawfight" ||
+                !match.fightStarted ||
+                match.fightFinished
+            )
+                return;
+
+            if(
+                Date.now() >= fightEndTime
+            ){
+
+                finishFightDrawing();
+                return;
+
+            }
+
+            fightDrawing = true;
+
+            const rect =
+                fightCanvas.getBoundingClientRect();
+
+            fightLastX =
+                (e.clientX - rect.left) *
+                (fightCanvas.width / rect.width);
+
+            fightLastY =
+                (e.clientY - rect.top) *
+                (fightCanvas.height / rect.height);
+
+        }
+    );
+
+
+    fightCanvas.addEventListener(
+        "pointerup",
+        ()=>{
+            fightDrawing = false;
+        }
+    );
+
+
+    fightCanvas.addEventListener(
+        "pointerleave",
+        ()=>{
+            fightDrawing = false;
+        }
+    );
+
+
+    fightCanvas.addEventListener(
+        "pointermove",
+        e=>{
+
+            if(!fightDrawing)
+                return;
+
+            if(
+                !match ||
+                match.game !== "drawfight" ||
+                !match.fightStarted ||
+                match.fightFinished
+            ){
+
+                fightDrawing = false;
+                return;
+
+            }
+
+            if(
+                Date.now() >= fightEndTime
+            ){
+
+                fightDrawing = false;
+
+                finishFightDrawing();
+
+                return;
+
+            }
+
+            const rect =
+                fightCanvas.getBoundingClientRect();
+
+            const x =
+                (e.clientX - rect.left) *
+                (fightCanvas.width / rect.width);
+
+            const y =
+                (e.clientY - rect.top) *
+                (fightCanvas.height / rect.height);
+
+            fightCtx.beginPath();
+
+            fightCtx.moveTo(
+                fightLastX,
+                fightLastY
+            );
+
+            fightCtx.lineTo(
+                x,
+                y
+            );
+
+            fightCtx.strokeStyle =
+                "#111";
+
+            fightCtx.lineWidth =
+                4;
+
+            fightCtx.lineCap =
+                "round";
+
+            fightCtx.stroke();
+
+            fightLastX = x;
+            fightLastY = y;
+
+            /*
+               MUY IMPORTANTE:
+               NO SE PUBLICA NINGÚN drawLine.
+
+               El rival NO puede ver este dibujo.
+            */
+
+        }
+    );
+
+}
+
+
+function clearFightCanvas(){
+
+    if(
+        !match ||
+        match.game !== "drawfight" ||
+        match.fightFinished
+    )
+        return;
+
+    fightCtx.clearRect(
+        0,
+        0,
+        fightCanvas.width,
+        fightCanvas.height
+    );
+
+}
+
+
+/* =========================================================
+   TERMINAR PELEA
+========================================================= */
+
+function finishFightDrawing(){
+
+    if(
+        !match ||
+        match.game !== "drawfight" ||
+        match.fightFinished
+    )
+        return;
+
+    match.fightFinished =
+        true;
+
+    fightDrawing = false;
+
+    clearFightTimerOnly();
+
+    /*
+       Convertimos SOLO AL FINAL
+       el dibujo a imagen.
+    */
+
+    const image =
+        fightCanvas.toDataURL(
+            "image/jpeg",
+            0.55
+        );
+
+    match.myFightImage =
+        image;
+
+    document
+        .getElementById("fightWaiting")
+        .style.display =
+            "block";
+
+    document
+        .getElementById("fightWaiting")
+        .innerHTML =
+            "✅ Terminaste tu dibujo.<br>⏳ Esperando que termine el rival...";
+
+    publishMatch({
+
+        type:"fightFinished",
+
+        roomId:
+            match.id,
+
+        playerId,
+
+        playerName:
+            username,
+
+        image
+
+    });
+
+    showFightComparisonIfReady();
+
+}
+
+
+/* =========================================================
+   MOSTRAR COMPARACIÓN
+========================================================= */
+
+function showFightComparisonIfReady(){
+
+    if(!match)
+        return;
+
+    if(
+        !match.myFightImage ||
+        !match.enemyFightImage
+    )
+        return;
+
+    document
+        .getElementById("fightPlaying")
+        .style.display =
+            "none";
+
+    document
+        .getElementById("fightCompare")
+        .style.display =
+            "block";
+
+    document
+        .getElementById("myDrawingName")
+        .textContent =
+            username || "Vos";
+
+    document
+        .getElementById("enemyDrawingName")
+        .textContent =
+            match.enemyFightName ||
+            "Rival";
+
+    document
+        .getElementById("myDrawingImage")
+        .src =
+            match.myFightImage;
+
+    document
+        .getElementById("enemyDrawingImage")
+        .src =
+            match.enemyFightImage;
 
 }
 
@@ -4092,9 +4946,13 @@ function leaveMatch(){
     }
 
 
+    clearFightTimers();
+
+
     match = null;
 
     drawing = false;
+    fightDrawing = false;
 
     document
         .getElementById("waitingModal")
@@ -4308,6 +5166,21 @@ ctx =
     canvas.getContext("2d");
 
 setupCanvas();
+
+
+/* =========================================================
+   PELEA CANVAS INIT
+========================================================= */
+
+fightCanvas =
+    document.getElementById(
+        "fightCanvas"
+    );
+
+fightCtx =
+    fightCanvas.getContext("2d");
+
+setupFightCanvas();
 
 
 /* =========================================================
