@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>THOMY // ARCADE</title>
+
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
@@ -222,11 +223,6 @@ border-color:#6d2638;
 color:#ff9caf
 }
 
-.btn:disabled{
-opacity:.45;
-cursor:not-allowed
-}
-
 .actions{
 display:flex;
 gap:8px;
@@ -428,12 +424,6 @@ margin:3px 0
 .warn{color:#ffd447}
 .err{color:#ff637f}
 
-.drawGrid{
-display:grid;
-grid-template-columns:1.2fr .8fr;
-gap:14px
-}
-
 .canvas{
 width:100%;
 height:460px;
@@ -559,6 +549,12 @@ color:var(--purple);
 font-size:20px
 }
 
+.countdown{
+font-size:65px;
+font-weight:900;
+color:var(--cyan)
+}
+
 .confetti{
 position:fixed;
 top:-20px;
@@ -586,36 +582,6 @@ z-index:3000
 .toast.show{
 transform:none;
 opacity:1
-}
-
-.readyBox{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin:20px 0
-}
-
-.readyPlayer{
-padding:16px;
-border:1px solid var(--line);
-border-radius:14px
-}
-
-.ready{
-border-color:#1f674b;
-background:#39e58c12
-}
-
-.roomBigTitle{
-font-size:32px;
-font-weight:900;
-margin:5px 0
-}
-
-.countdown{
-font-size:65px;
-font-weight:900;
-color:var(--cyan)
 }
 
 @keyframes pop{
@@ -679,13 +645,8 @@ padding:15px 15px 80px
 .stats,
 .two,
 .three,
-.gameGrid,
-.drawGrid{
+.gameGrid{
 grid-template-columns:1fr
-}
-
-.roomBigTitle{
-font-size:25px
 }
 
 .matchPlayers{
@@ -694,10 +655,6 @@ grid-template-columns:1fr
 
 .vs{
 display:none
-}
-
-.readyBox{
-grid-template-columns:1fr
 }
 }
 </style>
@@ -718,12 +675,31 @@ ESP32 REMOTE CONTROL
 </div>
 
 <nav class="nav">
-<button class="active" data-view="home">🏠 Inicio</button>
-<button data-view="chat">💬 Chat</button>
-<button data-view="arcade">🎮 Arcade</button>
-<button data-view="draw">🎨 Dibujar</button>
-<button data-view="esp">⚡ ESP32</button>
-<button data-view="console">🖥️ Consola</button>
+
+<button class="active" data-view="home">
+🏠 Inicio
+</button>
+
+<button data-view="chat">
+💬 Chat
+</button>
+
+<button data-view="arcade">
+🎮 Arcade
+</button>
+
+<button data-view="draw">
+🎨 Dibujar
+</button>
+
+<button data-view="esp">
+⚡ ESP32
+</button>
+
+<button data-view="console">
+🖥️ Consola
+</button>
+
 </nav>
 
 <div class="status">
@@ -745,6 +721,7 @@ jugadores online
 
 </aside>
 
+
 <main>
 
 <div class="top">
@@ -760,7 +737,8 @@ THOMY // ARCADE /
 
 </div>
 
-<!-- ================= HOME ================= -->
+
+<!-- HOME -->
 
 <section id="home" class="view active">
 
@@ -777,22 +755,25 @@ ESP32<br>
 
 <p>
 Entrá, elegí una partida y jugá.
-Sin códigos de sala.
+Sin códigos.
 </p>
 
 <div class="actions">
 
-<button class="btn primary"
+<button
+class="btn primary"
 onclick="showView('arcade')">
 🎮 Jugar
 </button>
 
-<button class="btn"
+<button
+class="btn"
 onclick="showView('draw')">
 🎨 Dibujar
 </button>
 
-<button class="btn"
+<button
+class="btn"
 onclick="send('PING')">
 📡 Ping ESP32
 </button>
@@ -800,6 +781,7 @@ onclick="send('PING')">
 </div>
 
 </div>
+
 
 <div class="grid stats">
 
@@ -825,6 +807,7 @@ onclick="send('PING')">
 
 </div>
 
+
 <div class="grid two">
 
 <div class="card">
@@ -834,12 +817,14 @@ onclick="send('PING')">
 </h3>
 
 <p class="muted">
-Jugadores conectados ahora mismo.
+Personas conectadas ahora mismo.
 </p>
 
-<div id="homePlayers" class="players"></div>
+<div id="homePlayers" class="players">
+</div>
 
 </div>
+
 
 <div class="card">
 
@@ -847,7 +832,8 @@ Jugadores conectados ahora mismo.
 🏆 Mi perfil
 </h3>
 
-<div class="big cyan"
+<div
+class="big cyan"
 id="profileName">
 Jugador
 </div>
@@ -856,7 +842,8 @@ Jugador
 Tus puntos de las partidas.
 </p>
 
-<button class="btn"
+<button
+class="btn"
 onclick="changeName()">
 ✏️ Cambiar nombre
 </button>
@@ -868,15 +855,20 @@ onclick="changeName()">
 </section>
 
 
-<!-- ================= CHAT ================= -->
+<!-- CHAT -->
 
 <section id="chat" class="view">
 
-<h2>💬 Chat</h2>
+<h2>
+💬 Chat
+</h2>
 
 <div class="card">
 
-<div id="messages" class="messages"></div>
+<div
+id="messages"
+class="messages">
+</div>
 
 <div class="composer">
 
@@ -900,11 +892,14 @@ Enviar
 </section>
 
 
-<!-- ================= ARCADE ================= -->
+<!-- ARCADE -->
 
 <section id="arcade" class="view">
 
-<h2>🎮 Arcade</h2>
+<h2>
+🎮 Arcade
+</h2>
+
 
 <div class="card">
 
@@ -912,12 +907,12 @@ Enviar
 PARTIDAS ONLINE
 </div>
 
-<div class="roomBigTitle">
+<h2>
 Jugá contra alguien
-</div>
+</h2>
 
 <p class="muted">
-Creá una partida o uníte automáticamente a una que ya esté abierta.
+Creá una partida o uníte a una que ya esté abierta.
 </p>
 
 <div class="actions">
@@ -939,11 +934,18 @@ onclick="refreshRooms()">
 </div>
 
 
-<div class="card" style="margin-top:15px">
+<div
+class="card"
+style="margin-top:15px">
 
-<div style="display:flex;justify-content:space-between;align-items:center">
+<div
+style="
+display:flex;
+justify-content:space-between;
+align-items:center">
 
 <div>
+
 <h3 style="margin:0">
 🎮 Partidas disponibles
 </h3>
@@ -951,13 +953,15 @@ onclick="refreshRooms()">
 <p class="muted">
 Las salas aparecen automáticamente.
 </p>
+
 </div>
 
-<div class="badge green">
+<span class="badge green">
 SIN CÓDIGOS
-</div>
+</span>
 
 </div>
+
 
 <div
 id="roomsList"
@@ -972,16 +976,19 @@ style="margin-top:15px">
 class="grid gameGrid"
 style="margin-top:15px">
 
+
 <div class="card game">
 
-<div class="gameIcon">🎯</div>
+<div class="gameIcon">
+🎯
+</div>
 
 <h3>
 Caza el objetivo
 </h3>
 
 <p class="muted">
-20 segundos. Más objetivos = ganador.
+20 segundos. Más objetivos gana.
 </p>
 
 </div>
@@ -989,7 +996,9 @@ Caza el objetivo
 
 <div class="card game">
 
-<div class="gameIcon">⚡</div>
+<div class="gameIcon">
+⚡
+</div>
 
 <h3>
 Reflejos
@@ -1004,14 +1013,16 @@ El menor tiempo gana.
 
 <div class="card game">
 
-<div class="gameIcon">⭕</div>
+<div class="gameIcon">
+⭕
+</div>
 
 <h3>
 Tres en línea
 </h3>
 
 <p class="muted">
-La página detecta victoria o empate.
+La página detecta el ganador.
 </p>
 
 </div>
@@ -1019,7 +1030,9 @@ La página detecta victoria o empate.
 
 <div class="card game">
 
-<div class="gameIcon">🧠</div>
+<div class="gameIcon">
+🧠
+</div>
 
 <h3>
 Adiviná el número
@@ -1058,7 +1071,9 @@ class="muted">
 </div>
 
 
-<div class="grid two" style="margin-top:15px">
+<div
+class="grid two"
+style="margin-top:15px">
 
 <div class="card">
 
@@ -1072,7 +1087,10 @@ class="targetArea">
 
 <div
 class="muted"
-style="position:absolute;inset:45% 0;text-align:center">
+style="
+position:absolute;
+inset:45% 0;
+text-align:center">
 
 Esperando partida...
 
@@ -1115,7 +1133,7 @@ Todavía no hay resultados.
 </section>
 
 
-<!-- ================= DRAW ================= -->
+<!-- DRAW -->
 
 <section id="draw" class="view">
 
@@ -1208,7 +1226,9 @@ height="520">
 </div>
 
 
-<div class="card" style="margin-top:15px">
+<div
+class="card"
+style="margin-top:15px">
 
 <h3>
 🏆 Comparación automática
@@ -1247,7 +1267,7 @@ RIVAL
 </section>
 
 
-<!-- ================= ESP ================= -->
+<!-- ESP -->
 
 <section id="esp" class="view">
 
@@ -1271,6 +1291,7 @@ ON
 
 </div>
 
+
 <div class="card">
 
 <h3>
@@ -1284,6 +1305,7 @@ OFF
 </button>
 
 </div>
+
 
 <div class="card">
 
@@ -1331,11 +1353,14 @@ Enviar
 </section>
 
 
-<!-- ================= CONSOLE ================= -->
+<!-- CONSOLE -->
 
 <section id="console" class="view">
 
-<div style="display:flex;justify-content:space-between">
+<div
+style="
+display:flex;
+justify-content:space-between">
 
 <h2>
 🖥️ Consola
@@ -1357,10 +1382,11 @@ class="console">
 </section>
 
 </main>
+
 </div>
 
 
-<!-- ================= NAME ================= -->
+<!-- NAME -->
 
 <div id="nameOverlay">
 
@@ -1383,7 +1409,9 @@ id="firstNameInput"
 class="input"
 maxlength="18"
 placeholder="Tu nombre..."
-style="text-align:center;font-size:20px"
+style="
+text-align:center;
+font-size:20px"
 >
 
 <div
@@ -1403,7 +1431,7 @@ onclick="saveFirstName()">
 </div>
 
 
-<!-- ================= CREATE ROOM ================= -->
+<!-- CREATE ROOM -->
 
 <div id="roomOverlay">
 
@@ -1462,7 +1490,7 @@ Cancelar
 </div>
 
 
-<!-- ================= MATCH ================= -->
+<!-- MATCH -->
 
 <div id="matchOverlay">
 
@@ -1491,10 +1519,8 @@ T
 Vos
 </h3>
 
-<span
-id="myReadyBadge"
-class="badge">
-NO LISTO
+<span class="badge green">
+CONECTADO
 </span>
 
 </div>
@@ -1512,12 +1538,12 @@ id="matchRivalAvatar">
 </div>
 
 <h3 id="matchRivalName">
-Rival
+Esperando...
 </h3>
 
 <span
-id="rivalReadyBadge"
-class="badge">
+id="rivalStatus"
+class="badge yellow">
 ESPERANDO
 </span>
 
@@ -1528,18 +1554,17 @@ ESPERANDO
 <p
 id="matchCountdown"
 class="cyan"
-style="font-size:25px;font-weight:900">
-Esperando...
+style="
+font-size:25px;
+font-weight:900">
+
+Esperando rival...
+
 </p>
 
-<div class="actions" style="justify-content:center">
-
-<button
-id="readyButton"
-class="btn primary"
-onclick="toggleReady()">
-✅ ESTOY LISTO
-</button>
+<div
+class="actions"
+style="justify-content:center">
 
 <button
 class="btn danger"
@@ -1554,7 +1579,7 @@ Salir
 </div>
 
 
-<!-- ================= RESULT ================= -->
+<!-- RESULT -->
 
 <div id="resultOverlay">
 
@@ -1607,7 +1632,7 @@ onclick="closeResult()">
 <script>
 
 /* =========================================================
-   MQTT
+   CONFIGURACIÓN MQTT
 ========================================================= */
 
 const MQTT_BROKER =
@@ -1620,17 +1645,17 @@ const STATE_TOPIC =
 "thomy/esp32c3/estado";
 
 const LOBBY =
-"thomy/esp32c3/v3/lobby";
+"thomy/esp32c3/v4/lobby";
 
 const CHAT_TOPIC =
-"thomy/esp32c3/v3/chat";
+"thomy/esp32c3/v4/chat";
 
 const ROOM_PREFIX =
-"thomy/esp32c3/v3/room/";
+"thomy/esp32c3/v4/room/";
 
 
 /* =========================================================
-   PLAYER
+   IDENTIDAD
 ========================================================= */
 
 const playerId =
@@ -1642,57 +1667,89 @@ let username =
 localStorage.getItem("nexusUsername") || "";
 
 let client = null;
+
 let connected = false;
 
 
 /* =========================================================
-   PRESENCE
+   JUGADORES
 ========================================================= */
 
-let onlinePlayers = new Map();
+let onlinePlayers =
+new Map();
 
 
 /* =========================================================
-   ROOMS
+   SALAS
 ========================================================= */
 
-let rooms = new Map();
+let rooms =
+new Map();
 
 let match = null;
 
-let myReady = false;
-let rivalReady = false;
+
+/* =========================================================
+   ESTADO DE PARTIDA
+========================================================= */
 
 let matchResultShown = false;
 
-
-/* =========================================================
-   GAMES
-========================================================= */
-
 let selectedGame = null;
 
+
+/* =========================================================
+   TARGET
+========================================================= */
+
 let targetScore = 0;
+
 let targetResults = {};
+
 let targetStart = 0;
+
 let targetTimer = null;
 
+
+/* =========================================================
+   REACTION
+========================================================= */
+
 let reactionGoTime = 0;
+
 let reactionResults = {};
+
 let reactionArmed = false;
+
+
+/* =========================================================
+   TTT
+========================================================= */
 
 let tttState = {
 board:Array(9).fill(""),
 turn:0
 };
 
-let canvas;
-let ctx;
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+let canvas = null;
+
+let ctx = null;
+
 let drawing = false;
+
 let drawColor = "#111";
+
 let drawRound = "";
+
 let drawResults = {};
+
 let drawDeadline = 0;
+
 let drawTimerInterval = null;
 
 
@@ -1704,7 +1761,7 @@ let ranking = {};
 
 
 /* =========================================================
-   NAME
+   NOMBRE
 ========================================================= */
 
 function openName(){
@@ -1714,9 +1771,11 @@ document
 .classList.add("show");
 
 setTimeout(()=>{
+
 document
 .getElementById("firstNameInput")
 .focus();
+
 },100);
 
 }
@@ -1748,11 +1807,13 @@ username
 
 document.getElementById(
 "usernameLabel"
-).textContent = username;
+).textContent =
+username;
 
 document.getElementById(
 "profileName"
-).textContent = username;
+).textContent =
+username;
 
 document
 .getElementById("nameOverlay")
@@ -1767,7 +1828,8 @@ function changeName(){
 
 document.getElementById(
 "firstNameInput"
-).value = username;
+).value =
+username;
 
 openName();
 
@@ -1775,7 +1837,7 @@ openName();
 
 
 /* =========================================================
-   NAVIGATION
+   NAVEGACIÓN
 ========================================================= */
 
 document
@@ -1783,7 +1845,11 @@ document
 .forEach(button=>{
 
 button.onclick=()=>{
-showView(button.dataset.view);
+
+showView(
+button.dataset.view
+);
+
 };
 
 });
@@ -1806,10 +1872,12 @@ element.classList.add("active");
 document
 .querySelectorAll(".nav button")
 .forEach(b=>{
+
 b.classList.toggle(
 "active",
 b.dataset.view===view
 );
+
 });
 
 document.getElementById(
@@ -1821,7 +1889,7 @@ view.toUpperCase();
 
 
 /* =========================================================
-   MQTT CONNECT
+   CONEXIÓN MQTT
 ========================================================= */
 
 function connectMQTT(){
@@ -1831,7 +1899,8 @@ log(
 "out"
 );
 
-client = mqtt.connect(
+client =
+mqtt.connect(
 MQTT_BROKER,
 {
 clientId:
@@ -1850,22 +1919,26 @@ client.on("connect",()=>{
 
 connected = true;
 
+
 document
 .getElementById("mqttDot")
 .classList.add("online");
 
+
 document.getElementById(
 "mqttText"
-).textContent="Online";
+).textContent =
+"Online";
+
 
 document.getElementById(
 "statMqtt"
-).textContent="ON";
+).textContent =
+"ON";
 
 
 /*
-   SUSCRIBIMOS TODO ANTES
-   DE ENVIAR PRESENCIA
+Suscribirse ANTES de publicar cualquier cosa.
 */
 
 client.subscribe(
@@ -1887,22 +1960,24 @@ CHAT_TOPIC
 
 announcePresence();
 
+
 setTimeout(
 announcePresence,
 500
 );
+
 
 log(
 "MQTT CONECTADO",
 "in"
 );
 
-refreshRooms();
-
 });
 
 
-client.on("message",(topic,payload)=>{
+client.on(
+"message",
+(topic,payload)=>{
 
 const raw =
 payload.toString();
@@ -1920,26 +1995,35 @@ raw
 });
 
 
-client.on("close",()=>{
+client.on(
+"close",
+()=>{
 
 connected = false;
+
 
 document
 .getElementById("mqttDot")
 .classList.remove("online");
 
+
 document.getElementById(
 "mqttText"
-).textContent="Offline";
+).textContent =
+"Offline";
+
 
 document.getElementById(
 "statMqtt"
-).textContent="OFF";
+).textContent =
+"OFF";
 
 });
 
 
-client.on("error",e=>{
+client.on(
+"error",
+e=>{
 
 log(
 "MQTT ERROR: "+e.message,
@@ -1952,10 +2036,13 @@ log(
 
 
 /* =========================================================
-   MQTT PUBLISH
+   PUBLICAR MQTT
 ========================================================= */
 
-function publish(topic,data){
+function publish(
+topic,
+data
+){
 
 if(!connected)
 return;
@@ -1969,12 +2056,15 @@ JSON.stringify(data)
 
 
 /* =========================================================
-   PRESENCE
+   PRESENCIA
 ========================================================= */
 
 function announcePresence(){
 
-if(!username || !connected)
+if(
+!username ||
+!connected
+)
 return;
 
 publish(
@@ -1996,7 +2086,7 @@ busy:!!match
 
 
 /*
-   Cada 2.5 segundos
+Cada 2.5 segundos.
 */
 
 setInterval(
@@ -2011,16 +2101,24 @@ announcePresence,
 
 function handleLobby(data){
 
-if(!data || !data.type)
+if(
+!data ||
+!data.type
+)
 return;
 
 
-/* ---------- PRESENCE ---------- */
+/* PRESENCIA */
 
-if(data.type==="presence"){
+if(
+data.type==="presence"
+){
 
-if(data.id===playerId)
+if(
+data.id===playerId
+)
 return;
+
 
 onlinePlayers.set(
 data.id,
@@ -2032,6 +2130,7 @@ busy:!!data.busy
 }
 );
 
+
 renderPlayers();
 
 return;
@@ -2039,12 +2138,17 @@ return;
 }
 
 
-/* ---------- ROOM ---------- */
+/* SALA */
 
-if(data.type==="room"){
+if(
+data.type==="room"
+){
 
-if(data.hostId===playerId)
+if(
+data.hostId===playerId
+)
 return;
+
 
 rooms.set(
 data.roomId,
@@ -2058,6 +2162,7 @@ seen:Date.now()
 }
 );
 
+
 renderRooms();
 
 return;
@@ -2065,77 +2170,17 @@ return;
 }
 
 
-/* ---------- ROOM REMOVE ---------- */
+/* SALA CERRADA */
 
-if(data.type==="roomClosed"){
+if(
+data.type==="roomClosed"
+){
 
 rooms.delete(
 data.roomId
 );
 
 renderRooms();
-
-return;
-
-}
-
-
-/* ---------- PLAYER JOIN ---------- */
-
-if(data.type==="roomJoin"){
-
-if(!match)
-return;
-
-if(data.roomId!==match.id)
-return;
-
-if(data.guestId===playerId)
-return;
-
-if(match.host===playerId){
-
-match.guest=data.guestId;
-
-publishRoom({
-type:"roomState",
-roomId:match.id,
-host:{
-id:match.host,
-user:username,
-ready:myReady
-},
-guest:{
-id:match.guest,
-user:data.guestName,
-ready:false
-},
-game:match.game,
-state:"waiting"
-});
-
-showMatchFound();
-
-}
-
-return;
-
-}
-
-
-/* ---------- ROOM LEAVE ---------- */
-
-if(data.type==="roomLeave"){
-
-if(data.roomId){
-
-rooms.delete(
-data.roomId
-);
-
-renderRooms();
-
-}
 
 return;
 
@@ -2145,12 +2190,13 @@ return;
 
 
 /* =========================================================
-   PLAYER RENDER
+   MOSTRAR JUGADORES
 ========================================================= */
 
 function renderPlayers(){
 
-const now = Date.now();
+const now =
+Date.now();
 
 
 for(
@@ -2159,7 +2205,7 @@ of onlinePlayers
 ){
 
 if(
-now-p.seen > 8000
+now-p.seen>8000
 ){
 
 onlinePlayers.delete(id);
@@ -2178,6 +2224,7 @@ document.getElementById(
 ).textContent =
 count;
 
+
 document.getElementById(
 "statUsers"
 ).textContent =
@@ -2193,25 +2240,26 @@ p.id!==playerId &&
 );
 
 
-const containers = [
-
+const box =
 document.getElementById(
 "homePlayers"
-)
+);
 
-];
-
-
-containers.forEach(box=>{
 
 if(!box)
 return;
 
 
-if(!players.length){
+if(
+!players.length
+){
 
 box.innerHTML =
-'<div class="muted">No hay otros jugadores conectados.</div>';
+`
+<div class="muted">
+No hay otros jugadores conectados.
+</div>
+`;
 
 return;
 
@@ -2220,16 +2268,19 @@ return;
 
 box.innerHTML =
 players
-.map(p=>`
+.map(
+p=>`
 
 <div class="player">
 
 <div class="playerLeft">
 
 <div class="avatar">
+
 ${escapeHTML(
 p.user.charAt(0).toUpperCase()
 )}
+
 </div>
 
 <div>
@@ -2254,16 +2305,15 @@ Disponible
 
 </div>
 
-`)
+`
+)
 .join("");
-
-});
 
 }
 
 
 /* =========================================================
-   ROOMS
+   NOMBRE DEL JUEGO
 ========================================================= */
 
 function gameName(game){
@@ -2285,10 +2335,11 @@ return "🎮 Juego";
 }
 
 
-function refreshRooms(){
+/* =========================================================
+   SALAS
+========================================================= */
 
-if(!connected)
-return;
+function refreshRooms(){
 
 renderRooms();
 
@@ -2306,7 +2357,8 @@ if(!box)
 return;
 
 
-const now = Date.now();
+const now =
+Date.now();
 
 
 for(
@@ -2315,7 +2367,7 @@ of rooms
 ){
 
 if(
-now-r.seen > 8000
+now-r.seen>8000
 ){
 
 rooms.delete(id);
@@ -2329,23 +2381,31 @@ const list =
 [...rooms.values()]
 .filter(
 r=>
-r.state==="open" &&
-r.hostId!==playerId
+r.hostId!==playerId &&
+r.state==="open"
 );
 
 
-if(!list.length){
+if(
+!list.length
+){
 
 box.innerHTML = `
 
 <div
 class="muted"
-style="padding:15px;text-align:center">
+style="
+padding:15px;
+text-align:center">
 
-🎮 No hay partidas abiertas.<br>
+🎮 No hay partidas abiertas.
+
+<br>
 
 <span style="font-size:12px">
+
 Creá una y esperá a que alguien se una.
+
 </span>
 
 </div>
@@ -2358,7 +2418,9 @@ return;
 
 
 box.innerHTML =
-list.map(room=>`
+list
+.map(
+room=>`
 
 <div class="roomCard">
 
@@ -2367,14 +2429,18 @@ list.map(room=>`
 <div>
 
 <div class="roomGame">
+
 ${gameName(room.game)}
+
 </div>
 
 <div class="muted">
+
 Creada por
 <b>
 ${escapeHTML(room.hostName)}
 </b>
+
 </div>
 
 </div>
@@ -2411,14 +2477,15 @@ onclick="joinRoom('${room.roomId}')">
 
 </div>
 
-`)
+`
+)
 .join("");
 
 }
 
 
 /* =========================================================
-   CREATE ROOM
+   CREAR SALA
 ========================================================= */
 
 function openCreateRoom(){
@@ -2479,12 +2546,14 @@ return;
 
 }
 
+
 closeCreateRoom();
 
 
 const roomId =
 "room_"+
-Date.now()+"_"+
+Date.now()+
+"_"+
 Math.random()
 .toString(36)
 .slice(2,8);
@@ -2505,15 +2574,18 @@ state:"open"
 };
 
 
-selectedGame = game;
+selectedGame =
+game;
 
-myReady = false;
-rivalReady = false;
 
-rooms.delete(roomId);
+subscribeRoom(
+roomId
+);
 
-subscribeRoom(roomId);
 
+/*
+Publicamos la sala.
+*/
 
 publish(
 LOBBY,
@@ -2537,6 +2609,7 @@ ts:Date.now()
 
 showMatchFound();
 
+
 toast(
 "Partida creada. Esperando rival..."
 );
@@ -2548,7 +2621,7 @@ announcePresence();
 
 
 /* =========================================================
-   JOIN ROOM
+   UNIRSE
 ========================================================= */
 
 function joinRoom(roomId){
@@ -2566,6 +2639,7 @@ return;
 
 const room =
 rooms.get(roomId);
+
 
 if(!room){
 
@@ -2600,12 +2674,15 @@ state:"waiting"
 selectedGame =
 room.game;
 
-myReady = false;
-rivalReady = false;
+
+subscribeRoom(
+roomId
+);
 
 
-subscribeRoom(roomId);
-
+/*
+Primero avisamos al host.
+*/
 
 publishRoom({
 
@@ -2622,32 +2699,13 @@ ts:Date.now()
 });
 
 
-publishRoom({
-
-type:"roomState",
-
-roomId:roomId,
-
-host:{
-id:room.hostId,
-user:room.hostName,
-ready:false
-},
-
-guest:{
-id:playerId,
-user:username,
-ready:false
-},
-
-game:room.game,
-
-state:"waiting"
-
-});
-
+/*
+Mostramos inmediatamente
+nuestra propia sala.
+*/
 
 showMatchFound();
+
 
 rooms.delete(roomId);
 
@@ -2659,13 +2717,16 @@ announcePresence();
 
 
 /* =========================================================
-   ROOM SUBSCRIBE
+   SUSCRIBIR SALA
 ========================================================= */
 
 function subscribeRoom(roomId){
 
-if(!connected)
+if(
+!connected
+)
 return;
+
 
 client.subscribe(
 ROOM_PREFIX+roomId
@@ -2675,13 +2736,14 @@ ROOM_PREFIX+roomId
 
 
 /* =========================================================
-   ROOM PUBLISH
+   PUBLICAR EN SALA
 ========================================================= */
 
 function publishRoom(data){
 
 if(!match)
 return;
+
 
 publish(
 ROOM_PREFIX+match.id,
@@ -2692,7 +2754,7 @@ data
 
 
 /* =========================================================
-   MATCH SCREEN
+   MATCH UI
 ========================================================= */
 
 function showMatchFound(){
@@ -2701,44 +2763,16 @@ if(!match)
 return;
 
 
-showView("arcade");
-
-
-const rivalId =
-playerId===match.host ?
-match.guest :
-match.host;
-
-
-let rivalName =
-"Esperando...";
-
-
-if(rivalId){
-
-if(
-rivalId===playerId
-){
-
-rivalName=username;
-
-}else{
-
-rivalName =
-onlinePlayers.get(
-rivalId
-)?.user ||
-"Rival";
-
-}
-
-}
+showView(
+"arcade"
+);
 
 
 document.getElementById(
 "matchMeName"
 ).textContent =
 username;
+
 
 document.getElementById(
 "matchMeAvatar"
@@ -2748,10 +2782,43 @@ username
 .toUpperCase();
 
 
+let rivalName =
+"Esperando...";
+
+
+if(
+match.guest &&
+match.guest!==playerId
+){
+
+rivalName =
+onlinePlayers.get(
+match.guest
+)?.user ||
+"Rival";
+
+}
+
+
+if(
+match.host &&
+match.host!==playerId
+){
+
+rivalName =
+onlinePlayers.get(
+match.host
+)?.user ||
+"Rival";
+
+}
+
+
 document.getElementById(
 "matchRivalName"
 ).textContent =
 rivalName;
+
 
 document.getElementById(
 "matchRivalAvatar"
@@ -2765,16 +2832,28 @@ rivalName
 .toUpperCase();
 
 
-updateReadyUI();
+document.getElementById(
+"rivalStatus"
+).textContent =
+match.guest ?
+"✓ CONECTADO" :
+"ESPERANDO";
+
+
+document.getElementById(
+"rivalStatus"
+).className =
+match.guest ?
+"badge green" :
+"badge yellow";
 
 
 document.getElementById(
 "matchCountdown"
 ).textContent =
 match.guest ?
-"Los dos deben estar listos."
-:
-"Esperando que alguien se una...";
+"Preparando partida..." :
+"Esperando rival...";
 
 
 document
@@ -2785,153 +2864,7 @@ document
 
 
 /* =========================================================
-   READY
-========================================================= */
-
-function toggleReady(){
-
-if(!match)
-return;
-
-if(!match.guest){
-
-toast(
-"Esperá a que se una otro jugador."
-);
-
-return;
-
-}
-
-myReady = !myReady;
-
-publishRoom({
-
-type:"ready",
-
-id:playerId,
-
-user:username,
-
-ready:myReady
-
-});
-
-
-updateReadyUI();
-
-checkBothReady();
-
-}
-
-
-function updateReadyUI(){
-
-const myBadge =
-document.getElementById(
-"myReadyBadge"
-);
-
-const rivalBadge =
-document.getElementById(
-"rivalReadyBadge"
-);
-
-
-if(myReady){
-
-myBadge.textContent =
-"✓ LISTO";
-
-myBadge.className =
-"badge green";
-
-}else{
-
-myBadge.textContent =
-"NO LISTO";
-
-myBadge.className =
-"badge";
-
-}
-
-
-if(rivalReady){
-
-rivalBadge.textContent =
-"✓ LISTO";
-
-rivalBadge.className =
-"badge green";
-
-}else{
-
-rivalBadge.textContent =
-"ESPERANDO";
-
-rivalBadge.className =
-"badge yellow";
-
-}
-
-
-const button =
-document.getElementById(
-"readyButton"
-);
-
-button.textContent =
-myReady ?
-"❌ NO ESTOY LISTO" :
-"✅ ESTOY LISTO";
-
-}
-
-
-/* =========================================================
-   CHECK READY
-========================================================= */
-
-function checkBothReady(){
-
-if(
-!match ||
-!match.guest ||
-!myReady ||
-!rivalReady
-)
-return;
-
-
-/*
-   SOLAMENTE EL HOST
-   inicia la partida.
-*/
-
-if(match.host!==playerId)
-return;
-
-
-match.state =
-"starting";
-
-
-publishRoom({
-
-type:"start",
-
-game:match.game,
-
-at:Date.now()+2500
-
-});
-
-}
-
-
-/* =========================================================
-   ROOM MESSAGE
+   MENSAJES DE SALA
 ========================================================= */
 
 function handleRoom(data){
@@ -2939,140 +2872,118 @@ function handleRoom(data){
 if(!match)
 return;
 
-if(data.roomId &&
-data.roomId!==match.id)
+
+if(
+data.roomId &&
+data.roomId!==match.id
+)
 return;
 
 
-/* ---------- STATE ---------- */
+/* ================= ROOM JOIN ================= */
 
-if(data.type==="roomState"){
+if(
+data.type==="roomJoin"
+){
 
-if(data.host){
+/*
+Solo el creador procesa
+la llegada del segundo.
+*/
 
-match.host =
-data.host.id;
-
-if(data.host.id!==playerId){
-
-document.getElementById(
-"matchRivalName"
-).textContent =
-data.host.user;
-
-}
-
-}
-
-if(data.guest){
-
-match.guest =
-data.guest.id;
-
-if(data.guest.id!==playerId){
-
-document.getElementById(
-"matchRivalName"
-).textContent =
-data.guest.user;
-
-}
-
-}
-
-myReady =
-playerId===data.host?.id ?
-!!data.host.ready :
-!!data.guest?.ready;
-
-rivalReady =
-playerId===data.host?.id ?
-!!data.guest?.ready :
-!!data.host?.ready;
-
-updateReadyUI();
-
+if(
+match.host!==playerId
+)
 return;
 
-}
 
-
-/* ---------- JOIN ---------- */
-
-if(data.type==="roomJoin"){
-
-if(match.host!==playerId)
+if(
+data.guestId===playerId
+)
 return;
 
-if(data.guestId===playerId)
-return;
 
 match.guest =
 data.guestId;
 
 match.state =
-"waiting";
+"starting";
 
 
-rivalReady=false;
+/*
+Guardamos el nombre del rival
+localmente para mostrarlo.
+*/
+
+onlinePlayers.set(
+data.guestId,
+{
+id:data.guestId,
+user:data.guestName,
+seen:Date.now(),
+busy:true
+}
+);
+
 
 showMatchFound();
 
 
+announcePresence();
+
+
+/*
+MUY IMPORTANTE:
+El host manda START.
+No hay botón LISTO.
+*/
+
+setTimeout(()=>{
+
+if(
+!match ||
+match.host!==playerId ||
+!match.guest
+)
+return;
+
+
+const startAt =
+Date.now()+3500;
+
+
 publishRoom({
 
-type:"roomState",
+type:"start",
 
 roomId:match.id,
 
-host:{
-id:match.host,
-user:username,
-ready:myReady
-},
-
-guest:{
-id:match.guest,
-user:data.guestName,
-ready:false
-},
-
 game:match.game,
 
-state:"waiting"
+at:startAt
 
 });
 
 
-announcePresence();
+},500);
+
 
 return;
 
 }
 
 
-/* ---------- READY ---------- */
+/* ================= START ================= */
 
-if(data.type==="ready"){
+if(
+data.type==="start"
+){
 
-if(data.id===playerId)
+if(
+!match
+)
 return;
 
-rivalReady =
-!!data.ready;
-
-updateReadyUI();
-
-checkBothReady();
-
-return;
-
-}
-
-
-/* ---------- START ---------- */
-
-if(data.type==="start"){
 
 startCountdown(
 data.at
@@ -3083,71 +2994,101 @@ return;
 }
 
 
-/* ---------- TARGET ---------- */
+/* ================= TARGET ================= */
 
-if(data.type==="targetFinished"){
+if(
+data.type==="targetFinished"
+){
 
-handleTargetFinished(data);
-
-return;
-
-}
-
-
-/* ---------- REACTION ---------- */
-
-if(data.type==="reactionGo"){
-
-handleReactionGo(data);
-
-return;
-
-}
-
-if(data.type==="reactionResult"){
-
-handleReactionResult(data);
+handleTargetFinished(
+data
+);
 
 return;
 
 }
 
 
-/* ---------- TTT ---------- */
+/* ================= REACTION ================= */
 
-if(data.type==="tttState"){
+if(
+data.type==="reactionGo"
+){
 
-handleTTTState(data);
-
-return;
-
-}
-
-
-/* ---------- DRAW ---------- */
-
-if(data.type==="drawRound"){
-
-handleDrawRoom(data);
-
-return;
-
-}
-
-if(data.type==="drawSubmit"){
-
-handleDrawSubmit(data);
+handleReactionGo(
+data
+);
 
 return;
 
 }
 
 
-/* ---------- RESULT ---------- */
+if(
+data.type==="reactionResult"
+){
 
-if(data.type==="gameResult"){
+handleReactionResult(
+data
+);
 
-showGameResult(data);
+return;
+
+}
+
+
+/* ================= TTT ================= */
+
+if(
+data.type==="tttState"
+){
+
+handleTTTState(
+data
+);
+
+return;
+
+}
+
+
+/* ================= DRAW ================= */
+
+if(
+data.type==="drawRound"
+){
+
+handleDrawRoom(
+data
+);
+
+return;
+
+}
+
+
+if(
+data.type==="drawSubmit"
+){
+
+handleDrawSubmit(
+data
+);
+
+return;
+
+}
+
+
+/* ================= RESULT ================= */
+
+if(
+data.type==="gameResult"
+){
+
+showGameResult(
+data
+);
 
 return;
 
@@ -3157,7 +3098,7 @@ return;
 
 
 /* =========================================================
-   START COUNTDOWN
+   CUENTA REGRESIVA
 ========================================================= */
 
 function startCountdown(at){
@@ -3166,12 +3107,15 @@ if(!match)
 return;
 
 
-const overlay =
-document.getElementById(
-"matchOverlay"
-);
+document
+.getElementById("matchOverlay")
+.classList.add("show");
 
-overlay.classList.add("show");
+
+const countdown =
+document.getElementById(
+"matchCountdown"
+);
 
 
 const delay =
@@ -3181,37 +3125,59 @@ at-Date.now()
 );
 
 
-const countdown =
-document.getElementById(
-"matchCountdown"
-);
-
-
-countdown.textContent="3";
+countdown.textContent =
+"3";
 
 
 setTimeout(()=>{
-countdown.textContent="2";
-},Math.max(0,delay-1600));
+
+if(match)
+countdown.textContent =
+"2";
+
+},Math.max(
+0,
+delay-2000
+));
 
 
 setTimeout(()=>{
-countdown.textContent="1";
-},Math.max(0,delay-800));
+
+if(match)
+countdown.textContent =
+"1";
+
+},Math.max(
+0,
+delay-1000
+));
 
 
 setTimeout(()=>{
+
+if(!match)
+return;
+
 
 countdown.textContent =
 "🔥 ¡YA!";
 
+
 setTimeout(()=>{
 
-overlay.classList.remove("show");
+if(!match)
+return;
+
+
+document
+.getElementById("matchOverlay")
+.classList.remove("show");
+
 
 startMatchGame();
 
-},400);
+},450);
+
 
 },delay);
 
@@ -3219,7 +3185,7 @@ startMatchGame();
 
 
 /* =========================================================
-   START GAME
+   ARRANCAR JUEGO
 ========================================================= */
 
 function startMatchGame(){
@@ -3232,17 +3198,40 @@ match.state =
 "playing";
 
 
-if(match.game==="target")
+if(
+match.game==="target"
+){
+
 startTargetMultiplayer();
 
-if(match.game==="reaction")
+}
+
+
+if(
+match.game==="reaction"
+){
+
 startReactionMultiplayer();
 
-if(match.game==="ttt")
+}
+
+
+if(
+match.game==="ttt"
+){
+
 startTTTMultiplayer();
 
-if(match.game==="draw")
+}
+
+
+if(
+match.game==="draw"
+){
+
 startDrawMultiplayer();
+
+}
 
 }
 
@@ -3253,7 +3242,9 @@ startDrawMultiplayer();
 
 function startTargetMultiplayer(){
 
-showView("arcade");
+showView(
+"arcade"
+);
 
 
 targetScore=0;
@@ -3263,7 +3254,8 @@ targetResults={};
 
 document.getElementById(
 "targetScore"
-).textContent="0";
+).textContent =
+"0";
 
 
 const area =
@@ -3271,7 +3263,9 @@ document.getElementById(
 "targetArea"
 );
 
-area.innerHTML="";
+
+area.innerHTML =
+"";
 
 
 targetStart =
@@ -3290,13 +3284,13 @@ targetTimer =
 setInterval(()=>{
 
 if(
-Date.now()-targetStart >=
-20000
+Date.now()-targetStart>=20000
 ){
 
 clearInterval(
 targetTimer
 );
+
 
 publishRoom({
 
@@ -3313,15 +3307,14 @@ ts:Date.now()
 });
 
 
-area.innerHTML=`
+area.innerHTML = `
 
 <div
 class="muted"
 style="
 position:absolute;
 inset:45% 0;
-text-align:center
-">
+text-align:center">
 
 Esperando resultado...
 
@@ -3353,14 +3346,17 @@ return;
 
 
 const target =
-document.createElement("button");
+document.createElement(
+"button"
+);
+
 
 target.className =
 "target";
 
 
 target.style.left =
-Math.random() *
+Math.random()*
 Math.max(
 1,
 area.clientWidth-55
@@ -3368,7 +3364,7 @@ area.clientWidth-55
 
 
 target.style.top =
-Math.random() *
+Math.random()*
 Math.max(
 1,
 area.clientHeight-55
@@ -3392,10 +3388,14 @@ document.getElementById(
 targetScore;
 
 
-beep(850,.035);
+beep(
+850,
+.035
+);
 
 
 target.remove();
+
 
 spawnTargetMulti();
 
@@ -3423,33 +3423,52 @@ score:Number(data.score)
 
 
 if(
-Object.keys(targetResults).length>=2
-){
+Object.keys(targetResults).length<2
+)
+return;
+
+
+/*
+Solo HOST calcula
+el resultado.
+*/
+
+if(
+match.host!==playerId
+)
+return;
+
 
 const players =
-Object.values(targetResults);
-
-
-const sorted =
-players.sort(
-(a,b)=>b.score-a.score
+Object.values(
+targetResults
 );
 
 
 let winner=null;
 
+
 if(
-sorted[0].score >
-sorted[1].score
+players[0].score>
+players[1].score
 ){
 
 winner =
-sorted[0].id;
+players[0].id;
+
+}else if(
+players[1].score>
+players[0].score
+){
+
+winner =
+players[1].id;
 
 }
 
 
 const results={};
+
 
 players.forEach(p=>{
 
@@ -3476,8 +3495,6 @@ reason:"target"
 
 }
 
-}
-
 
 /* =========================================================
    REACTION
@@ -3485,7 +3502,9 @@ reason:"target"
 
 function startReactionMultiplayer(){
 
-showView("arcade");
+showView(
+"arcade"
+);
 
 
 reactionResults={};
@@ -3501,7 +3520,7 @@ document.getElementById(
 );
 
 
-area.innerHTML=`
+area.innerHTML = `
 
 <div
 class="muted"
@@ -3518,9 +3537,15 @@ Esperá...
 `;
 
 
-if(match.host===playerId){
+if(
+match.host===playerId
+){
 
 setTimeout(()=>{
+
+if(!match)
+return;
+
 
 publishRoom({
 
@@ -3529,6 +3554,7 @@ type:"reactionGo",
 at:Date.now()
 
 });
+
 
 },1500+
 Math.random()*3000);
@@ -3547,7 +3573,9 @@ function handleReactionGo(data){
 reactionGoTime =
 Date.now();
 
-reactionArmed=true;
+
+reactionArmed =
+true;
 
 
 const area =
@@ -3556,7 +3584,7 @@ document.getElementById(
 );
 
 
-area.innerHTML=`
+area.innerHTML = `
 
 <button
 id="reactionButton"
@@ -3592,7 +3620,9 @@ document
 if(!reactionArmed)
 return;
 
-reactionArmed=false;
+
+reactionArmed =
+false;
 
 
 const ms =
@@ -3647,15 +3677,26 @@ ms:Number(data.ms)
 
 
 if(
-Object.keys(reactionResults).length>=2
-){
+Object.keys(reactionResults).length<2
+)
+return;
+
+
+if(
+match.host!==playerId
+)
+return;
+
 
 const players =
-Object.values(reactionResults);
+Object.values(
+reactionResults
+);
 
 
 players.sort(
-(a,b)=>a.ms-b.ms
+(a,b)=>
+a.ms-b.ms
 );
 
 
@@ -3663,7 +3704,7 @@ let winner=null;
 
 
 if(
-players[0].ms <
+players[0].ms<
 players[1].ms
 ){
 
@@ -3702,8 +3743,6 @@ reason:"reaction"
 
 }
 
-}
-
 
 /* =========================================================
    TTT
@@ -3711,7 +3750,9 @@ reason:"reaction"
 
 function startTTTMultiplayer(){
 
-showView("arcade");
+showView(
+"arcade"
+);
 
 
 tttState={
@@ -3723,7 +3764,9 @@ turn:0
 renderTTT();
 
 
-if(match.host===playerId){
+if(
+match.host===playerId
+){
 
 publishRoom({
 
@@ -3751,13 +3794,16 @@ document.getElementById(
 "targetArea"
 );
 
-box.innerHTML="";
+
+box.innerHTML =
+"";
 
 
 const grid =
 document.createElement(
 "div"
 );
+
 
 grid.className =
 "ttt";
@@ -3774,17 +3820,23 @@ document.createElement(
 "button"
 );
 
+
 b.className =
 "tttCell";
 
+
 b.textContent =
 tttState.board[i];
+
 
 b.onclick=()=>{
 tttMove(i);
 };
 
-grid.appendChild(b);
+
+grid.appendChild(
+b
+);
 
 }
 
@@ -3892,7 +3944,9 @@ return;
 
 
 if(
-tttState.board.every(x=>x)
+tttState.board.every(
+x=>x
+)
 ){
 
 publishRoom({
@@ -3920,6 +3974,7 @@ score:50
 reason:"ttt"
 
 });
+
 
 return;
 
@@ -4002,12 +4057,14 @@ return null;
 
 
 /* =========================================================
-   DRAW
+   DRAW START
 ========================================================= */
 
 function startDrawMultiplayer(){
 
-showView("draw");
+showView(
+"draw"
+);
 
 
 drawResults={};
@@ -4016,7 +4073,9 @@ drawResults={};
 clearCanvas();
 
 
-if(match.host===playerId){
+if(
+match.host===playerId
+){
 
 const words=[
 "MOTO",
@@ -4074,6 +4133,7 @@ function handleDrawRoom(data){
 drawRound =
 data.round;
 
+
 drawDeadline =
 data.deadline;
 
@@ -4105,7 +4165,8 @@ const left =
 Math.max(
 0,
 Math.ceil(
-(drawDeadline-Date.now())/1000
+(drawDeadline-Date.now())/
+1000
 )
 );
 
@@ -4116,7 +4177,9 @@ document.getElementById(
 left+"s";
 
 
-if(left<=0){
+if(
+left<=0
+){
 
 clearInterval(
 drawTimerInterval
@@ -4175,7 +4238,8 @@ ts:Date.now()
 
 document.getElementById(
 "myDrawing"
-).src=image;
+).src =
+image;
 
 
 document.getElementById(
@@ -4187,7 +4251,7 @@ document.getElementById(
 
 
 /* =========================================================
-   DRAW SUBMIT
+   DRAW RESULT
 ========================================================= */
 
 function handleDrawSubmit(data){
@@ -4198,7 +4262,7 @@ data.round!==drawRound
 return;
 
 
-drawResults[data.id]=
+drawResults[data.id] =
 data;
 
 
@@ -4222,16 +4286,27 @@ data.image;
 
 
 if(
-Object.keys(drawResults).length>=2
-){
+Object.keys(drawResults).length<2
+)
+return;
+
+
+if(
+match.host!==playerId
+)
+return;
+
 
 const list =
-Object.values(drawResults);
+Object.values(
+drawResults
+);
 
 
 list.sort(
 (a,b)=>
-Number(a.ts)-Number(b.ts)
+Number(a.ts)-
+Number(b.ts)
 );
 
 
@@ -4245,12 +4320,8 @@ list[1];
 let winner=null;
 
 
-/*
-   El que termina primero gana.
-*/
-
 if(
-Number(first.ts) <
+Number(first.ts)<
 Number(second.ts)
 ){
 
@@ -4290,23 +4361,27 @@ reason:"draw"
 
 }
 
-}
-
 
 /* =========================================================
-   RESULT
+   RESULTADO
 ========================================================= */
 
 function showGameResult(data){
 
-if(matchResultShown)
+if(
+matchResultShown
+)
 return;
 
-matchResultShown=true;
+
+matchResultShown =
+true;
 
 
 const results =
-data.results || {};
+data.results ||
+{};
+
 
 const winnerId =
 data.winner;
@@ -4316,39 +4391,47 @@ if(!winnerId){
 
 document.getElementById(
 "resultIcon"
-).textContent="🤝";
+).textContent =
+"🤝";
+
 
 document.getElementById(
 "resultTitle"
-).textContent="¡EMPATE!";
+).textContent =
+"¡EMPATE!";
+
 
 document.getElementById(
 "resultName"
-).textContent="Nadie gana";
+).textContent =
+"Nadie gana";
+
 
 document.getElementById(
 "resultSub"
-).textContent=
+).textContent =
 "Los dos estuvieron iguales.";
 
-document.getElementById(
-"resultOverlay"
-).classList.add("show");
+
+document
+.getElementById("resultOverlay")
+.classList.add("show");
 
 
-beep(550,.15);
+beep(
+550,
+.15
+);
 
-setTimeout(()=>{
+
+setTimeout(
+()=>{
 beep(700,.15);
-},160);
+},
+160
+);
 
-
-finishMatchAfterResult();
-
-return;
-
-}
-
+}else{
 
 const winner =
 results[winnerId]?.user ||
@@ -4389,9 +4472,9 @@ iAmWinner ?
 "El resultado fue determinado automáticamente.";
 
 
-document.getElementById(
-"resultOverlay"
-).classList.add("show");
+document
+.getElementById("resultOverlay")
+.classList.add("show");
 
 
 if(iAmWinner){
@@ -4402,10 +4485,19 @@ victorySound();
 
 }else{
 
-beep(220,.25);
+beep(
+220,
+.25
+);
 
 }
 
+}
+
+
+/*
+Sumar ranking.
+*/
 
 for(
 const id in results
@@ -4413,6 +4505,7 @@ const id in results
 
 const p =
 results[id];
+
 
 addScore(
 p.user,
@@ -4422,18 +4515,24 @@ Number(p.score)||0
 }
 
 
-finishMatchAfterResult();
+/*
+Liberar partida después
+de mostrar el resultado.
+*/
+
+setTimeout(
+finishMatchAfterResult,
+1800
+);
 
 }
 
 
 /* =========================================================
-   FINISH MATCH
+   TERMINAR PARTIDA
 ========================================================= */
 
 function finishMatchAfterResult(){
-
-setTimeout(()=>{
 
 if(!match)
 return;
@@ -4464,24 +4563,18 @@ ts:Date.now()
 
 match=null;
 
-myReady=false;
-
-rivalReady=false;
+selectedGame=null;
 
 matchResultShown=false;
 
-selectedGame=null;
 
 announcePresence();
-
-
-},1800);
 
 }
 
 
 /* =========================================================
-   LEAVE MATCH
+   SALIR
 ========================================================= */
 
 function leaveMatch(){
@@ -4505,6 +4598,7 @@ ts:Date.now()
 }
 );
 
+
 publishRoom({
 
 type:"roomLeave",
@@ -4525,13 +4619,9 @@ ROOM_PREFIX+oldRoom
 
 match=null;
 
-myReady=false;
-
-rivalReady=false;
+selectedGame=null;
 
 matchResultShown=false;
-
-selectedGame=null;
 
 
 document
@@ -4541,7 +4631,11 @@ document
 
 announcePresence();
 
-showView("arcade");
+
+showView(
+"arcade"
+);
+
 
 toast(
 "Saliste de la partida."
@@ -4556,7 +4650,9 @@ toast(
 
 function getPlayerName(id){
 
-if(id===playerId)
+if(
+id===playerId
+)
 return username;
 
 
@@ -4611,7 +4707,9 @@ document
 "keydown",
 e=>{
 
-if(e.key==="Enter")
+if(
+e.key==="Enter"
+)
 sendChat();
 
 }
@@ -4652,7 +4750,9 @@ escapeHTML(data.user)+
 escapeHTML(data.text);
 
 
-box.appendChild(div);
+box.appendChild(
+div
+);
 
 
 box.scrollTop =
@@ -4719,7 +4819,7 @@ input.value="";
 
 
 /* =========================================================
-   NUMBER GAME
+   ADIVINAR NÚMERO
 ========================================================= */
 
 let numberSecret =
@@ -4727,7 +4827,8 @@ Math.floor(
 Math.random()*100
 )+1;
 
-let numberAttempts=0;
+let numberAttempts =
+0;
 
 
 function guessNumber(){
@@ -4786,6 +4887,7 @@ Math.floor(
 Math.random()*100
 )+1;
 
+
 numberAttempts=0;
 
 }else{
@@ -4804,7 +4906,10 @@ value<numberSecret ?
    RANKING
 ========================================================= */
 
-function addScore(user,score){
+function addScore(
+user,
+score
+){
 
 ranking[user] =
 (ranking[user]||0)+score;
@@ -4823,16 +4928,24 @@ document.getElementById(
 
 
 const list =
-Object.entries(ranking)
+Object.entries(
+ranking
+)
 .sort(
 (a,b)=>b[1]-a[1]
 );
 
 
-if(!list.length){
+if(
+!list.length
+){
 
 box.innerHTML =
-'<div class="muted">Todavía no hay resultados.</div>';
+`
+<div class="muted">
+Todavía no hay resultados.
+</div>
+`;
 
 return;
 
@@ -4843,16 +4956,25 @@ box.innerHTML =
 list
 .slice(0,10)
 .map(
-(x,i)=>
-`<div class="rank">
+(x,i)=>`
+
+<div class="rank">
+
 <span>
-${i===0?"👑 ":""}#${i+1}
+
+${i===0?"👑 ":""}
+#${i+1}
 ${escapeHTML(x[0])}
+
 </span>
+
 <b>
 ${x[1]} pts
 </b>
-</div>`
+
+</div>
+
+`
 )
 .join("");
 
@@ -4860,7 +4982,7 @@ ${x[1]} pts
 
 
 /* =========================================================
-   INDIVIDUAL WINNER
+   GANADOR INDIVIDUAL
 ========================================================= */
 
 function showWinner(
@@ -4898,19 +5020,21 @@ document.getElementById(
 subtitle;
 
 
-document.getElementById(
-"resultOverlay"
-).classList.add("show");
+document
+.getElementById("resultOverlay")
+.classList.add("show");
 
 
-if(winner===username)
+if(
+winner===username
+)
 confetti();
 
 }
 
 
 /* =========================================================
-   CLOSE RESULT
+   CERRAR RESULTADO
 ========================================================= */
 
 function closeResult(){
@@ -4922,7 +5046,10 @@ document
 
 announcePresence();
 
-showView("arcade");
+
+showView(
+"arcade"
+);
 
 }
 
@@ -4943,6 +5070,7 @@ const c =
 document.createElement(
 "div"
 );
+
 
 c.className =
 "confetti";
@@ -4970,7 +5098,8 @@ Math.random()*6
 
 c.style.setProperty(
 "--x",
-(Math.random()*300-150)+"px"
+(Math.random()*300-150)+
+"px"
 );
 
 
@@ -4996,7 +5125,7 @@ c.remove();
 
 
 /* =========================================================
-   SOUNDS
+   SONIDO
 ========================================================= */
 
 function victorySound(){
@@ -5070,7 +5199,7 @@ a.currentTime+d
 
 
 /* =========================================================
-   DRAW CANVAS
+   CANVAS
 ========================================================= */
 
 function initCanvas(){
@@ -5079,6 +5208,7 @@ canvas =
 document.getElementById(
 "canvas"
 );
+
 
 ctx =
 canvas.getContext(
@@ -5181,9 +5311,12 @@ x,
 y
 );
 
+
 ctx.stroke();
 
+
 ctx.beginPath();
+
 
 ctx.moveTo(
 x,
@@ -5194,7 +5327,7 @@ y
 
 
 /* =========================================================
-   CLEAR CANVAS
+   CLEAR
 ========================================================= */
 
 function clearCanvas(){
@@ -5203,7 +5336,9 @@ if(!ctx)
 return;
 
 
-ctx.fillStyle="#fff";
+ctx.fillStyle =
+"#fff";
+
 
 ctx.fillRect(
 0,
@@ -5221,7 +5356,7 @@ canvas.height
 
 function setColor(
 color,
-b
+button
 ){
 
 drawColor =
@@ -5238,7 +5373,7 @@ x.classList.remove(
 );
 
 
-b.classList.add(
+button.classList.add(
 "selected"
 );
 
@@ -5255,11 +5390,13 @@ return String(text)
 .replace(
 /[&<>"']/g,
 c=>({
+
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
 '"':"&quot;",
 "'":"&#39;"
+
 }[c])
 );
 
@@ -5275,7 +5412,9 @@ topic,
 raw
 ){
 
-if(topic===LOBBY){
+if(
+topic===LOBBY
+){
 
 try{
 
@@ -5290,7 +5429,9 @@ return;
 }
 
 
-if(topic===STATE_TOPIC){
+if(
+topic===STATE_TOPIC
+){
 
 document.getElementById(
 "statEsp"
@@ -5302,7 +5443,9 @@ return;
 }
 
 
-if(topic===CHAT_TOPIC){
+if(
+topic===CHAT_TOPIC
+){
 
 try{
 
@@ -5337,7 +5480,7 @@ JSON.parse(raw)
 
 
 /* =========================================================
-   CONSOLE
+   CONSOLE LOG
 ========================================================= */
 
 function log(
@@ -5367,9 +5510,11 @@ type;
 
 
 div.textContent =
-"["+new Date()
+"["+
+new Date()
 .toLocaleTimeString()+
-"] "+text;
+"] "+
+text;
 
 
 box.appendChild(
@@ -5384,7 +5529,7 @@ box.scrollHeight;
 
 
 /* =========================================================
-   SESSION TIMER
+   TIMER
 ========================================================= */
 
 const sessionStart =
@@ -5395,7 +5540,8 @@ setInterval(()=>{
 
 const s =
 Math.floor(
-(Date.now()-sessionStart)/1000
+(Date.now()-sessionStart)/
+1000
 );
 
 
@@ -5420,7 +5566,7 @@ renderRooms();
 
 
 /* =========================================================
-   START
+   INICIO
 ========================================================= */
 
 initCanvas();
@@ -5441,6 +5587,7 @@ document.getElementById(
 "usernameLabel"
 ).textContent =
 username;
+
 
 document.getElementById(
 "profileName"
