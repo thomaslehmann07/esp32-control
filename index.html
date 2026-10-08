@@ -1,0 +1,5589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>THOMY // ARCADE</title>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+:root{
+    --bg:#070812;
+    --bg2:#0b0e1c;
+    --panel:#101426;
+    --panel2:#14192d;
+    --line:#252c49;
+    --text:#f1f4ff;
+    --muted:#858ca9;
+    --green:#6dffb1;
+    --cyan:#65dfff;
+    --purple:#a78bfa;
+    --pink:#ff78c8;
+    --red:#ff6b81;
+    --yellow:#ffd66b;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    color:var(--text);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(167,139,250,.13),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(101,223,255,.10),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(109,255,177,.07),
+            transparent 30%
+        ),
+        var(--bg);
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:.45;
+}
+
+.app{
+    min-height:100vh;
+}
+
+/* TOP BAR */
+
+.topbar{
+    height:72px;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+
+    border-bottom:1px solid rgba(255,255,255,.07);
+
+    background:
+        rgba(7,8,18,.78);
+
+    backdrop-filter:blur(18px);
+
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand-logo{
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--cyan)
+        );
+
+    color:#080914;
+    font-weight:900;
+    box-shadow:
+        0 0 30px rgba(167,139,250,.22);
+}
+
+.brand-text{
+    line-height:1.05;
+}
+
+.brand-title{
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.brand-sub{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.connection{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+
+    border:1px solid var(--line);
+    border-radius:999px;
+
+    background:rgba(255,255,255,.025);
+
+    font-size:13px;
+}
+
+.dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#ff536b;
+}
+
+.dot.online{
+    background:var(--green);
+    box-shadow:0 0 14px var(--green);
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    color:#0a0b12;
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--green),
+            var(--cyan)
+        );
+}
+
+/* LAYOUT */
+
+.layout{
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr);
+    min-height:calc(100vh - 72px);
+}
+
+.sidebar{
+    border-right:1px solid rgba(255,255,255,.07);
+    padding:18px;
+
+    background:
+        rgba(9,11,23,.70);
+
+    position:sticky;
+    top:72px;
+    height:calc(100vh - 72px);
+}
+
+.nav-label{
+    font-size:10px;
+    color:#666d89;
+    letter-spacing:1.8px;
+    margin:10px 10px 8px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.nav-btn{
+    width:100%;
+    border:1px solid transparent;
+    border-radius:11px;
+
+    padding:11px 12px;
+
+    color:#a9aec5;
+    background:transparent;
+
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    text-align:left;
+
+    transition:
+        .18s ease;
+}
+
+.nav-btn:hover{
+    background:rgba(255,255,255,.035);
+    color:white;
+}
+
+.nav-btn.active{
+    color:white;
+    border-color:
+        rgba(167,139,250,.25);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(167,139,250,.15),
+            rgba(101,223,255,.05)
+        );
+}
+
+.nav-icon{
+    width:27px;
+    text-align:center;
+}
+
+.sidebar-room{
+    margin-top:20px;
+    padding:14px;
+
+    border-radius:13px;
+    border:1px solid var(--line);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(167,139,250,.08),
+            rgba(101,223,255,.03)
+        );
+}
+
+.sidebar-room-title{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.sidebar-room-code{
+    margin-top:5px;
+    font-weight:800;
+    color:var(--cyan);
+    word-break:break-all;
+}
+
+/* MAIN */
+
+.main{
+    width:100%;
+    max-width:1250px;
+    padding:28px;
+    margin:0 auto;
+}
+
+.page{
+    display:none;
+    animation:pageIn .25s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(7px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+/* GENERAL */
+
+.hero{
+    padding:28px;
+
+    border:1px solid var(--line);
+    border-radius:22px;
+
+    background:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(101,223,255,.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 15% 90%,
+            rgba(167,139,250,.13),
+            transparent 35%
+        ),
+        var(--panel);
+
+    position:relative;
+    overflow:hidden;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    right:-70px;
+    bottom:-90px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.eyebrow{
+    color:var(--green);
+    font-size:11px;
+    letter-spacing:2px;
+    font-weight:800;
+}
+
+.hero h1{
+    margin:10px 0 8px;
+    font-size:clamp(30px,5vw,56px);
+    line-height:1;
+}
+
+.hero p{
+    max-width:680px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.grid{
+    display:grid;
+    gap:15px;
+}
+
+.grid2{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.grid3{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+.card{
+    border:1px solid var(--line);
+    border-radius:17px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,25,45,.94),
+            rgba(10,13,25,.94)
+        );
+
+    padding:18px;
+}
+
+.card h2,
+.card h3{
+    margin-top:0;
+}
+
+.stat{
+    min-height:125px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.stat-icon{
+    font-size:22px;
+}
+
+.stat-label{
+    font-size:12px;
+    color:var(--muted);
+}
+
+.stat-value{
+    margin-top:5px;
+    font-size:28px;
+    font-weight:900;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+.green{
+    color:var(--green);
+}
+
+.cyan{
+    color:var(--cyan);
+}
+
+.purple{
+    color:var(--purple);
+}
+
+.pink{
+    color:var(--pink);
+}
+
+.yellow{
+    color:var(--yellow);
+}
+
+.red{
+    color:var(--red);
+}
+
+/* BUTTONS */
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.btn{
+    border:1px solid var(--line);
+    border-radius:10px;
+
+    padding:10px 14px;
+
+    color:white;
+    background:#12172a;
+
+    transition:.16s ease;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+    border-color:#3a4265;
+}
+
+.btn.primary{
+    border:0;
+    color:#080a12;
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--green),
+            var(--cyan)
+        );
+}
+
+.btn.purple{
+    border:0;
+    color:white;
+    font-weight:800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8d6cff,
+            #c16cff
+        );
+}
+
+.btn.danger{
+    color:#ff91a0;
+    background:#25121a;
+    border-color:#51202e;
+}
+
+/* INPUTS */
+
+.input{
+    width:100%;
+    padding:12px 13px;
+
+    border:1px solid var(--line);
+    border-radius:10px;
+
+    outline:none;
+
+    color:white;
+    background:#080b16;
+}
+
+.input:focus{
+    border-color:var(--purple);
+    box-shadow:
+        0 0 0 3px
+        rgba(167,139,250,.08);
+}
+
+/* CHAT */
+
+.chat-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 250px;
+    gap:15px;
+}
+
+.chat-box{
+    height:520px;
+    display:flex;
+    flex-direction:column;
+}
+
+.messages{
+    flex:1;
+    overflow:auto;
+
+    padding:12px;
+
+    border:1px solid var(--line);
+    border-radius:13px;
+
+    background:#070914;
+}
+
+.message{
+    max-width:80%;
+    margin-bottom:10px;
+    padding:10px 12px;
+
+    border-radius:12px 12px 12px 3px;
+
+    background:#12182a;
+}
+
+.message.mine{
+    margin-left:auto;
+
+    border-radius:12px 12px 3px 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(109,255,177,.13),
+            rgba(101,223,255,.08)
+        );
+}
+
+.message-user{
+    font-size:11px;
+    font-weight:800;
+    color:var(--cyan);
+    margin-bottom:3px;
+}
+
+.message-time{
+    margin-top:4px;
+    font-size:9px;
+    color:#636a83;
+}
+
+.system-message{
+    text-align:center;
+    color:#686f89;
+    font-size:12px;
+    margin:9px 0;
+}
+
+.chat-form{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    margin-top:9px;
+}
+
+.online{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.online-user{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:9px;
+
+    border-radius:10px;
+
+    background:#0b0f1d;
+    border:1px solid #1b2238;
+}
+
+.online-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 9px var(--green);
+}
+
+/* GAME CARDS */
+
+.game-picker{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+}
+
+.game-card{
+    padding:16px;
+    border:1px solid var(--line);
+    border-radius:14px;
+
+    background:#0c1020;
+
+    text-align:left;
+
+    transition:.18s ease;
+}
+
+.game-card:hover{
+    transform:translateY(-2px);
+    border-color:#4a5275;
+}
+
+.game-card-icon{
+    font-size:28px;
+}
+
+.game-card-title{
+    margin-top:10px;
+    font-weight:900;
+}
+
+.game-card-desc{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+    margin-top:5px;
+}
+
+.game-stage{
+    margin-top:15px;
+    min-height:430px;
+    border:1px solid var(--line);
+    border-radius:17px;
+    background:#070914;
+    padding:22px;
+}
+
+.game-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    padding:6px 10px;
+    border-radius:999px;
+
+    background:#11182b;
+    border:1px solid var(--line);
+
+    color:var(--muted);
+    font-size:11px;
+}
+
+.target-area{
+    height:330px;
+    position:relative;
+
+    margin-top:18px;
+
+    border-radius:13px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(167,139,250,.06),
+            transparent 50%
+        );
+
+    border:1px solid #182039;
+
+    overflow:hidden;
+}
+
+.target{
+    position:absolute;
+
+    width:54px;
+    height:54px;
+
+    border-radius:50%;
+
+    border:4px solid #ffc2ce;
+
+    background:#ff4968;
+
+    box-shadow:
+        0 0 25px
+        rgba(255,73,104,.55);
+
+    cursor:pointer;
+}
+
+/* TTT */
+
+.ttt-board{
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    gap:8px;
+    justify-content:center;
+    margin:30px auto;
+}
+
+.ttt-cell{
+    width:100px;
+    height:100px;
+
+    border:1px solid #2b3454;
+    border-radius:14px;
+
+    background:#0c1120;
+
+    color:white;
+
+    font-size:42px;
+    font-weight:900;
+
+    transition:.15s;
+}
+
+.ttt-cell:hover{
+    border-color:var(--purple);
+    background:#121831;
+}
+
+.ttt-cell.x{
+    color:var(--cyan);
+}
+
+.ttt-cell.o{
+    color:var(--pink);
+}
+
+/* DRAW */
+
+.draw-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.object-box{
+    padding:16px;
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(167,139,250,.11),
+            rgba(101,223,255,.06)
+        );
+
+    border:1px solid #2c3452;
+
+    text-align:center;
+}
+
+.object-label{
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:1.5px;
+}
+
+.object-value{
+    margin-top:4px;
+    font-size:28px;
+    font-weight:900;
+}
+
+.canvas-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-top:15px;
+}
+
+.canvas-card{
+    padding:12px;
+
+    border-radius:15px;
+
+    background:#0a0e1b;
+    border:1px solid var(--line);
+}
+
+.canvas-title{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.canvas-wrap{
+    width:100%;
+    aspect-ratio:3/2;
+}
+
+canvas{
+    display:block;
+    width:100%;
+    height:100%;
+
+    background:#fff;
+
+    border-radius:10px;
+
+    touch-action:none;
+}
+
+.paint-tools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+}
+
+.tool{
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:8px 11px;
+    background:#111629;
+    color:white;
+}
+
+.result{
+    margin-top:15px;
+    padding:18px;
+
+    border-radius:14px;
+
+    border:1px solid var(--line);
+    background:#0b0f1c;
+
+    text-align:center;
+}
+
+.result-score{
+    font-size:38px;
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--green),
+            var(--cyan),
+            var(--purple)
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+/* ESP */
+
+.esp-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.esp-status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px;
+
+    border-radius:12px;
+
+    background:#080b15;
+    border:1px solid var(--line);
+}
+
+.terminal{
+    height:480px;
+    overflow:auto;
+
+    padding:15px;
+
+    border-radius:13px;
+
+    background:#03050a;
+    border:1px solid #17213a;
+
+    color:#9dffbf;
+
+    font-family:
+        Consolas,
+        Monaco,
+        monospace;
+
+    font-size:12px;
+    line-height:1.6;
+
+    white-space:pre-wrap;
+}
+
+/* RANKING */
+
+.rank-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.rank{
+    display:grid;
+    grid-template-columns:45px 1fr 100px;
+    align-items:center;
+
+    padding:12px;
+
+    border-radius:11px;
+
+    background:#0c1020;
+    border:1px solid var(--line);
+}
+
+.rank-number{
+    font-weight:900;
+    color:var(--purple);
+}
+
+.rank-name{
+    font-weight:700;
+}
+
+.rank-game{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.rank-score{
+    text-align:right;
+    color:var(--green);
+    font-weight:900;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+
+    max-width:330px;
+
+    padding:13px 16px;
+
+    border-radius:12px;
+
+    background:#13192b;
+    border:1px solid #333c60;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.4);
+
+    transform:
+        translateY(20px);
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:.25s;
+
+    z-index:50;
+}
+
+.toast.show{
+    transform:none;
+    opacity:1;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+
+    .game-picker{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .chat-layout{
+        grid-template-columns:1fr;
+    }
+
+    .esp-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:750px){
+
+    .topbar{
+        height:auto;
+        min-height:68px;
+        padding:12px 15px;
+    }
+
+    .layout{
+        display:block;
+    }
+
+    .sidebar{
+        position:sticky;
+        top:0;
+        z-index:15;
+
+        height:auto;
+
+        border-right:0;
+        border-bottom:1px solid rgba(255,255,255,.07);
+
+        padding:8px;
+
+        overflow-x:auto;
+    }
+
+    .nav{
+        flex-direction:row;
+        min-width:max-content;
+    }
+
+    .nav-btn{
+        width:auto;
+        padding:9px 11px;
+    }
+
+    .nav-btn span:not(.nav-icon){
+        display:none;
+    }
+
+    .nav-label,
+    .sidebar-room{
+        display:none;
+    }
+
+    .main{
+        padding:15px;
+    }
+
+    .grid2,
+    .grid3,
+    .canvas-grid{
+        grid-template-columns:1fr;
+    }
+
+    .game-picker{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .ttt-board{
+        grid-template-columns:repeat(3,80px);
+    }
+
+    .ttt-cell{
+        width:80px;
+        height:80px;
+    }
+
+    .hero{
+        padding:20px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            T
+        </div>
+
+        <div class="brand-text">
+
+            <div class="brand-title">
+                THOMY ARCADE
+            </div>
+
+            <div class="brand-sub">
+                ESP32 • MULTIPLAYER • MQTT
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="top-right">
+
+        <div class="connection">
+
+            <span id="connectionDot"
+                  class="dot"></span>
+
+            <span id="connectionText">
+                Conectando...
+            </span>
+
+        </div>
+
+        <div id="topAvatar"
+             class="avatar">
+            T
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+
+<aside class="sidebar">
+
+    <div class="nav-label">
+        MENÚ
+    </div>
+
+    <nav class="nav">
+
+        <button class="nav-btn active"
+                data-page="home">
+            <span class="nav-icon">⌂</span>
+            <span>Inicio</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="chat">
+            <span class="nav-icon">◉</span>
+            <span>Chat</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="games">
+            <span class="nav-icon">◆</span>
+            <span>Arcade</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="paint">
+            <span class="nav-icon">✎</span>
+            <span>Dibujar</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="esp">
+            <span class="nav-icon">⚙</span>
+            <span>ESP32</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="console">
+            <span class="nav-icon">></span>
+            <span>Consola</span>
+        </button>
+
+        <button class="nav-btn"
+                data-page="ranking">
+            <span class="nav-icon">★</span>
+            <span>Ranking</span>
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-room">
+
+        <div class="sidebar-room-title">
+            SALA ACTUAL
+        </div>
+
+        <div id="sidebarRoom"
+             class="sidebar-room-code">
+            ---
+        </div>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+
+<!-- HOME -->
+
+<section id="home"
+         class="page active">
+
+    <div class="hero">
+
+        <div class="eyebrow">
+            MULTIPLAYER CONTROL CENTER
+        </div>
+
+        <h1>
+            Hola,
+            <span id="heroName"
+                  class="green">
+                jugador
+            </span>.
+        </h1>
+
+        <p>
+            Este es tu centro de operaciones.
+            Podés hablar con otra persona,
+            jugar, dibujar juntos y controlar
+            tu ESP32 desde Internet.
+        </p>
+
+        <div class="actions">
+
+            <button class="btn primary"
+                    data-go="chat">
+                Abrir chat
+            </button>
+
+            <button class="btn purple"
+                    data-go="games">
+                Ir al arcade
+            </button>
+
+            <button class="btn"
+                    data-go="paint">
+                Dibujar 1v1
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+
+    <div class="grid grid3">
+
+        <div class="card stat">
+
+            <div class="stat-icon">
+                ◉
+            </div>
+
+            <div>
+
+                <div class="stat-label">
+                    USUARIOS ONLINE
+                </div>
+
+                <div id="onlineCount"
+                     class="stat-value cyan">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <div class="stat-icon">
+                ◆
+            </div>
+
+            <div>
+
+                <div class="stat-label">
+                    SALA
+                </div>
+
+                <div id="homeRoom"
+                     class="stat-value purple">
+                    ---
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <div class="stat-icon">
+                ⚙
+            </div>
+
+            <div>
+
+                <div class="stat-label">
+                    ESP32
+                </div>
+
+                <div id="homeEsp"
+                     class="stat-value red">
+                    OFFLINE
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+
+    <div class="grid grid2">
+
+
+        <div class="card">
+
+            <h3>
+                👤 Tu identidad
+            </h3>
+
+            <p class="muted">
+                Así te van a ver los demás jugadores.
+            </p>
+
+            <input id="usernameInput"
+                   class="input"
+                   maxlength="20"
+                   placeholder="Tu nombre">
+
+            <br><br>
+
+            <input id="roomInput"
+                   class="input"
+                   maxlength="24"
+                   placeholder="Código de sala">
+
+            <br><br>
+
+            <button id="saveIdentity"
+                    class="btn primary">
+                GUARDAR CAMBIOS
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                🧑‍🤝‍🧑 Tu sala
+            </h3>
+
+            <p class="muted">
+                Compartí el mismo código con la persona
+                con la que quieras jugar.
+            </p>
+
+            <div class="object-box">
+
+                <div class="object-label">
+                    CÓDIGO
+                </div>
+
+                <div id="roomBig"
+                     class="object-value cyan">
+                    ---
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="muted">
+                Personas conectadas:
+                <strong id="roomPeople">
+                    0
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CHAT -->
+
+<section id="chat"
+         class="page">
+
+    <div class="card">
+
+        <h2>
+            💬 Chat
+        </h2>
+
+        <p class="muted">
+            Chat privado de tu sala.
+        </p>
+
+    </div>
+
+    <br>
+
+    <div class="chat-layout">
+
+        <div class="card chat-box">
+
+            <div id="messages"
+                 class="messages">
+            </div>
+
+            <form id="chatForm"
+                  class="chat-form">
+
+                <input id="chatInput"
+                       class="input"
+                       maxlength="250"
+                       autocomplete="off"
+                       placeholder="Escribí algo...">
+
+                <button class="btn primary">
+                    ENVIAR
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                🟢 Online
+            </h3>
+
+            <div id="onlineList"
+                 class="online">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- GAMES -->
+
+<section id="games"
+         class="page">
+
+    <div class="card">
+
+        <h2>
+            🎮 Arcade
+        </h2>
+
+        <p class="muted">
+            Elegí un juego. Los juegos 1v1 detectan
+            automáticamente al otro jugador.
+        </p>
+
+        <div class="game-picker">
+
+            <button class="game-card"
+                    data-game="target">
+
+                <div class="game-card-icon">
+                    🎯
+                </div>
+
+                <div class="game-card-title">
+                    Caza
+                </div>
+
+                <div class="game-card-desc">
+                    Tocá el objetivo antes que el rival.
+                </div>
+
+            </button>
+
+
+            <button class="game-card"
+                    data-game="reaction">
+
+                <div class="game-card-icon">
+                    ⚡
+                </div>
+
+                <div class="game-card-title">
+                    Reflejos
+                </div>
+
+                <div class="game-card-desc">
+                    ¿Quién reacciona más rápido?
+                </div>
+
+            </button>
+
+
+            <button class="game-card"
+                    data-game="number">
+
+                <div class="game-card-icon">
+                    🧠
+                </div>
+
+                <div class="game-card-title">
+                    Número
+                </div>
+
+                <div class="game-card-desc">
+                    Adiviná el número secreto.
+                </div>
+
+            </button>
+
+
+            <button class="game-card"
+                    data-game="ttt">
+
+                <div class="game-card-icon">
+                    ❌⭕
+                </div>
+
+                <div class="game-card-title">
+                    Ta-Te-Ti
+                </div>
+
+                <div class="game-card-desc">
+                    Partida automática 1 contra 1.
+                </div>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="gameStage"
+         class="game-stage">
+
+        <div style="text-align:center;padding:100px 20px">
+
+            <div style="font-size:50px">
+                🎮
+            </div>
+
+            <h2>
+                Elegí un juego
+            </h2>
+
+            <p class="muted">
+                Tu rival aparecerá automáticamente.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PAINT -->
+
+<section id="paint"
+         class="page">
+
+    <div class="card">
+
+        <div class="draw-top">
+
+            <div>
+
+                <h2>
+                    🎨 Duelo de dibujo
+                </h2>
+
+                <p class="muted">
+                    Los dos reciben el mismo objeto.
+                    Cada uno hace su propia versión.
+                </p>
+
+            </div>
+
+            <div class="actions">
+
+                <button id="newPaint"
+                        class="btn primary">
+                    NUEVO DESAFÍO
+                </button>
+
+                <button id="submitPaint"
+                        class="btn purple">
+                    TERMINÉ
+                </button>
+
+                <button id="clearPaint"
+                        class="btn danger">
+                    BORRAR
+                </button>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="object-box">
+
+            <div class="object-label">
+                DIBUJÁ
+            </div>
+
+            <div id="paintObject"
+                 class="object-value yellow">
+                esperando desafío...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="canvas-grid">
+
+        <div class="canvas-card">
+
+            <div class="canvas-title">
+
+                <strong>
+                    🎨 TU DIBUJO
+                </strong>
+
+                <span class="badge">
+                    VOS
+                </span>
+
+            </div>
+
+            <div class="canvas-wrap">
+
+                <canvas id="myCanvas"
+                        width="600"
+                        height="400">
+                </canvas>
+
+            </div>
+
+            <div class="paint-tools">
+
+                <button class="tool"
+                        data-size="3">
+                    Fino
+                </button>
+
+                <button class="tool"
+                        data-size="6">
+                    Normal
+                </button>
+
+                <button class="tool"
+                        data-size="12">
+                    Grueso
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="canvas-card">
+
+            <div class="canvas-title">
+
+                <strong>
+                    👤 RIVAL
+                </strong>
+
+                <span id="opponentPaintStatus"
+                      class="badge">
+                    ESPERANDO
+                </span>
+
+            </div>
+
+            <div class="canvas-wrap">
+
+                <canvas id="opponentCanvas"
+                        width="600"
+                        height="400">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="paintResult"
+         class="result">
+
+        <div class="muted">
+            Iniciá un desafío para empezar.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ESP -->
+
+<section id="esp"
+         class="page">
+
+    <div class="card">
+
+        <h2>
+            🤖 Control ESP32
+        </h2>
+
+        <p class="muted">
+            Estos comandos siguen utilizando el MQTT
+            que ya tenés funcionando.
+        </p>
+
+        <div class="esp-status">
+
+            <span id="espDot"
+                  class="dot">
+            </span>
+
+            <strong id="espStatus">
+                OFFLINE
+            </strong>
+
+            <span class="muted">
+                último mensaje:
+            </span>
+
+            <span id="lastEspMessage">
+                ---
+            </span>
+
+        </div>
+
+    </div>
+
+    <br>
+
+
+    <div class="esp-grid">
+
+        <div class="card">
+
+            <h3>
+                Controles
+            </h3>
+
+            <div class="actions">
+
+                <button id="espOn"
+                        class="btn primary">
+                    🟢 ON
+                </button>
+
+                <button id="espOff"
+                        class="btn danger">
+                    🔴 OFF
+                </button>
+
+                <button id="espPing"
+                        class="btn">
+                    📡 PING
+                </button>
+
+                <button id="espGame"
+                        class="btn purple">
+                    🎮 GAME
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                💬 Mensaje
+            </h3>
+
+            <form id="espMessageForm">
+
+                <input id="espMessage"
+                       class="input"
+                       maxlength="200"
+                       placeholder="Mensaje para el ESP32">
+
+                <br>
+
+                <button class="btn primary">
+                    ENVIAR AL ESP32
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONSOLE -->
+
+<section id="console"
+         class="page">
+
+    <div class="card">
+
+        <div class="draw-top">
+
+            <div>
+
+                <h2>
+                    🛰️ Consola MQTT
+                </h2>
+
+                <p class="muted">
+                    Todo lo que entra y sale de esta página.
+                </p>
+
+            </div>
+
+            <button id="clearConsole"
+                    class="btn">
+                LIMPIAR
+            </button>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div id="consoleBox"
+         class="terminal">
+    </div>
+
+</section>
+
+
+<!-- RANKING -->
+
+<section id="ranking"
+         class="page">
+
+    <div class="card">
+
+        <h2>
+            🏆 Ranking
+        </h2>
+
+        <p class="muted">
+            Resultados registrados durante esta sesión.
+        </p>
+
+        <div id="rankingList"
+             class="rank-list">
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<div id="toast"
+     class="toast">
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const MQTT_URL =
+    "wss://broker.hivemq.com:8884/mqtt";
+
+const ESP_COMMAND_TOPIC =
+    "thomy/esp32c3/comandos";
+
+const ESP_STATUS_TOPIC =
+    "thomy/esp32c3/estado";
+
+
+/* =========================================================
+   IDENTIDAD
+========================================================= */
+
+let username =
+    localStorage.getItem("thomy_username") ||
+    "Jugador" +
+    Math.floor(
+        1000 +
+        Math.random()*8999
+    );
+
+let room =
+    localStorage.getItem("thomy_room") ||
+    "THOMY-ARCADE";
+
+
+const clientId =
+    "browser-" +
+    Math.random()
+    .toString(16)
+    .slice(2) +
+    Date.now();
+
+
+/* =========================================================
+   TOPICS
+========================================================= */
+
+function topic(name){
+
+    return (
+        "thomy/esp32c3/" +
+        room +
+        "/" +
+        name
+    );
+
+}
+
+
+function getTopics(){
+
+    return {
+
+        chat:
+            topic("chat"),
+
+        presence:
+            topic("presence"),
+
+        game:
+            topic("game"),
+
+        paint:
+            topic("paint")
+
+    };
+
+}
+
+
+let topics =
+    getTopics();
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let mqttClient = null;
+
+let reconnectTimer = null;
+
+let presenceTimer = null;
+
+let presenceMap = {};
+
+let ranking = [];
+
+let currentGame = null;
+
+let gameId = null;
+
+let gameHost = false;
+
+
+/* =========================================================
+   UTILS
+========================================================= */
+
+function $(id){
+
+    return document.getElementById(id);
+
+}
+
+
+function log(text){
+
+    const time =
+        new Date()
+        .toLocaleTimeString();
+
+    $("consoleBox").textContent +=
+        "[" +
+        time +
+        "] " +
+        text +
+        "\n";
+
+    $("consoleBox").scrollTop =
+        $("consoleBox").scrollHeight;
+
+}
+
+
+function toast(text){
+
+    const el =
+        $("toast");
+
+    el.textContent =
+        text;
+
+    el.classList.add("show");
+
+    clearTimeout(
+        toast.timer
+    );
+
+    toast.timer =
+        setTimeout(
+            () => {
+                el.classList.remove("show");
+            },
+            2500
+        );
+
+}
+
+
+function initials(name){
+
+    return (
+        name ||
+        "?"
+    )
+    .trim()
+    .slice(0,1)
+    .toUpperCase();
+
+}
+
+
+/* =========================================================
+   IDENTITY UI
+========================================================= */
+
+function renderIdentity(){
+
+    $("heroName").textContent =
+        username;
+
+    $("topAvatar").textContent =
+        initials(username);
+
+    $("usernameInput").value =
+        username;
+
+    $("roomInput").value =
+        room;
+
+    $("sidebarRoom").textContent =
+        room;
+
+    $("homeRoom").textContent =
+        room;
+
+    $("roomBig").textContent =
+        room;
+
+}
+
+
+renderIdentity();
+
+
+$("saveIdentity")
+.addEventListener(
+    "click",
+    () => {
+
+        const newName =
+            $("usernameInput")
+            .value
+            .trim()
+            .replace(/\s+/g," ")
+            .slice(0,20);
+
+        const newRoom =
+            $("roomInput")
+            .value
+            .trim()
+            .replace(
+                /[^a-zA-Z0-9_-]/g,
+                ""
+            )
+            .slice(0,24);
+
+
+        if(!newName){
+
+            toast(
+                "Poné un nombre."
+            );
+
+            return;
+
+        }
+
+
+        if(!newRoom){
+
+            toast(
+                "Poné un código de sala."
+            );
+
+            return;
+
+        }
+
+
+        username =
+            newName;
+
+        room =
+            newRoom;
+
+        localStorage.setItem(
+            "thomy_username",
+            username
+        );
+
+        localStorage.setItem(
+            "thomy_room",
+            room
+        );
+
+
+        renderIdentity();
+
+        toast(
+            "Identidad guardada. Recargando sala..."
+        );
+
+
+        setTimeout(
+            () => location.reload(),
+            700
+        );
+
+    }
+);
+
+
+/* =========================================================
+   NAV
+========================================================= */
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                openPage(
+                    button.dataset.page
+                );
+
+            }
+        );
+
+    }
+);
+
+
+document
+.querySelectorAll("[data-go]")
+.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                openPage(
+                    button.dataset.go
+                );
+
+            }
+        );
+
+    }
+);
+
+
+function openPage(page){
+
+    document
+    .querySelectorAll(".nav-btn")
+    .forEach(
+        button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.page === page
+            );
+
+        }
+    );
+
+
+    document
+    .querySelectorAll(".page")
+    .forEach(
+        section => {
+
+            section.classList.toggle(
+                "active",
+                section.id === page
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MQTT
+========================================================= */
+
+function connectMQTT(){
+
+    if(mqttClient){
+
+        try{
+            mqttClient.end(
+                true
+            );
+        }catch(e){}
+
+    }
+
+
+    topics =
+        getTopics();
+
+
+    log(
+        "Conectando a HiveMQ..."
+    );
+
+
+    mqttClient =
+        mqtt.connect(
+            MQTT_URL,
+            {
+
+                clientId:
+                    clientId,
+
+                clean:true,
+
+                reconnectPeriod:3000,
+
+                connectTimeout:7000,
+
+                keepalive:30
+
+            }
+        );
+
+
+    mqttClient.on(
+        "connect",
+        onMQTTConnect
+    );
+
+
+    mqttClient.on(
+        "message",
+        onMQTTMessage
+    );
+
+
+    mqttClient.on(
+        "error",
+        error => {
+
+            log(
+                "MQTT ERROR: " +
+                error.message
+            );
+
+        }
+    );
+
+
+    mqttClient.on(
+        "close",
+        () => {
+
+            setConnection(
+                false
+            );
+
+            log(
+                "MQTT desconectado."
+            );
+
+        }
+    );
+
+
+    mqttClient.on(
+        "reconnect",
+        () => {
+
+            $("connectionText")
+            .textContent =
+                "Reconectando...";
+
+        }
+    );
+
+}
+
+
+function onMQTTConnect(){
+
+    setConnection(
+        true
+    );
+
+
+    log(
+        "MQTT conectado."
+    );
+
+
+    mqttClient.subscribe(
+        [
+            topics.chat,
+            topics.presence,
+            topics.game,
+            topics.paint,
+            ESP_STATUS_TOPIC
+        ],
+        error => {
+
+            if(error){
+
+                log(
+                    "Error al suscribirse: " +
+                    error.message
+                );
+
+                return;
+
+            }
+
+            log(
+                "Topics suscriptos."
+            );
+
+        }
+    );
+
+
+    publishPresence();
+
+
+    clearInterval(
+        presenceTimer
+    );
+
+
+    presenceTimer =
+        setInterval(
+            publishPresence,
+            3000
+        );
+
+
+    systemMessage(
+        "Conectado a la sala " +
+        room
+    );
+
+}
+
+
+function setConnection(online){
+
+    $("connectionDot")
+    .classList.toggle(
+        "online",
+        online
+    );
+
+
+    $("connectionText")
+    .textContent =
+        online
+        ? "ONLINE"
+        : "OFFLINE";
+
+}
+
+
+function publish(
+    topicName,
+    payload
+){
+
+    if(
+        !mqttClient ||
+        !mqttClient.connected
+    ){
+
+        toast(
+            "Todavía no hay conexión."
+        );
+
+        return false;
+
+    }
+
+
+    mqttClient.publish(
+        topicName,
+        payload
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   PRESENCE
+========================================================= */
+
+function publishPresence(){
+
+    publish(
+        topics.presence,
+        JSON.stringify({
+
+            type:
+                "presence",
+
+            id:
+                clientId,
+
+            user:
+                username,
+
+            time:
+                Date.now()
+
+        })
+    );
+
+}
+
+
+function cleanPresence(){
+
+    const now =
+        Date.now();
+
+
+    for(
+        const id
+        of Object.keys(
+            presenceMap
+        )
+    ){
+
+        if(
+            now -
+            presenceMap[id].time >
+            9000
+        ){
+
+            delete presenceMap[id];
+
+        }
+
+    }
+
+
+    renderOnline();
+
+}
+
+
+setInterval(
+    cleanPresence,
+    1500
+);
+
+
+function getOnlineUsers(){
+
+    return Object
+    .values(
+        presenceMap
+    );
+
+}
+
+
+function renderOnline(){
+
+    const users =
+        getOnlineUsers();
+
+
+    $("onlineCount")
+    .textContent =
+        users.length;
+
+
+    $("roomPeople")
+    .textContent =
+        users.length;
+
+
+    const list =
+        $("onlineList");
+
+
+    list.innerHTML = "";
+
+
+    if(!users.length){
+
+        list.innerHTML =
+            `
+            <div class="muted">
+                Esperando jugadores...
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    users
+    .sort(
+        (a,b) =>
+            a.user.localeCompare(
+                b.user
+            )
+    )
+    .forEach(
+        user => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "online-user";
+
+
+            const dot =
+                document.createElement(
+                    "span"
+                );
+
+            dot.className =
+                "online-dot";
+
+
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+            name.textContent =
+                user.user;
+
+
+            if(
+                user.id === clientId
+            ){
+
+                name.textContent +=
+                    " (vos)";
+
+            }
+
+
+            div.append(
+                dot,
+                name
+            );
+
+
+            list.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+function onPresence(data){
+
+    if(
+        !data ||
+        !data.id
+    )
+        return;
+
+
+    presenceMap[
+        data.id
+    ] = {
+
+        id:
+            data.id,
+
+        user:
+            data.user ||
+            "Jugador",
+
+        time:
+            Date.now()
+
+    };
+
+
+    renderOnline();
+
+}
+
+
+/* =========================================================
+   MQTT MESSAGE ROUTER
+========================================================= */
+
+function onMQTTMessage(
+    mqttTopic,
+    buffer
+){
+
+    const raw =
+        buffer.toString();
+
+
+    log(
+        mqttTopic +
+        " -> " +
+        raw
+    );
+
+
+    let data = null;
+
+    try{
+
+        data =
+            JSON.parse(
+                raw
+            );
+
+    }catch(e){}
+
+
+    if(
+        mqttTopic ===
+        topics.presence
+    ){
+
+        onPresence(
+            data
+        );
+
+        return;
+
+    }
+
+
+    if(
+        mqttTopic ===
+        topics.chat
+    ){
+
+        if(data){
+
+            renderChatMessage(
+                data
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    if(
+        mqttTopic ===
+        topics.game
+    ){
+
+        handleGameMessage(
+            data
+        );
+
+        return;
+
+    }
+
+
+    if(
+        mqttTopic ===
+        topics.paint
+    ){
+
+        handlePaintMessage(
+            data
+        );
+
+        return;
+
+    }
+
+
+    if(
+        mqttTopic ===
+        ESP_STATUS_TOPIC
+    ){
+
+        setESPOnline(
+            raw
+        );
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function systemMessage(text){
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.className =
+        "system-message";
+
+    div.textContent =
+        text;
+
+
+    $("messages")
+    .appendChild(
+        div
+    );
+
+
+    $("messages")
+    .scrollTop =
+        $("messages")
+        .scrollHeight;
+
+}
+
+
+function renderChatMessage(data){
+
+    if(
+        !data ||
+        !data.user ||
+        typeof data.text !== "string"
+    )
+        return;
+
+
+    const wrapper =
+        document.createElement(
+            "div"
+        );
+
+
+    wrapper.className =
+        "message";
+
+
+    if(
+        data.user ===
+        username
+    ){
+
+        wrapper.classList.add(
+            "mine"
+        );
+
+    }
+
+
+    const user =
+        document.createElement(
+            "div"
+        );
+
+    user.className =
+        "message-user";
+
+    user.textContent =
+        data.user;
+
+
+    const text =
+        document.createElement(
+            "div"
+        );
+
+    text.textContent =
+        data.text;
+
+
+    const time =
+        document.createElement(
+            "div"
+        );
+
+    time.className =
+        "message-time";
+
+    time.textContent =
+        new Date()
+        .toLocaleTimeString(
+            [],
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+
+    wrapper.append(
+        user,
+        text,
+        time
+    );
+
+
+    $("messages")
+    .appendChild(
+        wrapper
+    );
+
+
+    $("messages")
+    .scrollTop =
+        $("messages")
+        .scrollHeight;
+
+
+    beep(
+        data.user === username
+        ? 500
+        : 760
+    );
+
+}
+
+
+$("chatForm")
+.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+
+        const input =
+            $("chatInput");
+
+        const text =
+            input.value
+            .trim()
+            .slice(0,250);
+
+
+        if(!text)
+            return;
+
+
+        publish(
+            topics.chat,
+            JSON.stringify({
+
+                type:
+                    "chat",
+
+                user:
+                    username,
+
+                text:
+                    text,
+
+                time:
+                    Date.now()
+
+            })
+        );
+
+
+        input.value =
+            "";
+
+    }
+);
+
+
+/* =========================================================
+   SOUND
+========================================================= */
+
+let audioContext = null;
+
+
+function beep(
+    frequency=650,
+    duration=.05
+){
+
+    try{
+
+        if(!audioContext){
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+        }
+
+
+        const osc =
+            audioContext
+            .createOscillator();
+
+        const gain =
+            audioContext
+            .createGain();
+
+
+        osc.frequency.value =
+            frequency;
+
+        gain.gain.value =
+            .025;
+
+
+        osc.connect(
+            gain
+        );
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        osc.start();
+
+        osc.stop(
+            audioContext
+            .currentTime +
+            duration
+        );
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   ESP32
+========================================================= */
+
+function setESPOnline(
+    message
+){
+
+    $("espStatus")
+    .textContent =
+        "ONLINE";
+
+
+    $("espStatus")
+    .className =
+        "green";
+
+
+    $("homeEsp")
+    .textContent =
+        "ONLINE";
+
+
+    $("homeEsp")
+    .className =
+        "stat-value green";
+
+
+    $("espDot")
+    .classList.add(
+        "online"
+    );
+
+
+    $("lastEspMessage")
+    .textContent =
+        message;
+
+
+    clearTimeout(
+        setESPOnline.timer
+    );
+
+
+    setESPOnline.timer =
+        setTimeout(
+            () => {
+
+                $("espStatus")
+                .textContent =
+                    "SIN RESPUESTA";
+
+                $("espStatus")
+                .className =
+                    "yellow";
+
+                $("homeEsp")
+                .textContent =
+                    "SIN RESP.";
+
+                $("homeEsp")
+                .className =
+                    "stat-value yellow";
+
+                $("espDot")
+                .classList.remove(
+                    "online"
+                );
+
+            },
+            15000
+        );
+
+}
+
+
+function espCommand(
+    command
+){
+
+    publish(
+        ESP_COMMAND_TOPIC,
+        command
+    );
+
+
+    log(
+        "ESP32 COMMAND -> " +
+        command
+    );
+
+}
+
+
+$("espOn")
+.onclick =
+() =>
+    espCommand("ON");
+
+
+$("espOff")
+.onclick =
+() =>
+    espCommand("OFF");
+
+
+$("espPing")
+.onclick =
+() =>
+    espCommand("PING");
+
+
+$("espGame")
+.onclick =
+() =>
+    espCommand("GAME");
+
+
+$("espMessageForm")
+.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+
+        const input =
+            $("espMessage");
+
+
+        const text =
+            input.value
+            .trim()
+            .slice(0,200);
+
+
+        if(!text)
+            return;
+
+
+        espCommand(
+            "MSG:" +
+            text
+        );
+
+
+        input.value =
+            "";
+
+    }
+);
+
+
+/* =========================================================
+   GAME COMMON
+========================================================= */
+
+document
+.querySelectorAll("[data-game]")
+.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                startGame(
+                    button.dataset.game
+                );
+
+            }
+        );
+
+    }
+);
+
+
+function startGame(
+    game
+){
+
+    currentGame =
+        game;
+
+    gameId =
+        room +
+        "-" +
+        Date.now() +
+        "-" +
+        Math.random()
+        .toString(36)
+        .slice(2,6);
+
+
+    if(
+        game ===
+        "target"
+    ){
+
+        startTarget();
+
+        return;
+
+    }
+
+
+    if(
+        game ===
+        "reaction"
+    ){
+
+        startReaction();
+
+        return;
+
+    }
+
+
+    if(
+        game ===
+        "number"
+    ){
+
+        startNumber();
+
+        return;
+
+    }
+
+
+    if(
+        game ===
+        "ttt"
+    ){
+
+        startTTT();
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   TARGET
+========================================================= */
+
+let targetScore = 0;
+
+let targetTimer = null;
+
+
+function startTarget(){
+
+    targetScore =
+        0;
+
+
+    $("gameStage")
+    .innerHTML =
+        `
+
+        <div class="game-header">
+
+            <div>
+
+                <h2>
+                    🎯 Caza el objetivo
+                </h2>
+
+                <div class="muted">
+                    Tocá los objetivos y sumá puntos.
+                </div>
+
+            </div>
+
+            <div class="badge">
+                Puntos:
+                <strong id="targetScore">
+                    0
+                </strong>
+            </div>
+
+        </div>
+
+        <div id="targetArea"
+             class="target-area">
+        </div>
+
+        `;
+
+
+    spawnTarget();
+
+}
+
+
+function spawnTarget(){
+
+    const area =
+        $("targetArea");
+
+
+    if(!area)
+        return;
+
+
+    clearTimeout(
+        targetTimer
+    );
+
+
+    const target =
+        document.createElement(
+            "button"
+        );
+
+
+    target.className =
+        "target";
+
+
+    const size =
+        54;
+
+
+    target.style.left =
+        Math.random() *
+        Math.max(
+            1,
+            area.clientWidth -
+            size
+        ) +
+        "px";
+
+
+    target.style.top =
+        Math.random() *
+        Math.max(
+            1,
+            area.clientHeight -
+            size
+        ) +
+        "px";
+
+
+    target.addEventListener(
+        "click",
+        () => {
+
+            targetScore++;
+
+
+            $("targetScore")
+            .textContent =
+                targetScore;
+
+
+            beep(
+                600 +
+                targetScore*15
+            );
+
+
+            publish(
+                topics.game,
+                JSON.stringify({
+
+                    type:
+                        "score",
+
+                    game:
+                        "target",
+
+                    user:
+                        username,
+
+                    score:
+                        targetScore
+
+                })
+            );
+
+
+            target.remove();
+
+
+            targetTimer =
+                setTimeout(
+                    spawnTarget,
+                    80
+                );
+
+        }
+    );
+
+
+    area.appendChild(
+        target
+    );
+
+}
+
+
+/* =========================================================
+   REFLEX
+========================================================= */
+
+let reactionStart =
+    0;
+
+let reactionTimeout =
+    null;
+
+
+function startReaction(){
+
+    reactionStart =
+        0;
+
+
+    $("gameStage")
+    .innerHTML =
+        `
+
+        <div class="game-header">
+
+            <div>
+
+                <h2>
+                    ⚡ Reflejos
+                </h2>
+
+                <div class="muted">
+                    Esperá la señal y tocá lo más rápido posible.
+                </div>
+
+            </div>
+
+            <div id="reactionBadge"
+                 class="badge">
+                PREPARANDO
+            </div>
+
+        </div>
+
+        <div style="
+            display:grid;
+            place-items:center;
+            min-height:320px;
+        ">
+
+            <button id="reactionButton"
+                    class="btn purple"
+                    style="
+                        width:180px;
+                        height:180px;
+                        border-radius:50%;
+                        font-size:24px;
+                    ">
+                ESPERÁ
+            </button>
+
+        </div>
+
+        `;
+
+
+    const button =
+        $("reactionButton");
+
+
+    button.disabled =
+        true;
+
+
+    const delay =
+        1800 +
+        Math.random()*3500;
+
+
+    reactionTimeout =
+        setTimeout(
+            () => {
+
+                reactionStart =
+                    performance.now();
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "¡YA!";
+
+                $("reactionBadge")
+                .textContent =
+                    "¡AHORA!";
+
+                beep(
+                    1000,
+                    .12
+                );
+
+            },
+            delay
+        );
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            if(
+                !reactionStart
+            )
+                return;
+
+
+            const time =
+                Math.round(
+                    performance.now() -
+                    reactionStart
+                );
+
+
+            reactionStart =
+                0;
+
+
+            button.textContent =
+                time +
+                " ms";
+
+
+            $("reactionBadge")
+            .textContent =
+                "RESULTADO";
+
+
+            publish(
+                topics.game,
+                JSON.stringify({
+
+                    type:
+                        "score",
+
+                    game:
+                        "reaction",
+
+                    user:
+                        username,
+
+                    time:
+                        time
+
+                })
+            );
+
+
+            toast(
+                time +
+                " ms"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+let secretNumber =
+    0;
+
+let numberAttempts =
+    0;
+
+
+function startNumber(){
+
+    secretNumber =
+        Math.floor(
+            Math.random()*100
+        ) + 1;
+
+
+    numberAttempts =
+        0;
+
+
+    $("gameStage")
+    .innerHTML =
+        `
+
+        <div class="game-header">
+
+            <div>
+
+                <h2>
+                    🧠 Adiviná el número
+                </h2>
+
+                <div class="muted">
+                    Encontrá el número del 1 al 100.
+                </div>
+
+            </div>
+
+            <div class="badge">
+                Intentos:
+                <strong id="numberAttempts">
+                    0
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div style="
+            text-align:center;
+            padding:50px 20px;
+        ">
+
+            <div style="
+                font-size:80px;
+                font-weight:900;
+                color:var(--purple);
+            ">
+                ?
+            </div>
+
+
+            <input id="numberInput"
+                   class="input"
+                   type="number"
+                   min="1"
+                   max="100"
+                   style="max-width:300px"
+                   placeholder="1 - 100">
+
+            <br><br>
+
+            <button id="numberButton"
+                    class="btn primary">
+                PROBAR
+            </button>
+
+            <p id="numberResult"
+               class="muted">
+            </p>
+
+        </div>
+
+        `;
+
+
+    $("numberButton")
+    .addEventListener(
+        "click",
+        checkNumber
+    );
+
+}
+
+
+function checkNumber(){
+
+    const value =
+        Number(
+            $("numberInput").value
+        );
+
+
+    if(
+        !Number.isInteger(
+            value
+        ) ||
+        value < 1 ||
+        value > 100
+    ){
+
+        toast(
+            "Usá un número del 1 al 100."
+        );
+
+        return;
+
+    }
+
+
+    numberAttempts++;
+
+
+    $("numberAttempts")
+    .textContent =
+        numberAttempts;
+
+
+    if(
+        value ===
+        secretNumber
+    ){
+
+        $("numberResult")
+        .textContent =
+            "🎉 ¡Ganaste! Número: " +
+            secretNumber;
+
+
+        publish(
+            topics.game,
+            JSON.stringify({
+
+                type:
+                    "score",
+
+                game:
+                    "number",
+
+                user:
+                    username,
+
+                attempts:
+                    numberAttempts
+
+            })
+        );
+
+
+        beep(
+            1100,
+            .2
+        );
+
+
+        return;
+
+    }
+
+
+    $("numberResult")
+    .textContent =
+        value <
+        secretNumber
+        ? "⬆️ Más alto"
+        : "⬇️ Más bajo";
+
+}
+
+
+/* =========================================================
+   TTT MULTIPLAYER
+========================================================= */
+
+let ttt = {
+
+    id:null,
+
+    host:null,
+
+    x:null,
+
+    o:null,
+
+    turn:"X",
+
+    board:[
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ],
+
+    started:false
+
+};
+
+
+function startTTT(){
+
+    const players =
+        getOnlineUsers()
+        .sort(
+            (a,b) =>
+                a.id.localeCompare(
+                    b.id
+                )
+        );
+
+
+    const ids =
+        players.map(
+            p => p.id
+        );
+
+
+    if(
+        !ids.includes(
+            clientId
+        )
+    ){
+
+        ids.push(
+            clientId
+        );
+
+    }
+
+
+    ids.sort();
+
+
+    ttt.id =
+        room +
+        "-ttt";
+
+
+    ttt.host =
+        ids[0];
+
+
+    ttt.x =
+        ids[0];
+
+
+    ttt.o =
+        ids[1] ||
+        null;
+
+
+    ttt.turn =
+        "X";
+
+
+    ttt.board =
+        [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ];
+
+
+    ttt.started =
+        !!ttt.o;
+
+
+    renderTTT();
+
+
+    publish(
+        topics.game,
+        JSON.stringify({
+
+            type:
+                "ttt",
+
+            action:
+                "state",
+
+            gameId:
+                ttt.id,
+
+            host:
+                ttt.host,
+
+            x:
+                ttt.x,
+
+            o:
+                ttt.o,
+
+            turn:
+                ttt.turn,
+
+            board:
+                ttt.board
+
+        })
+    );
+
+}
+
+
+function renderTTT(){
+
+    $("gameStage")
+    .innerHTML =
+        `
+
+        <div class="game-header">
+
+            <div>
+
+                <h2>
+                    ❌⭕ Ta-Te-Ti
+                </h2>
+
+                <div id="tttStatus"
+                     class="muted">
+                </div>
+
+            </div>
+
+            <button id="tttRefresh"
+                    class="btn">
+                BUSCAR RIVAL
+            </button>
+
+        </div>
+
+
+        <div id="tttBoard"
+             class="ttt-board">
+
+            ${Array.from(
+                {length:9},
+                (_,i) =>
+                `
+                <button
+                    class="ttt-cell"
+                    data-cell="${i}">
+                </button>
+                `
+            ).join("")}
+
+        </div>
+
+        `;
+
+
+    document
+    .querySelectorAll(
+        ".ttt-cell"
+    )
+    .forEach(
+        cell => {
+
+            cell.addEventListener(
+                "click",
+                () => {
+
+                    playTTT(
+                        Number(
+                            cell.dataset.cell
+                        )
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    $("tttRefresh")
+    .addEventListener(
+        "click",
+        startTTT
+    );
+
+
+    updateTTTBoard();
+
+}
+
+
+function myTTTSymbol(){
+
+    if(
+        ttt.x ===
+        clientId
+    )
+        return "X";
+
+
+    if(
+        ttt.o ===
+        clientId
+    )
+        return "O";
+
+
+    return null;
+
+}
+
+
+function playTTT(
+    index
+){
+
+    const symbol =
+        myTTTSymbol();
+
+
+    if(
+        !symbol ||
+        !ttt.started ||
+        ttt.turn !== symbol ||
+        ttt.board[index]
+    )
+        return;
+
+
+    ttt.board[index] =
+        symbol;
+
+
+    const winner =
+        checkWinner(
+            ttt.board
+        );
+
+
+    if(!winner){
+
+        ttt.turn =
+            symbol === "X"
+            ? "O"
+            : "X";
+
+    }
+
+
+    if(
+        !winner &&
+        ttt.board.every(
+            Boolean
+        )
+    ){
+
+        ttt.started =
+            false;
+
+    }
+
+
+    if(winner){
+
+        ttt.started =
+            false;
+
+    }
+
+
+    publishTTT();
+
+    updateTTTBoard();
+
+}
+
+
+function publishTTT(){
+
+    publish(
+        topics.game,
+        JSON.stringify({
+
+            type:
+                "ttt",
+
+            action:
+                "state",
+
+            gameId:
+                ttt.id,
+
+            host:
+                ttt.host,
+
+            x:
+                ttt.x,
+
+            o:
+                ttt.o,
+
+            turn:
+                ttt.turn,
+
+            board:
+                ttt.board
+
+        })
+    );
+
+}
+
+
+function updateTTTBoard(){
+
+    const cells =
+        document
+        .querySelectorAll(
+            ".ttt-cell"
+        );
+
+
+    cells.forEach(
+        (cell,index) => {
+
+            const value =
+                ttt.board[index];
+
+
+            cell.textContent =
+                value;
+
+
+            cell.classList.toggle(
+                "x",
+                value === "X"
+            );
+
+
+            cell.classList.toggle(
+                "o",
+                value === "O"
+            );
+
+        }
+    );
+
+
+    const status =
+        $("tttStatus");
+
+
+    if(!status)
+        return;
+
+
+    const symbol =
+        myTTTSymbol();
+
+
+    if(!ttt.o){
+
+        status.textContent =
+            "Esperando al segundo jugador...";
+
+        return;
+
+    }
+
+
+    const winner =
+        checkWinner(
+            ttt.board
+        );
+
+
+    if(winner){
+
+        status.textContent =
+            winner === symbol
+            ? "🏆 ¡GANASTE!"
+            : "💀 Ganó el rival.";
+
+        return;
+
+    }
+
+
+    if(
+        ttt.board.every(
+            Boolean
+        )
+    ){
+
+        status.textContent =
+            "🤝 Empate.";
+
+        return;
+
+    }
+
+
+    status.textContent =
+        ttt.turn === symbol
+        ? "Tu turno."
+        : "Turno del rival.";
+
+}
+
+
+function checkWinner(board){
+
+    const wins = [
+
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+
+    ];
+
+
+    for(
+        const win
+        of wins
+    ){
+
+        const [
+            a,
+            b,
+            c
+        ] = win;
+
+
+        if(
+            board[a] &&
+            board[a] ===
+            board[b] &&
+            board[a] ===
+            board[c]
+        ){
+
+            return board[a];
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   GAME MQTT
+========================================================= */
+
+function handleGameMessage(data){
+
+    if(!data)
+        return;
+
+
+    if(
+        data.type ===
+        "score"
+    ){
+
+        if(
+            data.user !==
+            username
+        ){
+
+            if(
+                data.game ===
+                "target"
+            ){
+
+                addRanking(
+                    data.user,
+                    data.score,
+                    "Caza"
+                );
+
+            }
+
+
+            if(
+                data.game ===
+                "reaction"
+            ){
+
+                addRanking(
+                    data.user,
+                    Math.max(
+                        1,
+                        10000 -
+                        data.time
+                    ),
+                    "Reflejos"
+                );
+
+            }
+
+
+            if(
+                data.game ===
+                "number"
+            ){
+
+                addRanking(
+                    data.user,
+                    Math.max(
+                        1,
+                        1000 -
+                        data.attempts
+                    ),
+                    "Número"
+                );
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    if(
+        data.type !==
+        "ttt"
+    )
+        return;
+
+
+    if(
+        data.gameId !==
+        room + "-ttt"
+    )
+        return;
+
+
+    ttt.host =
+        data.host;
+
+    ttt.x =
+        data.x;
+
+    ttt.o =
+        data.o;
+
+    ttt.turn =
+        data.turn;
+
+    ttt.board =
+        Array.isArray(
+            data.board
+        )
+        ? data.board
+        : ttt.board;
+
+
+    ttt.started =
+        !!ttt.o &&
+        !checkWinner(
+            ttt.board
+        ) &&
+        !ttt.board.every(
+            Boolean
+        );
+
+
+    updateTTTBoard();
+
+}
+
+
+/* =========================================================
+   RANKING
+========================================================= */
+
+function addRanking(
+    user,
+    score,
+    game
+){
+
+    ranking.push({
+
+        user:
+            user,
+
+        score:
+            Math.round(
+                score
+            ),
+
+        game:
+            game
+
+    });
+
+
+    ranking.sort(
+        (a,b) =>
+            b.score -
+            a.score
+    );
+
+
+    ranking =
+        ranking.slice(
+            0,
+            30
+        );
+
+
+    renderRanking();
+
+}
+
+
+function renderRanking(){
+
+    const list =
+        $("rankingList");
+
+
+    list.innerHTML = "";
+
+
+    if(
+        !ranking.length
+    ){
+
+        list.innerHTML =
+            `
+            <div class="muted">
+                Todavía no hay resultados.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    ranking.forEach(
+        (item,index) => {
+
+            const row =
+                document
+                .createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "rank";
+
+
+            row.innerHTML =
+                `
+                <div class="rank-number">
+                    #${index+1}
+                </div>
+
+                <div>
+
+                    <div class="rank-name">
+                        ${escapeHTML(item.user)}
+                    </div>
+
+                    <div class="rank-game">
+                        ${escapeHTML(item.game)}
+                    </div>
+
+                </div>
+
+                <div class="rank-score">
+                    ${item.score}
+                </div>
+                `;
+
+
+            list.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+function escapeHTML(
+    text
+){
+
+    return String(
+        text
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+renderRanking();
+
+
+/* =========================================================
+   PAINT
+========================================================= */
+
+const objects = [
+
+    "una casa",
+    "un auto",
+    "una moto",
+    "un avión",
+    "un gato",
+    "un perro",
+    "un árbol",
+    "un robot",
+    "un cohete",
+    "un dinosaurio",
+    "un barco",
+    "una bicicleta",
+    "un helicóptero",
+    "una computadora",
+    "un monstruo",
+    "un castillo"
+
+];
+
+
+let paint = {
+
+    object:"",
+
+    round:0,
+
+    submitted:false,
+
+    strokes:[],
+
+    opponent:null,
+
+    host:null,
+
+    active:false
+
+};
+
+
+const myCanvas =
+    $("myCanvas");
+
+const opponentCanvas =
+    $("opponentCanvas");
+
+
+const myCtx =
+    myCanvas.getContext(
+        "2d"
+    );
+
+const opponentCtx =
+    opponentCanvas.getContext(
+        "2d"
+    );
+
+
+let brushSize =
+    6;
+
+let drawing =
+    false;
+
+let currentStroke =
+    null;
+
+
+function clearCanvas(
+    canvas,
+    ctx
+){
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+}
+
+
+clearCanvas(
+    myCanvas,
+    myCtx
+);
+
+clearCanvas(
+    opponentCanvas,
+    opponentCtx
+);
+
+
+function canvasPoint(
+    canvas,
+    event
+){
+
+    const rect =
+        canvas
+        .getBoundingClientRect();
+
+
+    return {
+
+        x:
+            (
+                event.clientX -
+                rect.left
+            ) *
+            canvas.width /
+            rect.width,
+
+        y:
+            (
+                event.clientY -
+                rect.top
+            ) *
+            canvas.height /
+            rect.height
+
+    };
+
+}
+
+
+myCanvas.addEventListener(
+    "pointerdown",
+    event => {
+
+        drawing =
+            true;
+
+        currentStroke =
+            [];
+
+
+        const p =
+            canvasPoint(
+                myCanvas,
+                event
+            );
+
+
+        currentStroke.push(
+            p
+        );
+
+
+        myCtx.beginPath();
+
+        myCtx.moveTo(
+            p.x,
+            p.y
+        );
+
+
+        myCanvas.setPointerCapture(
+            event.pointerId
+        );
+
+    }
+);
+
+
+myCanvas.addEventListener(
+    "pointermove",
+    event => {
+
+        if(!drawing)
+            return;
+
+
+        const p =
+            canvasPoint(
+                myCanvas,
+                event
+            );
+
+
+        currentStroke.push(
+            p
+        );
+
+
+        myCtx.lineTo(
+            p.x,
+            p.y
+        );
+
+
+        myCtx.strokeStyle =
+            "#10111a";
+
+
+        myCtx.lineWidth =
+            brushSize;
+
+
+        myCtx.lineCap =
+            "round";
+
+
+        myCtx.lineJoin =
+            "round";
+
+
+        myCtx.stroke();
+
+    }
+);
+
+
+function finishStroke(){
+
+    if(!drawing)
+        return;
+
+
+    drawing =
+        false;
+
+
+    if(
+        currentStroke &&
+        currentStroke.length
+    ){
+
+        paint.strokes.push(
+            currentStroke
+        );
+
+    }
+
+
+    currentStroke =
+        null;
+
+}
+
+
+myCanvas.addEventListener(
+    "pointerup",
+    finishStroke
+);
+
+myCanvas.addEventListener(
+    "pointercancel",
+    finishStroke
+);
+
+
+document
+.querySelectorAll(
+    "[data-size]"
+)
+.forEach(
+    button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                brushSize =
+                    Number(
+                        button.dataset.size
+                    );
+
+                toast(
+                    "Pincel: " +
+                    brushSize +
+                    " px"
+                );
+
+            }
+        );
+
+    }
+);
+
+
+$("clearPaint")
+.addEventListener(
+    "click",
+    () => {
+
+        paint.strokes =
+            [];
+
+        paint.submitted =
+            false;
+
+        clearCanvas(
+            myCanvas,
+            myCtx
+        );
+
+        $("paintResult")
+        .innerHTML =
+            `
+            <div class="muted">
+                Dibujo borrado.
+            </div>
+            `;
+
+    }
+);
+
+
+function generatePaintObject(){
+
+    return objects[
+        Math.floor(
+            Math.random() *
+            objects.length
+        )
+    ];
+
+}
+
+
+$("newPaint")
+.addEventListener(
+    "click",
+    startPaintRound
+);
+
+
+function startPaintRound(){
+
+    const object =
+        generatePaintObject();
+
+
+    paint.object =
+        object;
+
+    paint.round++;
+
+
+    paint.submitted =
+        false;
+
+    paint.strokes =
+        [];
+
+    paint.opponent =
+        null;
+
+    paint.active =
+        true;
+
+
+    clearCanvas(
+        myCanvas,
+        myCtx
+    );
+
+    clearCanvas(
+        opponentCanvas,
+        opponentCtx
+    );
+
+
+    $("paintObject")
+    .textContent =
+        object;
+
+
+    $("opponentPaintStatus")
+    .textContent =
+        "DIBUJANDO";
+
+
+    $("paintResult")
+    .innerHTML =
+        `
+        <div class="muted">
+            Ronda ${paint.round}
+        </div>
+
+        <div>
+            Dibujen:
+            <strong>
+                ${escapeHTML(object)}
+            </strong>
+        </div>
+        `;
+
+
+    publish(
+        topics.paint,
+        JSON.stringify({
+
+            type:
+                "round",
+
+            room:
+                room,
+
+            round:
+                paint.round,
+
+            object:
+                object,
+
+            user:
+                username
+
+        })
+    );
+
+
+    toast(
+        "Nuevo desafío: " +
+        object
+    );
+
+}
+
+
+$("submitPaint")
+.addEventListener(
+    "click",
+    () => {
+
+        if(
+            !paint.active ||
+            !paint.object
+        ){
+
+            toast(
+                "Primero iniciá un desafío."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !paint.strokes.length
+        ){
+
+            toast(
+                "Primero dibujá algo."
+            );
+
+            return;
+
+        }
+
+
+        paint.submitted =
+            true;
+
+
+        $("opponentPaintStatus")
+        .textContent =
+            "ENVIADO";
+
+
+        publish(
+            topics.paint,
+            JSON.stringify({
+
+                type:
+                    "drawing",
+
+                room:
+                    room,
+
+                round:
+                    paint.round,
+
+                object:
+                    paint.object,
+
+                user:
+                    username,
+
+                strokes:
+                    paint.strokes
+
+            })
+        );
+
+
+        $("paintResult")
+        .innerHTML =
+            `
+            <div class="muted">
+                Tu dibujo fue enviado.
+            </div>
+
+            <div>
+                Esperando al rival...
+            </div>
+            `;
+
+
+        if(
+            paint.opponent
+        ){
+
+            comparePaint();
+
+        }
+
+    }
+);
+
+
+function drawStrokes(
+    ctx,
+    strokes
+){
+
+    clearCanvas(
+        ctx.canvas,
+        ctx
+    );
+
+
+    ctx.strokeStyle =
+        "#10111a";
+
+    ctx.lineWidth =
+        6;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
+
+
+    strokes.forEach(
+        stroke => {
+
+            if(
+                !stroke ||
+                !stroke.length
+            )
+                return;
+
+
+            ctx.beginPath();
+
+
+            ctx.moveTo(
+                stroke[0].x,
+                stroke[0].y
+            );
+
+
+            for(
+                let i=1;
+                i<stroke.length;
+                i++
+            ){
+
+                ctx.lineTo(
+                    stroke[i].x,
+                    stroke[i].y
+                );
+
+            }
+
+
+            ctx.stroke();
+
+        }
+    );
+
+}
+
+
+function handlePaintMessage(
+    data
+){
+
+    if(!data)
+        return;
+
+
+    if(
+        data.type ===
+        "round"
+    ){
+
+        paint.object =
+            data.object;
+
+        paint.round =
+            data.round;
+
+        paint.active =
+            true;
+
+        paint.submitted =
+            false;
+
+        paint.strokes =
+            [];
+
+        paint.opponent =
+            null;
+
+
+        clearCanvas(
+            myCanvas,
+            myCtx
+        );
+
+        clearCanvas(
+            opponentCanvas,
+            opponentCtx
+        );
+
+
+        $("paintObject")
+        .textContent =
+            data.object;
+
+
+        $("opponentPaintStatus")
+        .textContent =
+            "DIBUJANDO";
+
+
+        $("paintResult")
+        .innerHTML =
+            `
+            <div>
+                Nuevo desafío:
+                <strong>
+                    ${escapeHTML(data.object)}
+                </strong>
+            </div>
+            `;
+
+
+        toast(
+            "Nuevo desafío recibido."
+        );
+
+
+        return;
+
+    }
+
+
+    if(
+        data.type !==
+        "drawing"
+    )
+        return;
+
+
+    if(
+        data.user ===
+        username
+    )
+        return;
+
+
+    if(
+        data.round !==
+        paint.round
+    )
+        return;
+
+
+    paint.opponent =
+        data.strokes;
+
+
+    drawStrokes(
+        opponentCtx,
+        paint.opponent
+    );
+
+
+    $("opponentPaintStatus")
+    .textContent =
+        "TERMINADO";
+
+
+    if(
+        paint.submitted
+    ){
+
+        comparePaint();
+
+    }else{
+
+        $("paintResult")
+        .innerHTML =
+            `
+            <div>
+                👤 El rival terminó.
+            </div>
+
+            <div class="muted">
+                Terminá tu dibujo para ver la comparación.
+            </div>
+            `;
+
+    }
+
+}
+
+
+function comparePaint(){
+
+    if(
+        !paint.opponent ||
+        !paint.strokes.length
+    )
+        return;
+
+
+    const width =
+        120;
+
+    const height =
+        80;
+
+
+    const a =
+        document.createElement(
+            "canvas"
+        );
+
+    const b =
+        document.createElement(
+            "canvas"
+        );
+
+
+    a.width =
+        b.width =
+        width;
+
+    a.height =
+        b.height =
+        height;
+
+
+    const ac =
+        a.getContext(
+            "2d"
+        );
+
+    const bc =
+        b.getContext(
+            "2d"
+        );
+
+
+    clearCanvas(
+        a,
+        ac
+    );
+
+    clearCanvas(
+        b,
+        bc
+    );
+
+
+    ac.drawImage(
+        myCanvas,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    bc.drawImage(
+        opponentCanvas,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const ap =
+        ac.getImageData(
+            0,
+            0,
+            width,
+            height
+        ).data;
+
+
+    const bp =
+        bc.getImageData(
+            0,
+            0,
+            width,
+            height
+        ).data;
+
+
+    let difference =
+        0;
+
+
+    for(
+        let i=0;
+        i<ap.length;
+        i+=4
+    ){
+
+        const da =
+            (
+                ap[i] +
+                ap[i+1] +
+                ap[i+2]
+            ) / 3;
+
+
+        const db =
+            (
+                bp[i] +
+                bp[i+1] +
+                bp[i+2]
+            ) / 3;
+
+
+        difference +=
+            Math.abs(
+                da-db
+            );
+
+    }
+
+
+    const max =
+        width *
+        height *
+        255;
+
+
+    let similarity =
+        100 -
+        (
+            difference /
+            max
+        ) *
+        100;
+
+
+    similarity =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                similarity
+            )
+        );
+
+
+    similarity =
+        Math.round(
+            similarity
+        );
+
+
+    $("paintResult")
+    .innerHTML =
+        `
+        <div class="muted">
+            COMPARACIÓN TERMINADA
+        </div>
+
+        <div class="result-score">
+            ${similarity}%
+        </div>
+
+        <div>
+            similitud visual
+        </div>
+
+        <div class="muted">
+            Ojo: esto compara la forma visual,
+            no sabe todavía si realmente dibujaron
+            el objeto correcto.
+        </div>
+        `;
+
+
+    addRanking(
+        username,
+        similarity,
+        "Dibujo"
+    );
+
+
+    beep(
+        800 +
+        similarity*3,
+        .15
+    );
+
+}
+
+
+/* =========================================================
+   CONSOLE
+========================================================= */
+
+$("clearConsole")
+.addEventListener(
+    "click",
+    () => {
+
+        $("consoleBox")
+        .textContent =
+            "";
+
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+renderOnline();
+
+renderIdentity();
+
+log(
+    "THOMY ARCADE iniciado."
+);
+
+log(
+    "Usuario: " +
+    username
+);
+
+log(
+    "Sala: " +
+    room
+);
+
+connectMQTT();
+
+</script>
+
+</body>
+</html>
