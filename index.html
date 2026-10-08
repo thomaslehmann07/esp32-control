@@ -2,717 +2,769 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>THOMY // ARCADE</title>
-
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESP32 Remote</title>
 
 <style>
-:root{
---bg:#050912;
---panel:#0b1321;
---panel2:#101b2d;
---line:#20304a;
---text:#eef7ff;
---muted:#8190a8;
---cyan:#38e8ff;
---purple:#8b5cf6;
---green:#39e58c;
---red:#ff5577;
---yellow:#ffd447
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
-
-*{box-sizing:border-box}
 
 body{
-margin:0;
-background:
-radial-gradient(circle at 15% 0%,#17345b 0,transparent 32%),
-radial-gradient(circle at 100% 100%,#291344 0,transparent 30%),
-var(--bg);
-color:var(--text);
-font-family:Arial,sans-serif;
-min-height:100vh
+  font-family:Arial,Helvetica,sans-serif;
+  background:#08090d;
+  color:#fff;
+  min-height:100vh;
 }
 
-button,input{font:inherit}
-button{cursor:pointer}
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
 
 .app{
-display:grid;
-grid-template-columns:225px 1fr;
-min-height:100vh
+  display:flex;
+  min-height:100vh;
 }
 
+/* SIDEBAR */
+
 .sidebar{
-position:sticky;
-top:0;
-height:100vh;
-padding:22px 14px;
-border-right:1px solid var(--line);
-background:#050912dd;
-backdrop-filter:blur(15px)
+  width:240px;
+  background:#101218;
+  border-right:1px solid #242731;
+  padding:25px 15px;
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  z-index:10;
 }
 
 .logo{
-font-size:19px;
-font-weight:900;
-letter-spacing:2px
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:35px;
+  padding:0 10px;
 }
 
-.logo span,.cyan{
-color:var(--cyan)
-}
-
-.sub{
-font-size:10px;
-color:var(--muted);
-margin-top:5px
+.logo span{
+  color:#6d7cff;
 }
 
 .nav{
-display:grid;
-gap:6px;
-margin-top:30px
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
 
 .nav button{
-padding:12px;
-border:1px solid transparent;
-border-radius:11px;
-background:transparent;
-color:var(--muted);
-text-align:left
+  border:0;
+  background:transparent;
+  color:#9297a5;
+  padding:13px 15px;
+  border-radius:10px;
+  text-align:left;
+  font-weight:700;
 }
 
 .nav button:hover,
 .nav button.active{
-color:#fff;
-border-color:var(--line);
-background:linear-gradient(90deg,#38e8ff16,#8b5cf615)
+  background:#1b1e28;
+  color:#fff;
 }
 
 .status{
-position:absolute;
-left:14px;
-right:14px;
-bottom:15px;
-padding:12px;
-border:1px solid var(--line);
-border-radius:12px;
-background:#ffffff05
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  padding:12px;
+  background:#171a22;
+  border-radius:10px;
+  font-size:12px;
+  color:#888e9d;
 }
 
 .dot{
-display:inline-block;
-width:8px;
-height:8px;
-border-radius:50%;
-background:var(--red);
-margin-right:5px
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#555;
+  margin-right:7px;
 }
 
 .dot.online{
-background:var(--green);
-box-shadow:0 0 12px var(--green)
+  background:#35d07f;
 }
 
-main{
-width:100%;
-max-width:1500px;
-margin:auto;
-padding:24px
+/* MAIN */
+
+.main{
+  margin-left:240px;
+  width:calc(100% - 240px);
+  min-height:100vh;
 }
 
-.top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px
+.topbar{
+  height:70px;
+  border-bottom:1px solid #242731;
+  display:flex;
+  align-items:center;
+  padding:0 30px;
+  justify-content:space-between;
+  background:#0c0d12;
+  position:sticky;
+  top:0;
+  z-index:5;
 }
 
-.muted{color:var(--muted)}
-
-.view{display:none}
-.view.active{display:block}
-
-.card{
-padding:18px;
-border:1px solid var(--line);
-border-radius:17px;
-background:#0b1321dd;
-box-shadow:0 15px 50px #0003
+.pageName{
+  font-weight:800;
+  font-size:18px;
 }
+
+.userName{
+  color:#8e94a5;
+  font-size:14px;
+}
+
+.content{
+  padding:30px;
+  max-width:1300px;
+  margin:auto;
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+/* CARDS */
 
 .hero{
-padding:35px;
-border:1px solid var(--line);
-border-radius:23px;
-background:linear-gradient(135deg,#38e8ff0d,#8b5cf615)
+  background:linear-gradient(135deg,#171a2a,#10121a);
+  border:1px solid #292d3b;
+  border-radius:20px;
+  padding:35px;
+  margin-bottom:25px;
 }
 
 .hero h1{
-font-size:clamp(42px,7vw,75px);
-line-height:.9;
-margin:12px 0
+  font-size:38px;
+  margin-bottom:10px;
 }
 
-.eyebrow{
-color:var(--cyan);
-font-size:11px;
-font-weight:bold;
-letter-spacing:3px
+.hero p{
+  color:#9298a8;
+  max-width:700px;
+  line-height:1.6;
 }
 
 .grid{
-display:grid;
-gap:14px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
 }
 
-.two{
-grid-template-columns:1.4fr 1fr
+.card{
+  background:#111319;
+  border:1px solid #252934;
+  border-radius:15px;
+  padding:22px;
+  transition:.2s;
 }
 
-.three{
-grid-template-columns:repeat(3,1fr)
+.card:hover{
+  transform:translateY(-2px);
+  border-color:#444b60;
 }
 
-.stats{
-grid-template-columns:repeat(4,1fr);
-margin:15px 0
+.card h3{
+  margin-bottom:8px;
 }
 
-.label{
-font-size:10px;
-color:var(--muted);
-letter-spacing:2px;
-text-transform:uppercase
+.card p{
+  color:#858b9b;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:17px;
 }
 
-.big{
-font-size:28px;
-font-weight:900;
-margin-top:6px
+.cardIcon{
+  font-size:35px;
+  margin-bottom:15px;
 }
 
-.btn{
-padding:10px 14px;
-border-radius:10px;
-border:1px solid var(--line);
-background:#101a2b;
-color:#fff
+.primary{
+  border:0;
+  background:#6675ff;
+  color:#fff;
+  padding:11px 17px;
+  border-radius:9px;
+  font-weight:800;
 }
 
-.btn:hover{
-background:#17243a
+.primary:hover{
+  background:#7986ff;
 }
 
-.btn.primary{
-border:0;
-background:linear-gradient(135deg,#16c9e6,#7652db);
-font-weight:bold
+.secondary{
+  border:1px solid #303542;
+  background:#181b23;
+  color:#fff;
+  padding:11px 17px;
+  border-radius:9px;
+  font-weight:700;
 }
 
-.btn.green{
-border-color:#1f674b;
-color:#71f5b0
+.danger{
+  background:#e74c3c;
+  color:#fff;
+  border:0;
+  padding:11px 17px;
+  border-radius:9px;
+  font-weight:800;
 }
 
-.btn.danger{
-border-color:#6d2638;
-color:#ff9caf
+/* HOME */
+
+.homeStats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:20px;
 }
 
-.actions{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-top:15px
+.stat{
+  background:#111319;
+  border:1px solid #252934;
+  border-radius:15px;
+  padding:20px;
 }
 
-.input{
-width:100%;
-padding:11px;
-border:1px solid var(--line);
-border-radius:10px;
-background:#070d17;
-color:#fff;
-outline:none
+.statValue{
+  font-size:28px;
+  font-weight:900;
+  margin-bottom:5px;
 }
 
-.input:focus{
-border-color:#47749e
+.statLabel{
+  color:#7e8492;
+  font-size:13px;
 }
 
-.players{
-display:grid;
-gap:8px
-}
+/* CHAT */
 
-.player{
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:12px;
-border:1px solid var(--line);
-border-radius:12px;
-background:#09101b
-}
-
-.avatar{
-width:34px;
-height:34px;
-border-radius:50%;
-display:grid;
-place-items:center;
-background:linear-gradient(135deg,#38e8ff,#8b5cf6);
-font-weight:900
-}
-
-.playerLeft{
-display:flex;
-align-items:center;
-gap:10px
-}
-
-.badge{
-font-size:10px;
-padding:5px 8px;
-border-radius:99px;
-background:#ffffff0c;
-color:var(--muted)
-}
-
-.badge.green{
-color:#71f5b0;
-background:#39e58c15
-}
-
-.badge.yellow{
-color:#ffe27b;
-background:#ffd44715
-}
-
-.roomCard{
-padding:15px;
-border:1px solid var(--line);
-border-radius:14px;
-background:#09101b
-}
-
-.roomTop{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px
-}
-
-.roomGame{
-font-size:18px;
-font-weight:900
-}
-
-.roomInfo{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-top:9px
-}
-
-.roomActions{
-margin-top:12px;
-display:flex;
-gap:8px
+.chatBox{
+  height:600px;
+  display:flex;
+  flex-direction:column;
+  background:#111319;
+  border:1px solid #252934;
+  border-radius:15px;
+  overflow:hidden;
 }
 
 .messages{
-height:460px;
-overflow:auto
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
 }
 
 .message{
-max-width:78%;
-padding:10px 12px;
-margin:8px 0;
-border:1px solid var(--line);
-border-radius:13px;
-background:#101a2b
+  margin-bottom:13px;
 }
 
-.message.me{
-margin-left:auto;
-background:#38e8ff12
+.message strong{
+  color:#7482ff;
 }
 
-.message small{
-display:block;
-color:var(--muted);
-font-size:10px;
-margin-bottom:4px
+.message span{
+  color:#d4d7df;
 }
 
-.composer{
-display:flex;
-gap:8px
+.chatInput{
+  display:flex;
+  gap:10px;
+  padding:15px;
+  border-top:1px solid #252934;
 }
 
-.gameGrid{
-grid-template-columns:repeat(2,1fr)
+.chatInput input{
+  flex:1;
+  background:#191c24;
+  border:1px solid #303542;
+  color:#fff;
+  padding:12px;
+  border-radius:9px;
+  outline:none;
 }
 
-.game{
-min-height:170px
+/* ARCADE */
+
+.sectionTitle{
+  margin-bottom:18px;
 }
 
-.gameIcon{
-font-size:38px
+.sectionTitle h2{
+  margin-bottom:5px;
+}
+
+.sectionTitle p{
+  color:#858b9b;
+  font-size:14px;
+}
+
+.arcadeTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  gap:15px;
+}
+
+.rooms{
+  margin-top:25px;
+}
+
+.room{
+  background:#111319;
+  border:1px solid #252934;
+  border-radius:13px;
+  padding:17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  gap:15px;
+}
+
+.roomInfo strong{
+  display:block;
+  margin-bottom:5px;
+}
+
+.roomInfo small{
+  color:#858b9b;
+}
+
+.room button{
+  white-space:nowrap;
+}
+
+/* ACTIVE GAME */
+
+.gameScreen{
+  min-height:calc(100vh - 130px);
+}
+
+.activeGameHeader{
+  background:#111319;
+  border:1px solid #292d3b;
+  border-radius:18px;
+  padding:20px 25px;
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.activeGameIcon{
+  font-size:40px;
+}
+
+.activeGameHeader h1{
+  font-size:27px;
+}
+
+.activeGameStatus{
+  color:#8d93a3;
+  margin-top:4px;
+}
+
+.gameArea{
+  background:#111319;
+  border:1px solid #292d3b;
+  border-radius:18px;
+  padding:25px;
+  min-height:500px;
+  position:relative;
 }
 
 .targetArea{
-height:400px;
-position:relative;
-overflow:hidden;
-border:1px dashed #334866;
-border-radius:14px;
-background:#070d17
+  min-height:390px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+  background:#090b10;
+  border-radius:15px;
+  border:1px solid #252934;
 }
 
 .target{
-position:absolute;
-width:45px;
-height:45px;
-border-radius:50%;
-border:0;
-background:radial-gradient(circle,#fff 0 8%,#ff647f 9% 38%,#8b142c 39% 100%);
-box-shadow:0 0 25px #ff5577aa
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:#ff4757;
+  position:absolute;
+  cursor:pointer;
+  display:none;
+  box-shadow:0 0 30px rgba(255,71,87,.35);
 }
 
-.ttt{
-display:grid;
-grid-template-columns:repeat(3,100px);
-gap:8px;
-justify-content:center;
-margin:25px 0
+.gameScore{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+  color:#9ba0ae;
 }
 
-.tttCell{
-width:100px;
-height:100px;
-border:1px solid var(--line);
-border-radius:11px;
-background:#080f1b;
-color:#fff;
-font-size:40px
-}
-
-.gameScreen{
-max-width:1100px;
-margin:auto
-}
-
-.gameHeader{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:15px;
-margin-bottom:15px
-}
-
-.gameHeader h1{
-margin:0;
-font-size:32px
-}
-
-.gameStatus{
-padding:12px 16px;
-border:1px solid var(--line);
-border-radius:12px;
-background:#09101b;
-text-align:center
-}
-
-.numberGame{
-max-width:500px;
-margin:40px auto;
-text-align:center
-}
-
-.numberBig{
-font-size:70px;
-font-weight:900;
-color:var(--cyan);
-margin:20px 0
-}
-
-.console{
-height:520px;
-overflow:auto;
-padding:13px;
-border:1px solid #1e2b3d;
-border-radius:15px;
-background:#020509;
-font:12px monospace
-}
-
-.log{
-margin:3px 0
-}
-
-.in{color:#64e7c7}
-.out{color:#63d7ff}
-.warn{color:#ffd447}
-.err{color:#ff637f}
-
-.canvas{
-width:100%;
-height:460px;
-background:#fff;
-border-radius:14px;
-display:block;
-touch-action:none
-}
-
-.tools{
-display:flex;
-gap:7px;
-flex-wrap:wrap;
-margin:10px 0
-}
-
-.color{
-width:30px;
-height:30px;
-border-radius:50%;
-border:2px solid transparent
-}
-
-.color.selected{
-border-color:#fff
-}
-
-.compare{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-.compare img{
-width:100%;
-background:#fff;
-border-radius:12px
+.gameScore strong{
+  color:#fff;
+  font-size:20px;
 }
 
 .ranking{
-display:grid;
-gap:7px
+  margin-top:20px;
+  background:#0b0d12;
+  border:1px solid #252934;
+  border-radius:12px;
+  padding:15px;
 }
 
-.rank{
-display:flex;
-justify-content:space-between;
-padding:9px;
-border:1px solid var(--line);
-border-radius:10px
+.ranking h3{
+  margin-bottom:10px;
 }
 
-#resultOverlay,
-#nameOverlay,
-#matchOverlay,
-#roomOverlay{
-position:fixed;
-inset:0;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:1000;
-background:#02050ccc;
-backdrop-filter:blur(15px)
+.rankRow{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid #20232c;
+  color:#b8bcc7;
 }
 
-#resultOverlay.show,
-#nameOverlay.show,
-#matchOverlay.show,
-#roomOverlay.show{
-display:flex
+.backGame{
+  margin-top:18px;
 }
 
-.overlayBox{
-width:min(600px,92%);
-padding:35px 25px;
-text-align:center;
-border:1px solid var(--line);
-border-radius:27px;
-background:#0b1321;
-box-shadow:0 30px 100px #0009;
-animation:pop .45s ease
+/* TIC TAC TOE */
+
+.ttt{
+  width:min(420px,100%);
+  margin:30px auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.ttt button{
+  aspect-ratio:1;
+  background:#191c24;
+  border:1px solid #303542;
+  color:#fff;
+  font-size:55px;
+  font-weight:900;
+  border-radius:12px;
+}
+
+.ttt button:hover{
+  background:#20242e;
+}
+
+/* DRAW */
+
+.drawLayout{
+  display:grid;
+  grid-template-columns:1fr 280px;
+  gap:20px;
+}
+
+.canvasBox{
+  background:#111319;
+  border:1px solid #292d3b;
+  border-radius:15px;
+  padding:15px;
+}
+
+.canvas{
+  width:100%;
+  height:550px;
+  background:#fff;
+  border-radius:10px;
+  display:block;
+  cursor:crosshair;
+}
+
+.drawControls{
+  background:#111319;
+  border:1px solid #292d3b;
+  border-radius:15px;
+  padding:20px;
+}
+
+.drawControls h3{
+  margin-bottom:15px;
+}
+
+.drawInfo{
+  color:#858b9b;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:20px;
+}
+
+/* ESP */
+
+.console{
+  background:#050607;
+  border:1px solid #292d3b;
+  border-radius:15px;
+  padding:20px;
+  min-height:400px;
+  font-family:monospace;
+  color:#50fa7b;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+
+.espButtons{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+
+/* MODALS */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:20px;
+}
+
+.overlay.show{
+  display:flex;
+}
+
+.modal{
+  width:min(550px,100%);
+  background:#111319;
+  border:1px solid #303542;
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 30px 100px rgba(0,0,0,.5);
+}
+
+.modal h2{
+  margin-bottom:10px;
+}
+
+.modal p{
+  color:#858b9b;
+  line-height:1.5;
+  margin-bottom:20px;
+}
+
+.modal input{
+  width:100%;
+  background:#191c24;
+  border:1px solid #303542;
+  color:#fff;
+  padding:13px;
+  border-radius:9px;
+  outline:none;
+  margin-bottom:15px;
+}
+
+.modalButtons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.gameChoice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.gameChoice button{
+  background:#191c24;
+  border:1px solid #303542;
+  color:#fff;
+  padding:17px;
+  border-radius:11px;
+  font-weight:800;
+  text-align:left;
+}
+
+.gameChoice button:hover{
+  border-color:#6675ff;
+  background:#202430;
+}
+
+.matchBig{
+  text-align:center;
+  padding:30px 10px;
+}
+
+.matchBigIcon{
+  font-size:55px;
+  margin-bottom:15px;
+}
+
+.matchBig h2{
+  font-size:30px;
+}
+
+.matchCountdown{
+  font-size:90px;
+  font-weight:900;
+  margin-top:15px;
+  color:#7482ff;
+}
+
+.result{
+  text-align:center;
+  padding:25px;
 }
 
 .resultIcon{
-font-size:75px
+  font-size:70px;
+  margin-bottom:10px;
 }
 
-.resultTitle{
-font-size:48px;
-font-weight:900;
-margin:10px 0
+.result h2{
+  font-size:32px;
+  margin-bottom:10px;
 }
 
-.resultName{
-font-size:30px;
-color:var(--cyan);
-font-weight:900
+.result p{
+  margin-bottom:25px;
 }
 
-.resultSub{
-color:var(--muted);
-margin:10px 0 25px
+/* NUMBER */
+
+.numberGame{
+  margin-top:20px;
+  background:#111319;
+  border:1px solid #292d3b;
+  border-radius:15px;
+  padding:25px;
 }
 
-.matchPlayers{
-display:grid;
-grid-template-columns:1fr 50px 1fr;
-align-items:center;
-gap:10px;
-margin:25px 0
+.numberGame input{
+  width:160px;
+  background:#191c24;
+  border:1px solid #303542;
+  color:#fff;
+  padding:12px;
+  border-radius:9px;
+  outline:none;
+  margin-right:8px;
 }
 
-.matchPlayer{
-padding:20px;
-border:1px solid var(--line);
-border-radius:16px
+.numberMessage{
+  margin-top:15px;
+  color:#9da3b1;
 }
 
-.vs{
-font-weight:900;
-color:var(--purple);
-font-size:20px
-}
+/* MOBILE */
 
-.countdown{
-font-size:65px;
-font-weight:900;
-color:var(--cyan)
-}
+@media(max-width:800px){
+  .sidebar{
+    width:70px;
+    padding:20px 8px;
+  }
 
-.confetti{
-position:fixed;
-top:-20px;
-width:8px;
-height:14px;
-z-index:2000;
-animation:fall linear forwards;
-pointer-events:none
-}
+  .logo{
+    font-size:0;
+    text-align:center;
+  }
 
-.toast{
-position:fixed;
-right:18px;
-bottom:18px;
-padding:12px 15px;
-border:1px solid var(--line);
-border-radius:12px;
-background:#0d1727;
-transform:translateY(100px);
-opacity:0;
-transition:.25s;
-z-index:3000
-}
+  .logo span{
+    font-size:20px;
+  }
 
-.toast.show{
-transform:none;
-opacity:1
-}
+  .nav button{
+    font-size:0;
+    text-align:center;
+    padding:14px 5px;
+  }
 
-@keyframes pop{
-from{
-transform:scale(.7);
-opacity:0
-}
-to{
-transform:scale(1);
-opacity:1
-}
-}
+  .nav button:first-letter{
+    font-size:20px;
+  }
 
-@keyframes fall{
-to{
-transform:translateY(110vh) translateX(var(--x)) rotate(720deg);
-opacity:0
-}
-}
+  .status{
+    font-size:0;
+    left:25px;
+    right:auto;
+    padding:0;
+    background:none;
+  }
 
-@media(max-width:900px){
+  .status .dot{
+    margin:0;
+  }
 
-.app{
-grid-template-columns:1fr
-}
+  .main{
+    margin-left:70px;
+    width:calc(100% - 70px);
+  }
 
-.sidebar{
-position:fixed;
-bottom:0;
-top:auto;
-height:auto;
-width:100%;
-padding:6px;
-z-index:50;
-border:0;
-border-top:1px solid var(--line)
-}
+  .content{
+    padding:18px;
+  }
 
-.logo,
-.sub,
-.status{
-display:none
-}
+  .topbar{
+    padding:0 18px;
+  }
 
-.nav{
-margin:0;
-grid-template-columns:repeat(6,1fr);
-gap:3px
-}
+  .hero h1{
+    font-size:29px;
+  }
 
-.nav button{
-text-align:center;
-padding:9px 3px;
-font-size:10px
-}
+  .homeStats{
+    grid-template-columns:1fr;
+  }
 
-main{
-padding:15px 15px 80px
-}
+  .drawLayout{
+    grid-template-columns:1fr;
+  }
 
-.stats,
-.two,
-.three,
-.gameGrid{
-grid-template-columns:1fr
-}
+  .canvas{
+    height:400px;
+  }
 
-.matchPlayers{
-grid-template-columns:1fr
-}
+  .gameChoice{
+    grid-template-columns:1fr;
+  }
 
-.vs{
-display:none
-}
-
-.gameHeader{
-align-items:flex-start;
-flex-direction:column
-}
-
-.ttt{
-grid-template-columns:repeat(3,80px)
-}
-
-.tttCell{
-width:80px;
-height:80px
-}
-
-.targetArea{
-height:330px
-}
+  .room{
+    flex-direction:column;
+    align-items:flex-start;
+  }
 }
 </style>
 </head>
@@ -721,1373 +773,664 @@ height:330px
 
 <div class="app">
 
-<aside class="sidebar">
+  <aside class="sidebar">
+    <div class="logo">ESP32 <span>REMOTE</span></div>
 
-<div class="logo">
-THOMY <span>// ARCADE</span>
-</div>
-
-<div class="sub">
-ESP32 REMOTE CONTROL
-</div>
-
-<nav class="nav">
-
-<button class="active" data-view="home">
-🏠 Inicio
-</button>
-
-<button data-view="chat">
-💬 Chat
-</button>
-
-<button data-view="arcade">
-🎮 Arcade
-</button>
-
-<button data-view="draw">
-🎨 Dibujar
-</button>
-
-<button data-view="esp">
-⚡ ESP32
-</button>
-
-<button data-view="console">
-🖥️ Consola
-</button>
-
-</nav>
-
-<div class="status">
-
-<span id="mqttDot" class="dot"></span>
-
-<b id="mqttText">
-Offline
-</b>
-
-<br>
-
-<small class="muted">
-<span id="onlineCount">0</span>
-jugadores online
-</small>
-
-</div>
-
-</aside>
-
-
-<main>
-
-<div class="top">
-
-<div class="muted">
-THOMY // ARCADE /
-<b id="pageName">INICIO</b>
-</div>
-
-<div>
-👤 <b id="usernameLabel">Jugador</b>
-</div>
-
-</div>
-
-
-<!-- HOME -->
-
-<section id="home" class="view active">
-
-<div class="hero">
-
-<div class="eyebrow">
-ONLINE MULTIPLAYER
-</div>
-
-<h1>
-ESP32<br>
-<span class="cyan">ARCADE</span>
-</h1>
-
-<p>
-Entrá, elegí una partida y jugá.
-Sin códigos.
-</p>
-
-<div class="actions">
-
-<button
-class="btn primary"
-onclick="showView('arcade')">
-🎮 Jugar
-</button>
-
-<button
-class="btn"
-onclick="showView('draw')">
-🎨 Dibujar
-</button>
-
-<button
-class="btn"
-onclick="send('PING')">
-📡 Ping ESP32
-</button>
-
-</div>
-
-</div>
-
-
-<div class="grid stats">
-
-<div class="card">
-<div class="label">MQTT</div>
-<div class="big" id="statMqtt">OFF</div>
-</div>
-
-<div class="card">
-<div class="label">Jugadores</div>
-<div class="big" id="statUsers">0</div>
-</div>
-
-<div class="card">
-<div class="label">ESP32</div>
-<div class="big" id="statEsp">—</div>
-</div>
-
-<div class="card">
-<div class="label">Sesión</div>
-<div class="big" id="statTime">00:00</div>
-</div>
-
-</div>
-
-
-<div class="grid two">
-
-<div class="card">
-
-<h3>
-👥 Jugadores disponibles
-</h3>
-
-<p class="muted">
-Personas conectadas ahora mismo.
-</p>
-
-<div id="homePlayers" class="players">
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>
-🏆 Mi perfil
-</h3>
-
-<div
-class="big cyan"
-id="profileName">
-Jugador
-</div>
-
-<p class="muted">
-Tus puntos de las partidas.
-</p>
-
-<button
-class="btn"
-onclick="changeName()">
-✏️ Cambiar nombre
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CHAT -->
-
-<section id="chat" class="view">
-
-<h2>
-💬 Chat
-</h2>
-
-<div class="card">
-
-<div
-id="messages"
-class="messages">
-</div>
-
-<div class="composer">
-
-<input
-id="chatInput"
-class="input"
-maxlength="240"
-placeholder="Escribí un mensaje..."
->
-
-<button
-class="btn primary"
-onclick="sendChat()">
-Enviar
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ARCADE -->
-
-<section id="arcade" class="view">
-
-<h2>
-🎮 Arcade
-</h2>
-
-<div class="card">
-
-<div class="label">
-PARTIDAS ONLINE
-</div>
-
-<h2>
-Jugá contra alguien
-</h2>
-
-<p class="muted">
-Creá una partida o uníte a una que ya esté abierta.
-</p>
-
-<div class="actions">
-
-<button
-class="btn primary"
-onclick="openCreateRoom()">
-➕ CREAR PARTIDA
-</button>
-
-<button
-class="btn"
-onclick="refreshRooms()">
-🔄 ACTUALIZAR
-</button>
-
-</div>
-
-</div>
-
-
-<div
-class="card"
-style="margin-top:15px">
-
-<div
-style="
-display:flex;
-justify-content:space-between;
-align-items:center">
-
-<div>
-
-<h3 style="margin:0">
-🎮 Partidas disponibles
-</h3>
-
-<p class="muted">
-Las salas aparecen automáticamente.
-</p>
-
-</div>
-
-<span class="badge green">
-SIN CÓDIGOS
-</span>
-
-</div>
-
-
-<div
-id="roomsList"
-class="players"
-style="margin-top:15px">
-</div>
-
-</div>
-
-
-<div
-class="grid gameGrid"
-style="margin-top:15px">
-
-
-<div class="card game">
-
-<div class="gameIcon">
-🎯
-</div>
-
-<h3>
-Caza el objetivo
-</h3>
-
-<p class="muted">
-20 segundos. Más objetivos gana.
-</p>
-
-</div>
-
-
-<div class="card game">
-
-<div class="gameIcon">
-⚡
-</div>
-
-<h3>
-Reflejos
-</h3>
-
-<p class="muted">
-El menor tiempo gana.
-</p>
-
-</div>
-
-
-<div class="card game">
-
-<div class="gameIcon">
-⭕
-</div>
-
-<h3>
-Tres en línea
-</h3>
-
-<p class="muted">
-La página detecta el ganador.
-</p>
-
-</div>
-
-
-<div class="card game">
-
-<div class="gameIcon">
-🧠
-</div>
-
-<h3>
-Adiviná el número
-</h3>
-
-<p class="muted">
-Modo individual.
-</p>
-
-<div class="composer">
-
-<input
-id="guess"
-class="input"
-type="number"
-min="1"
-max="100"
-placeholder="1-100"
->
-
-<button
-class="btn"
-onclick="guessNumber()">
-Probar
-</button>
-
-</div>
-
-<small
-id="guessResult"
-class="muted">
-</small>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- PANTALLA DE JUEGO -->
-
-<section id="activeGame" class="view">
-
-<div class="gameScreen">
-
-<div class="gameHeader">
-
-<div>
-
-<div class="label">
-PARTIDA EN CURSO
-</div>
-
-<h1 id="activeGameTitle">
-🎮 Juego
-</h1>
-
-</div>
-
-<button
-class="btn danger"
-onclick="leaveMatch()">
-← Salir de la partida
-</button>
-
-</div>
-
-
-<div
-id="gameStatus"
-class="gameStatus"
-style="margin-bottom:15px">
-Preparando...
-</div>
-
-
-<!-- AREA DEL JUEGO -->
-
-<div class="card">
-
-<div
-id="activeGameArea"
-class="targetArea">
-
-<div
-class="muted"
-style="
-position:absolute;
-inset:45% 0;
-text-align:center">
-
-Preparando juego...
-
-</div>
-
-</div>
-
-
-<div
-id="targetScoreBox"
-style="margin-top:12px">
-
-<b id="targetScore">
-0
-</b>
-puntos
-
-</div>
-
-</div>
-
-
-<div
-class="card"
-style="margin-top:15px">
-
-<h3>
-🏆 Ranking
-</h3>
-
-<div
-id="ranking"
-class="ranking">
-
-<div class="muted">
-Todavía no hay resultados.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- DRAW -->
-
-<section id="draw" class="view">
-
-<div class="card">
-
-<div class="label">
-DUELO DE DIBUJO
-</div>
+    <div class="nav">
+      <button id="navHome" onclick="showView('home')">🏠 Inicio</button>
+      <button id="navChat" onclick="showView('chat')">💬 Chat</button>
+      <button id="navArcade" onclick="showView('arcade')">🎮 Arcade</button>
+      <button id="navDraw" onclick="showView('draw')">🎨 Dibujar</button>
+      <button id="navEsp" onclick="showView('esp')">⚡ ESP32</button>
+    </div>
 
-<h2 id="drawWord">
-Esperando partida...
-</h2>
-
-<p
-id="drawStatus"
-class="muted">
-Entrá a una partida de dibujo desde Arcade.
-</p>
-
-<div id="drawTimer">
-60s
-</div>
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Desconectado</span>
+    </div>
+  </aside>
 
-<div class="tools">
-
-<button
-class="btn"
-onclick="clearCanvas()">
-Limpiar
-</button>
-
-<button
-class="btn primary"
-onclick="finishDrawing()">
-✓ Terminé
-</button>
-
-<label class="btn">
-
-Tamaño
-
-<input
-id="brushSize"
-type="range"
-min="2"
-max="30"
-value="6">
-
-</label>
-
-<button
-class="color selected"
-style="background:#111"
-onclick="setColor('#111',this)">
-</button>
-
-<button
-class="color"
-style="background:#ef4444"
-onclick="setColor('#ef4444',this)">
-</button>
-
-<button
-class="color"
-style="background:#2563eb"
-onclick="setColor('#2563eb',this)">
-</button>
-
-<button
-class="color"
-style="background:#16a34a"
-onclick="setColor('#16a34a',this)">
-</button>
-
-<button
-class="color"
-style="background:#facc15"
-onclick="setColor('#facc15',this)">
-</button>
+  <main class="main">
+
+    <header class="topbar">
+      <div id="pageName" class="pageName">INICIO</div>
+      <div id="topUser" class="userName">Sin nombre</div>
+    </header>
+
+    <div class="content">
+
+      <!-- HOME -->
+
+      <section id="home" class="view active">
+
+        <div class="hero">
+          <h1>ESP32 Remote 🎮</h1>
+          <p>
+            Controlá tu ESP32-C3, chateá y jugá partidas
+            multijugador directamente desde el navegador.
+          </p>
+        </div>
+
+        <div class="homeStats">
+          <div class="stat">
+            <div id="onlineCount" class="statValue">0</div>
+            <div class="statLabel">Jugadores online</div>
+          </div>
+
+          <div class="stat">
+            <div id="roomCount" class="statValue">0</div>
+            <div class="statLabel">Salas abiertas</div>
+          </div>
+
+          <div class="stat">
+            <div id="espStatus" class="statValue">OFF</div>
+            <div class="statLabel">ESP32</div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- CHAT -->
+
+      <section id="chat" class="view">
+
+        <div class="sectionTitle">
+          <h2>Chat global 💬</h2>
+          <p>Todos los jugadores conectados pueden verlo.</p>
+        </div>
+
+        <div class="chatBox">
+
+          <div id="messages" class="messages"></div>
+
+          <div class="chatInput">
+            <input
+              id="chatMessage"
+              type="text"
+              placeholder="Escribí un mensaje..."
+              maxlength="250"
+              onkeydown="if(event.key==='Enter')sendChat()"
+            >
+
+            <button class="primary" onclick="sendChat()">
+              Enviar
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ARCADE -->
+
+      <section id="arcade" class="view">
+
+        <div class="arcadeTop">
+          <div class="sectionTitle">
+            <h2>Arcade 🎮</h2>
+            <p>Creá una sala o unite a una partida abierta.</p>
+          </div>
+
+          <button class="primary" onclick="openCreateRoom()">
+            + Crear sala
+          </button>
+        </div>
+
+        <div class="grid">
+
+          <div class="card">
+            <div class="cardIcon">🎯</div>
+            <h3>Caza el objetivo</h3>
+            <p>
+              Tocá el objetivo tantas veces como puedas.
+              El jugador con más puntos gana.
+            </p>
+            <button class="secondary" onclick="openCreateRoom('target')">
+              Crear partida
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="cardIcon">⚡</div>
+            <h3>Reflejos</h3>
+            <p>
+              Esperá la señal y reaccioná lo más rápido posible.
+            </p>
+            <button class="secondary" onclick="openCreateRoom('reaction')">
+              Crear partida
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="cardIcon">❌</div>
+            <h3>Tres en línea</h3>
+            <p>
+              Clásico tres en línea para dos jugadores.
+            </p>
+            <button class="secondary" onclick="openCreateRoom('ttt')">
+              Crear partida
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="cardIcon">🧠</div>
+            <h3>Adiviná el número</h3>
+            <p>
+              Juego individual. Intentá descubrir el número secreto.
+            </p>
+            <button class="secondary" onclick="startNumberGame()">
+              Jugar
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="cardIcon">🎨</div>
+            <h3>Duelo de dibujo</h3>
+            <p>
+              Dibujen y comparen sus obras en tiempo real.
+            </p>
+            <button class="secondary" onclick="openCreateRoom('draw')">
+              Crear partida
+            </button>
+          </div>
+
+        </div>
+
+        <div class="rooms">
+          <div class="sectionTitle">
+            <h2>Salas disponibles</h2>
+            <p>Las salas abiertas aparecen automáticamente.</p>
+          </div>
+
+          <div id="roomList"></div>
+        </div>
+
+        <!-- NUMBER GAME -->
+
+        <div id="numberGame" class="numberGame" style="display:none">
+
+          <h2>🧠 Adiviná el número</h2>
+
+          <p style="color:#858b9b;margin:10px 0 20px">
+            Estoy pensando un número entre 1 y 100.
+          </p>
+
+          <input
+            id="numberInput"
+            type="number"
+            min="1"
+            max="100"
+            placeholder="Número"
+          >
 
-</div>
+          <button class="primary" onclick="guessNumber()">
+            Adivinar
+          </button>
 
-<canvas
-id="canvas"
-class="canvas"
-width="900"
-height="520">
-</canvas>
+          <div id="numberMessage" class="numberMessage"></div>
 
-</div>
+        </div>
 
+      </section>
 
-<div
-class="card"
-style="margin-top:15px">
 
-<h3>
-🏆 Comparación automática
-</h3>
+      <!-- ACTIVE GAME -->
 
-<p class="muted">
-El resultado se determina automáticamente cuando ambos terminan.
-</p>
+      <section id="activeGame" class="view gameScreen">
 
-<div class="compare">
+        <div class="activeGameHeader">
 
-<div>
+          <div id="activeGameIcon" class="activeGameIcon">
+            🎮
+          </div>
 
-<div class="label">
-TU DIBUJO
-</div>
+          <div>
+            <h1 id="activeGameTitle">Partida</h1>
+            <div id="activeGameStatus" class="activeGameStatus">
+              Preparando partida...
+            </div>
+          </div>
 
-<img id="myDrawing">
+        </div>
 
-</div>
+        <div class="gameArea">
 
-<div>
+          <div class="gameScore">
+            <div>
+              Puntos:
+              <strong id="targetScore">0</strong>
+            </div>
 
-<div class="label">
-RIVAL
-</div>
+            <div id="gameTimer">
+              --
+            </div>
+          </div>
 
-<img id="otherDrawing">
+          <div id="targetArea" class="targetArea">
 
-</div>
+            <div id="target" class="target"></div>
 
-</div>
+            <div id="gameMessage" style="color:#707687">
+              Preparando...
+            </div>
 
-</div>
+          </div>
 
-</section>
+          <div id="tttArea" style="display:none">
 
+            <div class="ttt">
 
-<!-- ESP -->
+              <button onclick="tttMove(0)"></button>
+              <button onclick="tttMove(1)"></button>
+              <button onclick="tttMove(2)"></button>
+              <button onclick="tttMove(3)"></button>
+              <button onclick="tttMove(4)"></button>
+              <button onclick="tttMove(5)"></button>
+              <button onclick="tttMove(6)"></button>
+              <button onclick="tttMove(7)"></button>
+              <button onclick="tttMove(8)"></button>
 
-<section id="esp" class="view">
+            </div>
 
-<h2>
-⚡ Control ESP32
-</h2>
+          </div>
 
-<div class="grid three">
+          <div id="ranking" class="ranking">
 
-<div class="card">
+            <h3>🏆 Resultados</h3>
 
-<h3>
-🟢 ON
-</h3>
+            <div id="rankingContent">
+              Esperando resultados...
+            </div>
 
-<button
-class="btn primary"
-onclick="send('ON')">
-ON
-</button>
+          </div>
 
-</div>
+        </div>
 
+        <button
+          class="secondary backGame"
+          onclick="leaveMatch()"
+        >
+          ← Salir de la partida
+        </button>
 
-<div class="card">
+      </section>
 
-<h3>
-🔴 OFF
-</h3>
 
-<button
-class="btn danger"
-onclick="send('OFF')">
-OFF
-</button>
+      <!-- DRAW -->
 
-</div>
+      <section id="draw" class="view">
 
+        <div class="sectionTitle">
+          <h2>Duelo de dibujo 🎨</h2>
+          <p>Dibujá mientras tu rival ve el dibujo.</p>
+        </div>
 
-<div class="card">
+        <div class="drawLayout">
 
-<h3>
-📡 PING
-</h3>
+          <div class="canvasBox">
+            <canvas id="canvas" class="canvas"></canvas>
+          </div>
 
-<button
-class="btn"
-onclick="send('PING')">
-PING
-</button>
+          <div class="drawControls">
 
-</div>
+            <h3>🎨 Tu dibujo</h3>
 
-</div>
+            <div class="drawInfo">
+              Dibujá libremente en el área blanca.
+              Tu rival recibirá tus trazos automáticamente.
+            </div>
 
+            <button class="danger" onclick="clearCanvas()">
+              Limpiar
+            </button>
 
-<div
-class="card"
-style="margin-top:15px">
+          </div>
 
-<h3>
-💬 Mensaje al ESP32
-</h3>
+        </div>
 
-<div class="composer">
+      </section>
 
-<input
-id="espMsg"
-class="input"
-placeholder="Mensaje..."
->
 
-<button
-class="btn primary"
-onclick="sendEspMsg()">
-Enviar
-</button>
+      <!-- ESP32 -->
 
-</div>
+      <section id="esp" class="view">
 
-</div>
+        <div class="sectionTitle">
+          <h2>Control del ESP32 ⚡</h2>
+          <p>Mandá comandos directamente a tu ESP32-C3.</p>
+        </div>
 
-</section>
+        <div class="espButtons">
 
+          <button class="primary" onclick="sendCommand('PING')">
+            PING
+          </button>
 
-<!-- CONSOLE -->
+          <button class="primary" onclick="sendCommand('ON')">
+            ON
+          </button>
 
-<section id="console" class="view">
+          <button class="secondary" onclick="sendCommand('OFF')">
+            OFF
+          </button>
 
-<div
-style="
-display:flex;
-justify-content:space-between">
+          <button class="primary" onclick="sendCommand('GAME')">
+            GAME
+          </button>
 
-<h2>
-🖥️ Consola
-</h2>
+        </div>
 
-<button
-class="btn"
-onclick="document.getElementById('consoleLog').innerHTML=''">
-Limpiar
-</button>
+        <div id="espConsole" class="console">
+Esperando conexión...
+        </div>
 
-</div>
+      </section>
 
-<div
-id="consoleLog"
-class="console">
+    </div>
+  </main>
 </div>
-
-</section>
-
-</main>
 
-</div>
 
+<!-- NAME MODAL -->
 
-<!-- NAME -->
+<div id="nameOverlay" class="overlay">
 
-<div id="nameOverlay">
+  <div class="modal">
 
-<div class="overlayBox">
+    <h2>👋 ¿Cómo te llamás?</h2>
 
-<div style="font-size:55px">
-👋
-</div>
+    <p>
+      Elegí el nombre que van a ver los demás jugadores.
+    </p>
 
-<h1>
-Bienvenido
-</h1>
-
-<p class="muted">
-Antes de entrar elegí cómo querés aparecer.
-</p>
-
-<input
-id="firstNameInput"
-class="input"
-maxlength="18"
-placeholder="Tu nombre..."
-style="
-text-align:center;
-font-size:20px"
->
-
-<div
-class="actions"
-style="justify-content:center">
-
-<button
-class="btn primary"
-onclick="saveFirstName()">
-🚀 Entrar
-</button>
+    <input
+      id="nameInput"
+      type="text"
+      maxlength="18"
+      placeholder="Tu nombre"
+      onkeydown="if(event.key==='Enter')saveName()"
+    >
 
-</div>
+    <div class="modalButtons">
+      <button class="primary" onclick="saveName()">
+        Continuar
+      </button>
+    </div>
 
-</div>
+  </div>
 
 </div>
 
 
 <!-- CREATE ROOM -->
 
-<div id="roomOverlay">
+<div id="createOverlay" class="overlay">
 
-<div class="overlayBox">
+  <div class="modal">
 
-<div style="font-size:55px">
-🎮
-</div>
+    <h2>🎮 Crear partida</h2>
 
-<h1>
-Crear partida
-</h1>
+    <p>
+      Elegí el juego. Otro jugador podrá ver tu sala y entrar.
+    </p>
 
-<p class="muted">
-Elegí el juego.
-</p>
+    <div class="gameChoice">
 
-<div
-class="actions"
-style="justify-content:center">
+      <button onclick="createRoom('target')">
+        🎯 Caza el objetivo
+      </button>
 
-<button
-class="btn primary"
-onclick="createRoom('target')">
-🎯 Caza el objetivo
-</button>
+      <button onclick="createRoom('reaction')">
+        ⚡ Reflejos
+      </button>
 
-<button
-class="btn primary"
-onclick="createRoom('reaction')">
-⚡ Reflejos
-</button>
+      <button onclick="createRoom('ttt')">
+        ❌ Tres en línea
+      </button>
 
-<button
-class="btn primary"
-onclick="createRoom('ttt')">
-⭕ Tres en línea
-</button>
+      <button onclick="createRoom('draw')">
+        🎨 Duelo de dibujo
+      </button>
 
-<button
-class="btn primary"
-onclick="createRoom('draw')">
-🎨 Dibujo
-</button>
+    </div>
 
-<button
-class="btn"
-onclick="closeCreateRoom()">
-Cancelar
-</button>
+    <button class="secondary" onclick="closeCreateRoom()">
+      Cancelar
+    </button>
 
-</div>
-
-</div>
+  </div>
 
 </div>
 
 
-<!-- MATCH -->
+<!-- MATCH COUNTDOWN -->
 
-<div id="matchOverlay">
+<div id="matchOverlay" class="overlay">
 
-<div class="overlayBox">
+  <div class="modal matchBig">
 
-<div style="font-size:55px">
-🎮
-</div>
+    <div id="matchIcon" class="matchBigIcon">
+      🎮
+    </div>
 
-<h1>
-PARTIDA
-</h1>
+    <h2 id="matchTitle">
+      Esperando jugador...
+    </h2>
 
-<div
-class="matchPlayers">
+    <p id="matchSub">
+      Compartí la sala con otro jugador.
+    </p>
 
-<div class="matchPlayer">
+    <div id="matchCountdown" class="matchCountdown"></div>
 
-<div
-class="avatar"
-id="matchMeAvatar">
-T
-</div>
-
-<h3 id="matchMeName">
-Vos
-</h3>
-
-<span class="badge green">
-CONECTADO
-</span>
-
-</div>
-
-<div class="vs">
-VS
-</div>
-
-<div class="matchPlayer">
-
-<div
-class="avatar"
-id="matchRivalAvatar">
-?
-</div>
-
-<h3 id="matchRivalName">
-Esperando...
-</h3>
-
-<span
-id="rivalStatus"
-class="badge yellow">
-ESPERANDO
-</span>
-
-</div>
-
-</div>
-
-<p
-id="matchCountdown"
-class="cyan"
-style="
-font-size:25px;
-font-weight:900">
-
-Esperando rival...
-
-</p>
-
-<div
-class="actions"
-style="justify-content:center">
-
-<button
-class="btn danger"
-onclick="leaveMatch()">
-Salir
-</button>
-
-</div>
-
-</div>
+  </div>
 
 </div>
 
 
 <!-- RESULT -->
 
-<div id="resultOverlay">
+<div id="resultOverlay" class="overlay">
 
-<div class="overlayBox">
+  <div class="modal result">
 
-<div
-id="resultIcon"
-class="resultIcon">
-🏆
-</div>
+    <div id="resultIcon" class="resultIcon">
+      🏆
+    </div>
 
-<div
-id="resultTitle"
-class="resultTitle">
-¡VICTORIA!
-</div>
+    <h2 id="resultTitle">
+      Resultado
+    </h2>
 
-<div
-id="resultName"
-class="resultName">
-Jugador
-</div>
+    <p id="resultText"></p>
 
-<div
-id="resultSub"
-class="resultSub">
-Resultado calculado automáticamente.
-</div>
+    <button class="primary" onclick="closeResult()">
+      Continuar
+    </button>
 
-<div
-class="actions"
-style="justify-content:center">
-
-<button
-class="btn primary"
-onclick="closeResult()">
-🔄 Seguir jugando
-</button>
+  </div>
 
 </div>
-
-</div>
-
-</div>
-
-
-<div id="toast" class="toast"></div>
 
 
 <script>
-
 /* =========================================================
    MQTT
 ========================================================= */
 
-const MQTT_BROKER =
-"wss://broker.hivemq.com:8884/mqtt";
+const MQTT_BROKER = "wss://broker.hivemq.com:8884/mqtt";
 
-const COMMAND_TOPIC =
-"thomy/esp32c3/comandos";
+const COMMAND_TOPIC = "thomy/esp32c3/comandos";
+const STATE_TOPIC = "thomy/esp32c3/estado";
 
-const STATE_TOPIC =
-"thomy/esp32c3/estado";
+const LOBBY = "thomy/esp32c3/v4/lobby";
+const CHAT_TOPIC = "thomy/esp32c3/v4/chat";
+const ROOM_PREFIX = "thomy/esp32c3/v4/room/";
 
-const LOBBY =
-"thomy/esp32c3/v4/lobby";
-
-const CHAT_TOPIC =
-"thomy/esp32c3/v4/chat";
-
-const ROOM_PREFIX =
-"thomy/esp32c3/v4/room/";
+let mqttClient = null;
+let connected = false;
 
 
 /* =========================================================
    IDENTIDAD
 ========================================================= */
 
-const playerId =
-crypto.randomUUID ?
-crypto.randomUUID() :
-Math.random().toString(36)+Date.now();
+let playerId =
+  localStorage.getItem("esp32PlayerId") ||
+  crypto.randomUUID();
+
+localStorage.setItem("esp32PlayerId", playerId);
 
 let username =
-localStorage.getItem("nexusUsername") || "";
+  localStorage.getItem("esp32Username") || "";
 
-let client = null;
-let connected = false;
+let onlinePlayers = {};
 
+let rooms = {};
 
-/* =========================================================
-   JUGADORES
-========================================================= */
-
-let onlinePlayers = new Map();
-
-
-/* =========================================================
-   SALAS
-========================================================= */
-
-let rooms = new Map();
 let match = null;
 
-
-/* =========================================================
-   ESTADO
-========================================================= */
-
 let matchResultShown = false;
-let selectedGame = null;
-
-
-/* =========================================================
-   TARGET
-========================================================= */
 
 let targetScore = 0;
-let targetResults = {};
-let targetStart = 0;
-let targetTimer = null;
+let targetTime = null;
+let targetInterval = null;
 
-
-/* =========================================================
-   REACTION
-========================================================= */
-
-let reactionGoTime = 0;
-let reactionResults = {};
-let reactionArmed = false;
-
-
-/* =========================================================
-   TTT
-========================================================= */
+let reactionStart = null;
+let reactionTimeout = null;
 
 let tttState = {
-board:Array(9).fill(""),
-turn:0
+  board:["","","","","","","","",""],
+  turn:null,
+  winner:null
 };
 
-
-/* =========================================================
-   DRAW
-========================================================= */
-
-let canvas = null;
-let ctx = null;
-let drawing = false;
-let drawColor = "#111";
-let drawRound = "";
-let drawResults = {};
-let drawDeadline = 0;
-let drawTimerInterval = null;
+let numberSecret = 0;
+let numberAttempts = 0;
 
 
 /* =========================================================
-   RANKING
+   DOM
 ========================================================= */
 
-let ranking = {};
+const statusDot = document.getElementById("statusDot");
+const statusText = document.getElementById("statusText");
+const pageName = document.getElementById("pageName");
+const topUser = document.getElementById("topUser");
+
+const nameOverlay = document.getElementById("nameOverlay");
+
+const createOverlay = document.getElementById("createOverlay");
+
+const matchOverlay = document.getElementById("matchOverlay");
+const matchTitle = document.getElementById("matchTitle");
+const matchSub = document.getElementById("matchSub");
+const matchCountdown = document.getElementById("matchCountdown");
+
+const resultOverlay = document.getElementById("resultOverlay");
+
+const target = document.getElementById("target");
+const targetArea = document.getElementById("targetArea");
+const targetScoreEl = document.getElementById("targetScore");
+
+const gameTimer = document.getElementById("gameTimer");
+const gameMessage = document.getElementById("gameMessage");
+
+const tttArea = document.getElementById("tttArea");
+
+const rankingContent = document.getElementById("rankingContent");
+
+const espConsole = document.getElementById("espConsole");
+
+const messages = document.getElementById("messages");
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 
 /* =========================================================
-   TOAST
+   VIEW
 ========================================================= */
 
-let toastTimer = null;
+function showView(view){
 
-function toast(text){
+  document.querySelectorAll(".view").forEach(v=>{
+    v.classList.remove("active");
+  });
 
-const box =
-document.getElementById("toast");
+  const element = document.getElementById(view);
 
-box.textContent = text;
+  if(element){
+    element.classList.add("active");
+  }
 
-box.classList.add("show");
+  document.querySelectorAll(".nav button").forEach(b=>{
+    b.classList.remove("active");
+  });
 
-clearTimeout(toastTimer);
+  const nav = document.getElementById(
+    "nav" + view.charAt(0).toUpperCase() + view.slice(1)
+  );
 
-toastTimer =
-setTimeout(()=>{
-box.classList.remove("show");
-},2500);
+  if(nav){
+    nav.classList.add("active");
+  }
 
+  const names = {
+    home:"INICIO",
+    chat:"CHAT",
+    arcade:"ARCADE",
+    activeGame:"ARCADE / PARTIDA",
+    draw:"DIBUJAR",
+    esp:"ESP32"
+  };
+
+  pageName.textContent = names[view] || "ESP32 REMOTE";
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 }
 
 
 /* =========================================================
-   NOMBRE
+   NAME
 ========================================================= */
 
 function openName(){
 
-document
-.getElementById("nameOverlay")
-.classList.add("show");
+  nameOverlay.classList.add("show");
 
-setTimeout(()=>{
-document
-.getElementById("firstNameInput")
-.focus();
-},100);
-
+  setTimeout(()=>{
+    document.getElementById("nameInput").focus();
+  },100);
 }
 
+function saveName(){
 
-function saveFirstName(){
+  const input =
+    document.getElementById("nameInput");
 
-const value =
-document
-.getElementById("firstNameInput")
-.value
-.trim()
-.slice(0,18);
+  const value =
+    input.value.trim();
 
-if(!value){
-toast("Escribí un nombre.");
-return;
-}
+  if(!value) return;
 
-username = value;
+  username = value.substring(0,18);
 
-localStorage.setItem(
-"nexusUsername",
-username
-);
+  localStorage.setItem(
+    "esp32Username",
+    username
+  );
 
-document.getElementById(
-"usernameLabel"
-).textContent =
-username;
+  topUser.textContent = username;
 
-document.getElementById(
-"profileName"
-).textContent =
-username;
+  nameOverlay.classList.remove("show");
 
-document
-.getElementById("nameOverlay")
-.classList.remove("show");
-
-announcePresence();
-
-}
-
-
-function changeName(){
-
-document.getElementById(
-"firstNameInput"
-).value =
-username;
-
-openName();
-
-}
-
-
-/* =========================================================
-   NAVEGACIÓN
-========================================================= */
-
-document
-.querySelectorAll(".nav button")
-.forEach(button=>{
-
-button.onclick=()=>{
-
-showView(
-button.dataset.view
-);
-
-};
-
-});
-
-
-function showView(view){
-
-document
-.querySelectorAll(".view")
-.forEach(v=>{
-v.classList.remove("active");
-});
-
-
-const element =
-document.getElementById(view);
-
-if(element)
-element.classList.add("active");
-
-
-document
-.querySelectorAll(".nav button")
-.forEach(b=>{
-
-b.classList.toggle(
-"active",
-b.dataset.view===view
-);
-
-});
-
-
-const names = {
-home:"INICIO",
-chat:"CHAT",
-arcade:"ARCADE",
-draw:"DIBUJAR",
-esp:"ESP32",
-console:"CONSOLA",
-activeGame:"PARTIDA"
-};
-
-
-document.getElementById(
-"pageName"
-).textContent =
-names[view] || view.toUpperCase();
-
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-
-
-/* =========================================================
-   PANTALLA DE JUEGO
-========================================================= */
-
-function showGameScreen(game){
-
-const title =
-document.getElementById(
-"activeGameTitle"
-);
-
-const status =
-document.getElementById(
-"gameStatus"
-);
-
-const area =
-document.getElementById(
-"activeGameArea"
-);
-
-
-document.getElementById(
-"targetScoreBox"
-).style.display =
-game==="target" ?
-"block" :
-"none";
-
-
-if(game==="target"){
-
-title.textContent =
-"🎯 Caza el objetivo";
-
-status.textContent =
-"¡Hacé clic en todos los objetivos que puedas durante 20 segundos!";
-
-area.innerHTML="";
-
-}
-
-
-if(game==="reaction"){
-
-title.textContent =
-"⚡ Reflejos";
-
-status.textContent =
-"Esperá a que aparezca ¡AHORA! y hacé clic lo más rápido posible.";
-
-area.innerHTML = `
-<div
-class="muted"
-style="
-position:absolute;
-inset:45% 0;
-text-align:center;
-font-size:22px">
-
-Esperá...
-
-</div>
-`;
-
-}
-
-
-if(game==="ttt"){
-
-title.textContent =
-"⭕ Tres en línea";
-
-status.textContent =
-"El jugador X empieza.";
-
-area.innerHTML="";
-
-}
-
-
-showView("activeGame");
-
+  announcePresence();
 }
 
 
@@ -2097,233 +1440,171 @@ showView("activeGame");
 
 function connectMQTT(){
 
-log(
-"Conectando MQTT...",
-"out"
-);
+  const clientId =
+    "web-" +
+    playerId.replaceAll("-","").substring(0,12) +
+    "-" +
+    Math.random().toString(16).slice(2);
+
+  mqttClient = mqtt.connect(
+    MQTT_BROKER,
+    {
+      clientId:clientId,
+      clean:true,
+      reconnectPeriod:3000
+    }
+  );
+
+  mqttClient.on("connect",()=>{
+
+    connected = true;
+
+    statusDot.classList.add("online");
+    statusText.textContent = "Online";
+
+    mqttClient.subscribe(COMMAND_TOPIC);
+    mqttClient.subscribe(STATE_TOPIC);
+    mqttClient.subscribe(LOBBY);
+    mqttClient.subscribe(CHAT_TOPIC);
+
+    announcePresence();
+    announceRoom();
+
+    addConsole("MQTT conectado.");
+  });
 
 
-client =
-mqtt.connect(
-MQTT_BROKER,
-{
-clientId:
-"THOMY_"+playerId
-.replaceAll("-","")
-.slice(0,20),
+  mqttClient.on("reconnect",()=>{
 
-clean:true,
+    statusText.textContent = "Conectando...";
 
-reconnectPeriod:3000
-}
-);
+  });
 
 
-client.on("connect",()=>{
+  mqttClient.on("close",()=>{
 
-connected = true;
+    connected = false;
 
+    statusDot.classList.remove("online");
+    statusText.textContent = "Desconectado";
 
-document
-.getElementById("mqttDot")
-.classList.add("online");
-
-
-document.getElementById(
-"mqttText"
-).textContent =
-"Online";
+  });
 
 
-document.getElementById(
-"statMqtt"
-).textContent =
-"ON";
+  mqttClient.on("error",(err)=>{
+
+    console.log("MQTT ERROR",err);
+
+  });
 
 
-client.subscribe(COMMAND_TOPIC);
-client.subscribe(STATE_TOPIC);
-client.subscribe(LOBBY);
-client.subscribe(CHAT_TOPIC);
+  mqttClient.on("message",(topic,payload)=>{
 
+    const data = payload.toString();
 
-announcePresence();
+    if(topic === LOBBY){
 
+      try{
+        handleLobby(JSON.parse(data));
+      }catch(e){}
 
-setTimeout(
-announcePresence,
-500
-);
+      return;
+    }
 
+    if(topic === CHAT_TOPIC){
 
-if(
-match &&
-match.host===playerId &&
-match.state==="open"
-){
+      try{
+        handleChat(JSON.parse(data));
+      }catch(e){}
 
-announceRoom();
+      return;
+    }
 
-}
+    if(topic.startsWith(ROOM_PREFIX)){
 
+      try{
+        handleRoom(JSON.parse(data));
+      }catch(e){}
 
-log(
-"MQTT CONECTADO",
-"in"
-);
+      return;
+    }
 
-});
+    if(topic === STATE_TOPIC){
 
+      handleESPState(data);
 
-client.on(
-"message",
-(topic,payload)=>{
+      return;
+    }
 
-const raw =
-payload.toString();
+    if(topic === COMMAND_TOPIC){
 
-log(
-"IN "+topic+" ← "+raw,
-"in"
-);
+      return;
+    }
 
-handleMQTT(
-topic,
-raw
-);
-
-});
-
-
-client.on(
-"close",
-()=>{
-
-connected = false;
-
-
-document
-.getElementById("mqttDot")
-.classList.remove("online");
-
-
-document.getElementById(
-"mqttText"
-).textContent =
-"Offline";
-
-
-document.getElementById(
-"statMqtt"
-).textContent =
-"OFF";
-
-});
-
-
-client.on(
-"error",
-e=>{
-
-log(
-"MQTT ERROR: "+e.message,
-"err"
-);
-
-});
-
+  });
 }
 
 
 /* =========================================================
-   PUBLICAR
+   MQTT PUBLISH
 ========================================================= */
 
 function publish(topic,data){
 
-if(!connected)
-return;
+  if(!connected || !mqttClient) return;
 
-client.publish(
-topic,
-JSON.stringify(data)
-);
-
+  mqttClient.publish(
+    topic,
+    typeof data === "string"
+      ? data
+      : JSON.stringify(data)
+  );
 }
 
 
 /* =========================================================
-   PRESENCIA
+   PRESENCE
 ========================================================= */
 
 function announcePresence(){
 
-if(
-!username ||
-!connected
-)
-return;
+  if(!connected || !username) return;
 
-
-publish(
-LOBBY,
-{
-type:"presence",
-id:playerId,
-user:username,
-ts:Date.now(),
-busy:!!match
+  publish(LOBBY,{
+    type:"presence",
+    playerId:playerId,
+    name:username,
+    busy:!!match,
+    ts:Date.now()
+  });
 }
-);
-
-}
-
-
-/*
-Heartbeat de presencia
-*/
-
-setInterval(
-announcePresence,
-2500
-);
 
 
 /* =========================================================
-   HEARTBEAT DE SALA
+   ROOM HEARTBEAT
 ========================================================= */
 
 function announceRoom(){
 
-if(
-!connected ||
-!match ||
-match.host!==playerId ||
-match.state!=="open"
-)
-return;
+  if(
+    !connected ||
+    !match ||
+    match.host !== playerId ||
+    match.state !== "open"
+  ){
+    return;
+  }
 
-
-publish(
-LOBBY,
-{
-type:"room",
-roomId:match.id,
-hostId:playerId,
-hostName:username,
-game:match.game,
-state:"open",
-ts:Date.now()
+  publish(LOBBY,{
+    type:"room",
+    roomId:match.id,
+    hostId:playerId,
+    hostName:username,
+    game:match.game,
+    state:"open",
+    ts:Date.now()
+  });
 }
-);
-
-}
-
-
-setInterval(
-announceRoom,
-2500
-);
 
 
 /* =========================================================
@@ -2332,895 +1613,475 @@ announceRoom,
 
 function handleLobby(data){
 
-if(
-!data ||
-!data.type
-)
-return;
+  if(data.type === "presence"){
+
+    onlinePlayers[data.playerId] = {
+      name:data.name,
+      busy:data.busy,
+      ts:data.ts
+    };
+
+    return;
+  }
 
 
-/* PRESENCIA */
+  if(data.type === "room"){
 
-if(
-data.type==="presence"
-){
+    if(data.state !== "open") return;
 
-if(data.id===playerId)
-return;
+    if(data.hostId === playerId) return;
 
+    rooms[data.roomId] = {
+      ...data,
+      received:Date.now()
+    };
 
-onlinePlayers.set(
-data.id,
-{
-id:data.id,
-user:data.user,
-seen:Date.now(),
-busy:!!data.busy
-}
-);
+    return;
+  }
 
 
-renderPlayers();
+  if(data.type === "roomClosed"){
 
-return;
+    delete rooms[data.roomId];
 
-}
-
-
-/* SALA */
-
-if(
-data.type==="room"
-){
-
-if(data.hostId===playerId)
-return;
-
-
-rooms.set(
-data.roomId,
-{
-roomId:data.roomId,
-hostId:data.hostId,
-hostName:data.hostName,
-game:data.game,
-state:data.state,
-seen:Date.now()
-}
-);
-
-
-renderRooms();
-
-return;
-
-}
-
-
-/* SALA CERRADA */
-
-if(
-data.type==="roomClosed"
-){
-
-rooms.delete(
-data.roomId
-);
-
-renderRooms();
-
-return;
-
-}
-
+    return;
+  }
 }
 
 
 /* =========================================================
-   JUGADORES
-========================================================= */
-
-function renderPlayers(){
-
-const now =
-Date.now();
-
-
-for(
-const [id,p]
-of onlinePlayers
-){
-
-if(
-now-p.seen>8000
-){
-
-onlinePlayers.delete(id);
-
-}
-
-}
-
-
-const count =
-onlinePlayers.size;
-
-
-document.getElementById(
-"onlineCount"
-).textContent =
-count;
-
-
-document.getElementById(
-"statUsers"
-).textContent =
-count;
-
-
-const players =
-[...onlinePlayers.values()]
-.filter(
-p=>
-p.id!==playerId &&
-!p.busy
-);
-
-
-const box =
-document.getElementById(
-"homePlayers"
-);
-
-
-if(!box)
-return;
-
-
-if(!players.length){
-
-box.innerHTML =
-`
-<div class="muted">
-No hay otros jugadores conectados.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML =
-players
-.map(
-p=>`
-
-<div class="player">
-
-<div class="playerLeft">
-
-<div class="avatar">
-
-${escapeHTML(
-p.user.charAt(0).toUpperCase()
-)}
-
-</div>
-
-<div>
-
-<b>
-${escapeHTML(p.user)}
-</b>
-
-<br>
-
-<span class="badge green">
-ONLINE
-</span>
-
-</div>
-
-</div>
-
-<span class="badge">
-Disponible
-</span>
-
-</div>
-
-`
-)
-.join("");
-
-}
-
-
-/* =========================================================
-   NOMBRE DEL JUEGO
+   ROOM LIST
 ========================================================= */
 
 function gameName(game){
 
-if(game==="target")
-return "🎯 Caza el objetivo";
+  const names = {
+    target:"Caza el objetivo",
+    reaction:"Reflejos",
+    ttt:"Tres en línea",
+    draw:"Duelo de dibujo"
+  };
 
-if(game==="reaction")
-return "⚡ Reflejos";
-
-if(game==="ttt")
-return "⭕ Tres en línea";
-
-if(game==="draw")
-return "🎨 Duelo de dibujo";
-
-return "🎮 Juego";
-
+  return names[game] || game;
 }
 
 
-/* =========================================================
-   SALAS
-========================================================= */
+function gameIcon(game){
 
-function refreshRooms(){
+  const icons = {
+    target:"🎯",
+    reaction:"⚡",
+    ttt:"❌",
+    draw:"🎨"
+  };
 
-renderRooms();
-
+  return icons[game] || "🎮";
 }
 
 
 function renderRooms(){
 
-const box =
-document.getElementById(
-"roomsList"
-);
+  const list =
+    document.getElementById("roomList");
 
-if(!box)
-return;
+  const now = Date.now();
 
+  Object.keys(rooms).forEach(id=>{
 
-const now =
-Date.now();
+    if(now - rooms[id].received > 8000){
+      delete rooms[id];
+    }
 
-
-for(
-const [id,r]
-of rooms
-){
-
-if(
-now-r.seen>8000
-){
-
-rooms.delete(id);
-
-}
-
-}
+  });
 
 
-const list =
-[...rooms.values()]
-.filter(
-r=>
-r.hostId!==playerId &&
-r.state==="open"
-);
+  const available =
+    Object.values(rooms);
+
+  document.getElementById("roomCount").textContent =
+    available.length;
 
 
-if(!list.length){
+  if(!available.length){
 
-box.innerHTML = `
+    list.innerHTML =
+      `<div class="card">
+        <p style="margin:0">
+          No hay salas abiertas en este momento.
+        </p>
+      </div>`;
 
-<div
-class="muted"
-style="
-padding:15px;
-text-align:center">
-
-🎮 No hay partidas abiertas.
-
-<br>
-
-<span style="font-size:12px">
-
-Creá una y esperá a que alguien se una.
-
-</span>
-
-</div>
-
-`;
-
-return;
-
-}
+    return;
+  }
 
 
-box.innerHTML =
-list
-.map(
-room=>`
+  list.innerHTML =
+    available.map(room=>`
 
-<div class="roomCard">
+      <div class="room">
 
-<div class="roomTop">
+        <div class="roomInfo">
 
-<div>
+          <strong>
+            ${gameIcon(room.game)}
+            ${escapeHTML(gameName(room.game))}
+          </strong>
 
-<div class="roomGame">
+          <small>
+            ${escapeHTML(room.hostName)}
+            está esperando un jugador
+          </small>
 
-${gameName(room.game)}
+        </div>
 
-</div>
+        <button
+          class="primary"
+          onclick="joinRoom('${room.roomId}')"
+        >
+          Unirse
+        </button>
 
-<div class="muted">
+      </div>
 
-Creada por
-<b>
-${escapeHTML(room.hostName)}
-</b>
-
-</div>
-
-</div>
-
-<span class="badge green">
-🟢 ABIERTA
-</span>
-
-</div>
-
-<div class="roomInfo">
-
-<span class="badge">
-👤 ${escapeHTML(room.hostName)}
-</span>
-
-<span class="badge">
-1 / 2 jugadores
-</span>
-
-</div>
-
-<div class="roomActions">
-
-<button
-class="btn primary"
-onclick="joinRoom('${room.roomId}')">
-
-🎮 UNIRME
-
-</button>
-
-</div>
-
-</div>
-
-`
-)
-.join("");
-
+    `).join("");
 }
 
 
 /* =========================================================
-   CREAR SALA
+   CREATE ROOM
 ========================================================= */
 
-function openCreateRoom(){
+function openCreateRoom(game=null){
 
-if(!username){
+  createOverlay.classList.add("show");
 
-openName();
-
-return;
-
-}
-
-if(match){
-
-toast(
-"Ya estás en una partida."
-);
-
-return;
-
-}
-
-document
-.getElementById("roomOverlay")
-.classList.add("show");
-
+  if(game){
+    createRoom(game);
+  }
 }
 
 
 function closeCreateRoom(){
 
-document
-.getElementById("roomOverlay")
-.classList.remove("show");
+  createOverlay.classList.remove("show");
 
 }
 
 
 function createRoom(game){
 
-if(!connected){
+  if(!username){
+    openName();
+    return;
+  }
 
-toast(
-"Esperá a que MQTT esté conectado."
-);
+  createOverlay.classList.remove("show");
 
-return;
-
-}
-
-if(match){
-
-toast(
-"Ya estás en una partida."
-);
-
-return;
-
-}
+  if(match){
+    leaveMatch();
+  }
 
 
-closeCreateRoom();
+  const roomId =
+    playerId.substring(0,8) +
+    "-" +
+    Math.random().toString(16).slice(2,8);
 
 
-const roomId =
-"room_"+
-Date.now()+
-"_"+Math.random()
-.toString(36)
-.slice(2,8);
+  match = {
+
+    id:roomId,
+
+    game:game,
+
+    host:playerId,
+
+    guest:null,
+
+    guestName:null,
+
+    state:"open",
+
+    startSent:false,
+
+    resultSent:false
+
+  };
 
 
-match = {
-
-id:roomId,
-host:playerId,
-guest:null,
-game:game,
-state:"open"
-
-};
+  mqttClient.subscribe(
+    ROOM_PREFIX + roomId
+  );
 
 
-selectedGame =
-game;
+  announceRoom();
 
-
-subscribeRoom(roomId);
-
-
-announceRoom();
-
-
-showMatchFound();
-
-
-toast(
-"Partida creada. Esperando rival..."
-);
-
-
-announcePresence();
+  showMatchFound();
 
 }
 
 
 /* =========================================================
-   UNIRSE
+   JOIN ROOM
 ========================================================= */
 
 function joinRoom(roomId){
 
-if(match){
+  const room = rooms[roomId];
 
-toast(
-"Ya estás en una partida."
-);
+  if(!room) return;
 
-return;
+  if(!username){
+    openName();
+    return;
+  }
 
-}
+  match = {
 
+    id:roomId,
 
-const room =
-rooms.get(roomId);
+    game:room.game,
 
+    host:room.hostId,
 
-if(!room){
+    hostName:room.hostName,
 
-toast(
-"La partida ya no está disponible."
-);
+    guest:playerId,
 
-rooms.delete(roomId);
-renderRooms();
+    guestName:username,
 
-return;
+    state:"joining",
 
-}
+    startSent:false,
 
+    resultSent:false
 
-match = {
-
-id:roomId,
-host:room.hostId,
-guest:playerId,
-game:room.game,
-state:"waiting"
-
-};
+  };
 
 
-selectedGame =
-room.game;
+  mqttClient.subscribe(
+    ROOM_PREFIX + roomId
+  );
 
 
-subscribeRoom(roomId);
+  publish(
+    ROOM_PREFIX + roomId,
+    {
+      type:"roomJoin",
+      roomId:roomId,
+      playerId:playerId,
+      playerName:username
+    }
+  );
 
 
-publishRoom({
-
-type:"roomJoin",
-
-roomId:roomId,
-
-guestId:playerId,
-
-guestName:username,
-
-ts:Date.now()
-
-});
-
-
-showMatchFound();
-
-
-rooms.delete(roomId);
-
-renderRooms();
-
-announcePresence();
+  showMatchFound();
 
 }
 
 
 /* =========================================================
-   SUSCRIBIR SALA
-========================================================= */
-
-function subscribeRoom(roomId){
-
-if(!connected)
-return;
-
-client.subscribe(
-ROOM_PREFIX+roomId
-);
-
-}
-
-
-/* =========================================================
-   PUBLICAR EN SALA
-========================================================= */
-
-function publishRoom(data){
-
-if(!match)
-return;
-
-publish(
-ROOM_PREFIX+match.id,
-data
-);
-
-}
-
-
-/* =========================================================
-   MATCH UI
-========================================================= */
-
-function showMatchFound(){
-
-if(!match)
-return;
-
-
-showView("arcade");
-
-
-document.getElementById(
-"matchMeName"
-).textContent =
-username;
-
-
-document.getElementById(
-"matchMeAvatar"
-).textContent =
-username
-.charAt(0)
-.toUpperCase();
-
-
-let rivalName =
-"Esperando...";
-
-
-if(
-match.guest &&
-match.guest!==playerId
-){
-
-rivalName =
-onlinePlayers.get(
-match.guest
-)?.user ||
-"Rival";
-
-}
-
-
-if(
-match.host &&
-match.host!==playerId
-){
-
-rivalName =
-onlinePlayers.get(
-match.host
-)?.user ||
-"Rival";
-
-}
-
-
-document.getElementById(
-"matchRivalName"
-).textContent =
-rivalName;
-
-
-document.getElementById(
-"matchRivalAvatar"
-).textContent =
-rivalName==="Esperando..."
-?
-"?"
-:
-rivalName
-.charAt(0)
-.toUpperCase();
-
-
-document.getElementById(
-"rivalStatus"
-).textContent =
-match.guest ?
-"✓ CONECTADO" :
-"ESPERANDO";
-
-
-document.getElementById(
-"rivalStatus"
-).className =
-match.guest ?
-"badge green" :
-"badge yellow";
-
-
-document.getElementById(
-"matchCountdown"
-).textContent =
-match.guest ?
-"Preparando partida..." :
-"Esperando rival...";
-
-
-document
-.getElementById("matchOverlay")
-.classList.add("show");
-
-}
-
-
-/* =========================================================
-   MENSAJES DE SALA
+   ROOM MESSAGE
 ========================================================= */
 
 function handleRoom(data){
 
-if(!match)
-return;
+  if(!match) return;
 
+  if(data.roomId !== match.id) return;
 
-if(
-data.roomId &&
-data.roomId!==match.id
-)
-return;
 
+  /* HOST RECEIVES JOIN */
 
-/* ROOM JOIN */
+  if(data.type === "roomJoin"){
 
-if(
-data.type==="roomJoin"
-){
+    if(match.host !== playerId) return;
 
-if(match.host!==playerId)
-return;
+    if(match.guest || match.state !== "open"){
+      return;
+    }
 
+    match.guest = data.playerId;
+    match.guestName = data.playerName;
 
-if(data.guestId===playerId)
-return;
+    match.state = "starting";
 
 
-match.guest =
-data.guestId;
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"roomAccepted",
+        roomId:match.id,
+        hostId:playerId,
+        hostName:username,
+        guestId:data.playerId,
+        guestName:data.playerName
+      }
+    );
 
 
-match.state =
-"starting";
+    showMatchFound();
 
 
-onlinePlayers.set(
-data.guestId,
-{
-id:data.guestId,
-user:data.guestName,
-seen:Date.now(),
-busy:true
-}
-);
+    if(match.startSent) return;
 
+    match.startSent = true;
 
-showMatchFound();
 
-announcePresence();
+    const startAt =
+      Date.now() + 3500;
 
 
-setTimeout(()=>{
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"start",
+        roomId:match.id,
+        startAt:startAt
+      }
+    );
 
-if(
-!match ||
-match.host!==playerId ||
-!match.guest
-)
-return;
 
+    startCountdown(startAt);
 
-const startAt =
-Date.now()+3500;
+    return;
+  }
 
 
-publishRoom({
+  /* GUEST RECEIVES ACCEPT */
 
-type:"start",
+  if(data.type === "roomAccepted"){
 
-roomId:match.id,
+    if(data.guestId !== playerId) return;
 
-game:match.game,
+    match.host = data.hostId;
+    match.hostName = data.hostName;
 
-at:startAt
+    match.guest = playerId;
+    match.guestName = username;
 
-});
+    match.state = "starting";
 
-},500);
+    showMatchFound();
 
+    return;
+  }
 
-return;
 
-}
+  /* START */
 
+  if(data.type === "start"){
 
-/* START */
+    if(match.state === "playing"){
+      return;
+    }
 
-if(
-data.type==="start"
-){
+    match.state = "starting";
 
-if(!match)
-return;
+    startCountdown(data.startAt);
 
-startCountdown(
-data.at
-);
+    return;
+  }
 
-return;
 
-}
+  /* TARGET */
 
+  if(data.type === "targetHit"){
 
-/* TARGET */
+    if(data.playerId === playerId){
+      return;
+    }
 
-if(
-data.type==="targetFinished"
-){
+    return;
+  }
 
-handleTargetFinished(data);
-return;
 
-}
+  if(data.type === "targetFinished"){
 
+    handleTargetFinished(data);
 
-/* REACTION */
+    return;
+  }
 
-if(
-data.type==="reactionGo"
-){
 
-handleReactionGo(data);
-return;
+  /* REACTION */
 
-}
+  if(data.type === "reactionFinished"){
 
+    handleReactionFinished(data);
 
-if(
-data.type==="reactionResult"
-){
+    return;
+  }
 
-handleReactionResult(data);
-return;
 
-}
+  /* TTT */
 
+  if(data.type === "tttState"){
 
-/* TTT */
+    handleTTTState(data);
 
-if(
-data.type==="tttState"
-){
+    return;
+  }
 
-handleTTTState(data);
-return;
 
-}
+  /* DRAW */
 
+  if(data.type === "draw"){
 
-/* DRAW */
+    receiveDrawing(data);
 
-if(
-data.type==="drawRound"
-){
+    return;
+  }
 
-handleDrawRoom(data);
-return;
 
-}
+  if(data.type === "drawFinished"){
 
+    handleDrawingFinished(data);
 
-if(
-data.type==="drawSubmit"
-){
+    return;
+  }
 
-handleDrawSubmit(data);
-return;
 
-}
+  /* ROOM CLOSED */
 
+  if(data.type === "roomClosed"){
 
-/* RESULT */
+    if(match){
 
-if(
-data.type==="gameResult"
-){
+      match = null;
 
-showGameResult(data);
-return;
+      matchOverlay.classList.remove("show");
+
+      showView("arcade");
+
+    }
+
+  }
 
 }
+
+
+/* =========================================================
+   MATCH WAITING
+========================================================= */
+
+function showMatchFound(){
+
+  if(!match) return;
+
+  matchOverlay.classList.add("show");
+
+  matchTitle.textContent =
+    match.state === "open"
+      ? "Esperando jugador..."
+      : "¡Jugador encontrado!";
+
+  matchSub.textContent =
+    match.state === "open"
+      ? "La sala está abierta."
+      : `${gameName(match.game)} • ${match.hostName || username}`;
+
+  matchCountdown.textContent = "";
 
 }
 
@@ -3229,588 +2090,569 @@ return;
    COUNTDOWN
 ========================================================= */
 
-function startCountdown(at){
+function startCountdown(startAt){
 
-if(!match)
-return;
+  matchOverlay.classList.add("show");
 
+  matchTitle.textContent =
+    "🎮 La partida comienza en...";
 
-document
-.getElementById("matchOverlay")
-.classList.add("show");
+  matchSub.textContent =
+    gameName(match.game);
 
+  const timer = setInterval(()=>{
 
-const countdown =
-document.getElementById(
-"matchCountdown"
-);
+    if(!match){
 
-
-const delay =
-Math.max(
-0,
-at-Date.now()
-);
+      clearInterval(timer);
+      return;
+    }
 
 
-countdown.textContent =
-"3";
+    const remaining =
+      startAt - Date.now();
 
 
-setTimeout(()=>{
+    if(remaining <= 0){
 
-if(match)
-countdown.textContent="2";
+      clearInterval(timer);
 
-},Math.max(0,delay-2000));
+      matchCountdown.textContent = "GO!";
 
+      /*
+        IMPORTANTE:
 
-setTimeout(()=>{
+        Acá NO volvemos a Arcade.
 
-if(match)
-countdown.textContent="1";
+        Apenas terminan los 3 segundos:
+        1. Cerramos el overlay.
+        2. Abrimos el juego correspondiente.
+        3. Arranca inmediatamente.
+      */
 
-},Math.max(0,delay-1000));
+      setTimeout(()=>{
 
+        if(!match) return;
 
-setTimeout(()=>{
+        matchOverlay.classList.remove("show");
 
-if(!match)
-return;
+        startMatchGame();
 
+      },120);
 
-countdown.textContent =
-"🔥 ¡YA!";
-
-
-setTimeout(()=>{
-
-if(!match)
-return;
-
-
-document
-.getElementById("matchOverlay")
-.classList.remove("show");
+      return;
+    }
 
 
-startMatchGame();
+    const seconds =
+      Math.ceil(remaining / 1000);
 
-},450);
+    matchCountdown.textContent =
+      seconds;
 
-},delay);
+  },50);
 
 }
 
 
 /* =========================================================
-   ARRANCAR JUEGO
+   START MATCH GAME
 ========================================================= */
 
 function startMatchGame(){
 
-if(!match)
-return;
+  if(!match) return;
+
+  match.state = "playing";
+
+  matchResultShown = false;
+
+  match.resultSent = false;
 
 
-match.state =
-"playing";
+  if(match.game === "target"){
+
+    showGameScreen("target");
+
+    startTargetGame();
+
+    return;
+  }
 
 
-if(match.game==="target"){
+  if(match.game === "reaction"){
 
-startTargetMultiplayer();
+    showGameScreen("reaction");
 
-}
+    startReactionGame();
 
-
-if(match.game==="reaction"){
-
-startReactionMultiplayer();
-
-}
+    return;
+  }
 
 
-if(match.game==="ttt"){
+  if(match.game === "ttt"){
 
-startTTTMultiplayer();
+    showGameScreen("ttt");
 
-}
+    startTTTGame();
+
+    return;
+  }
 
 
-if(match.game==="draw"){
+  if(match.game === "draw"){
 
-startDrawMultiplayer();
+    showView("draw");
 
-}
+    initCanvas();
+
+    return;
+  }
 
 }
 
 
 /* =========================================================
-   TARGET
+   GAME SCREEN
 ========================================================= */
 
-function startTargetMultiplayer(){
+function showGameScreen(game){
 
-showGameScreen("target");
-
-
-targetScore=0;
-targetResults={};
+  showView("activeGame");
 
 
-document.getElementById(
-"targetScore"
-).textContent =
-"0";
+  const info = {
+
+    target:{
+      icon:"🎯",
+      title:"Caza el objetivo",
+      status:"¡Tocá el objetivo lo más rápido posible!"
+    },
+
+    reaction:{
+      icon:"⚡",
+      title:"Reflejos",
+      status:"Esperá la señal..."
+    },
+
+    ttt:{
+      icon:"❌",
+      title:"Tres en línea",
+      status:"La partida está comenzando..."
+    }
+
+  };
 
 
-const area =
-document.getElementById(
-"activeGameArea"
-);
+  const data = info[game] || {
+    icon:"🎮",
+    title:"Partida",
+    status:"Jugando..."
+  };
 
 
-area.innerHTML="";
+  document.getElementById("activeGameIcon")
+    .textContent = data.icon;
+
+  document.getElementById("activeGameTitle")
+    .textContent = data.title;
+
+  document.getElementById("activeGameStatus")
+    .textContent = data.status;
 
 
-targetStart =
-Date.now();
+  target.style.display = "none";
+
+  targetArea.style.display = "flex";
+
+  tttArea.style.display = "none";
+
+  gameMessage.textContent = "";
+
+  targetScore = 0;
+
+  targetScoreEl.textContent = "0";
+
+  gameTimer.textContent = "--";
+
+  rankingContent.innerHTML =
+    "Esperando resultados...";
 
 
-spawnTargetMulti();
+  if(game === "ttt"){
+
+    targetArea.style.display = "none";
+
+    tttArea.style.display = "block";
+
+  }
 
 
-clearInterval(targetTimer);
+  pageName.textContent =
+    "ARCADE / " + data.title;
 
 
-targetTimer =
-setInterval(()=>{
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
-if(
-Date.now()-targetStart>=20000
-){
-
-clearInterval(targetTimer);
+}
 
 
-publishRoom({
+/* =========================================================
+   TARGET GAME
+========================================================= */
 
-type:"targetFinished",
+function startTargetGame(){
 
-id:playerId,
+  clearInterval(targetInterval);
 
-user:username,
+  targetScore = 0;
 
-score:targetScore,
+  targetScoreEl.textContent = "0";
 
-ts:Date.now()
+  gameMessage.textContent =
+    "¡Cazá el objetivo!";
+
+
+  targetTime = Date.now() + 20000;
+
+
+  moveTarget();
+
+
+  targetInterval = setInterval(()=>{
+
+    const left =
+      Math.max(
+        0,
+        targetTime - Date.now()
+      );
+
+
+    gameTimer.textContent =
+      (left / 1000).toFixed(1) + " s";
+
+
+    if(left <= 0){
+
+      clearInterval(targetInterval);
+
+      target.style.display = "none";
+
+      finishTarget();
+
+    }
+
+  },50);
+
+}
+
+
+function moveTarget(){
+
+  const area =
+    targetArea.getBoundingClientRect();
+
+
+  const size = 80;
+
+  const maxX =
+    Math.max(0, area.width - size);
+
+  const maxY =
+    Math.max(0, area.height - size);
+
+
+  target.style.left =
+    Math.random() * maxX + "px";
+
+  target.style.top =
+    Math.random() * maxY + "px";
+
+  target.style.display = "block";
+
+}
+
+
+target.addEventListener("click",()=>{
+
+  if(!match || match.game !== "target") return;
+
+  if(match.state !== "playing") return;
+
+
+  targetScore++;
+
+  targetScoreEl.textContent =
+    targetScore;
+
+
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"targetHit",
+      playerId:playerId,
+      score:targetScore
+    }
+  );
+
+
+  moveTarget();
 
 });
 
 
-area.innerHTML = `
+function finishTarget(){
 
-<div
-class="muted"
-style="
-position:absolute;
-inset:45% 0;
-text-align:center">
-
-Esperando resultado...
-
-</div>
-
-`;
-
-}
-
-},100);
-
-}
+  if(!match) return;
 
 
-/* =========================================================
-   TARGET
-========================================================= */
-
-function spawnTargetMulti(){
-
-const area =
-document.getElementById(
-"activeGameArea"
-);
-
-
-if(!area)
-return;
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"targetFinished",
+      playerId:playerId,
+      name:username,
+      score:targetScore
+    }
+  );
 
 
-const target =
-document.createElement("button");
-
-
-target.className =
-"target";
-
-
-target.style.left =
-Math.random()*
-Math.max(
-1,
-area.clientWidth-55
-)+"px";
-
-
-target.style.top =
-Math.random()*
-Math.max(
-1,
-area.clientHeight-55
-)+"px";
-
-
-target.onclick=()=>{
-
-if(
-Date.now()-targetStart>=20000
-)
-return;
-
-
-targetScore++;
-
-
-document.getElementById(
-"targetScore"
-).textContent =
-targetScore;
-
-
-beep(850,.035);
-
-
-target.remove();
-
-
-spawnTargetMulti();
-
-};
-
-
-area.appendChild(target);
+  handleTargetFinished({
+    playerId:playerId,
+    name:username,
+    score:targetScore
+  });
 
 }
 
-
-/* =========================================================
-   TARGET RESULT
-========================================================= */
 
 function handleTargetFinished(data){
 
-targetResults[data.id]={
-id:data.id,
-user:data.user,
-score:Number(data.score)
-};
+  if(!match) return;
+
+  if(!match.targetResults){
+    match.targetResults = {};
+  }
 
 
-if(
-Object.keys(targetResults).length<2
-)
-return;
+  match.targetResults[data.playerId] = data;
 
 
-if(
-match.host!==playerId
-)
-return;
+  renderTargetRanking();
 
 
-const players =
-Object.values(targetResults);
+  const totalPlayers =
+    match.guest ? 2 : 1;
 
 
-let winner=null;
+  if(Object.keys(match.targetResults).length >= totalPlayers){
+
+    const results =
+      Object.values(match.targetResults)
+        .sort((a,b)=>b.score-a.score);
 
 
-if(
-players[0].score>
-players[1].score
-){
+    const winner =
+      results[0];
 
-winner=players[0].id;
 
-}else if(
-players[1].score>
-players[0].score
-){
+    showGameResult(
+      winner.playerId === playerId,
+      winner.name + " ganó con " +
+      winner.score + " puntos."
+    );
 
-winner=players[1].id;
+  }
 
 }
 
 
-const results={};
+function renderTargetRanking(){
+
+  if(!match || !match.targetResults) return;
 
 
-players.forEach(p=>{
-
-results[p.id]={
-id:p.id,
-user:p.user,
-score:p.score
-};
-
-});
+  const results =
+    Object.values(match.targetResults)
+      .sort((a,b)=>b.score-a.score);
 
 
-publishRoom({
+  rankingContent.innerHTML =
+    results.map((r,i)=>`
 
-type:"gameResult",
+      <div class="rankRow">
+        <span>
+          ${i+1}. ${escapeHTML(r.name)}
+        </span>
 
-winner:winner,
+        <strong>
+          ${r.score}
+        </strong>
+      </div>
 
-results:results,
-
-reason:"target"
-
-});
+    `).join("");
 
 }
 
 
 /* =========================================================
-   REACTION
+   REACTION GAME
 ========================================================= */
 
-function startReactionMultiplayer(){
+function startReactionGame(){
 
-showGameScreen("reaction");
+  clearTimeout(reactionTimeout);
 
+  reactionStart = null;
 
-reactionResults={};
-reactionArmed=false;
-reactionGoTime=0;
-
-
-const area =
-document.getElementById(
-"activeGameArea"
-);
+  gameMessage.textContent =
+    "Esperá...";
 
 
-area.innerHTML = `
-
-<div
-class="muted"
-style="
-position:absolute;
-inset:45% 0;
-text-align:center;
-font-size:22px">
-
-Esperá...
-
-</div>
-
-`;
+  target.style.display = "none";
 
 
-if(
-match.host===playerId
-){
-
-setTimeout(()=>{
-
-if(!match)
-return;
+  const delay =
+    1500 + Math.random() * 3500;
 
 
-publishRoom({
+  reactionTimeout =
+    setTimeout(()=>{
 
-type:"reactionGo",
+      if(!match) return;
 
-at:Date.now()
+      if(match.game !== "reaction") return;
 
-});
+      reactionStart = Date.now();
 
-},1500+
-Math.random()*3000);
+      gameMessage.textContent =
+        "¡AHORA!";
 
-}
+      target.style.display = "block";
+
+      target.style.background =
+        "#35d07f";
+
+    },delay);
 
 }
 
 
-/* =========================================================
-   REACTION GO
-========================================================= */
+/* Clicking target also handles reaction */
 
-function handleReactionGo(data){
+function reactionClick(){
 
-reactionGoTime =
-Date.now();
+  if(!match) return;
 
+  if(match.game !== "reaction") return;
 
-reactionArmed =
-true;
+  if(match.state !== "playing") return;
 
 
-const area =
-document.getElementById(
-"activeGameArea"
-);
+  if(!reactionStart){
+
+    gameMessage.textContent =
+      "¡Demasiado pronto!";
+
+    return;
+  }
 
 
-area.innerHTML = `
-
-<button
-id="reactionButton"
-style="
-position:absolute;
-inset:20%;
-font-size:35px;
-font-weight:900;
-border:0;
-border-radius:20px;
-background:#39e58c;
-color:#04120b">
-
-¡AHORA!
-
-</button>
-
-`;
+  const time =
+    Date.now() - reactionStart;
 
 
-beep(1100,.1);
+  target.style.display = "none";
+
+  gameMessage.textContent =
+    time + " ms";
 
 
-document
-.getElementById("reactionButton")
-.onclick=()=>{
-
-if(!reactionArmed)
-return;
-
-
-reactionArmed=false;
-
-
-const ms =
-Math.max(
-0,
-Date.now()-reactionGoTime
-);
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"reactionFinished",
+      playerId:playerId,
+      name:username,
+      time:time
+    }
+  );
 
 
-publishRoom({
-
-type:"reactionResult",
-
-id:playerId,
-
-user:username,
-
-ms:ms,
-
-score:Math.max(
-1,
-1000-ms
-)
-
-});
-
-
-document
-.getElementById("reactionButton")
-.textContent =
-ms+" ms";
-
-};
+  handleReactionFinished({
+    playerId:playerId,
+    name:username,
+    time:time
+  });
 
 }
 
 
-/* =========================================================
-   REACTION RESULT
-========================================================= */
+target.addEventListener("click",()=>{
 
-function handleReactionResult(data){
-
-reactionResults[data.id]={
-id:data.id,
-user:data.user,
-score:Number(data.score),
-ms:Number(data.ms)
-};
-
-
-if(
-Object.keys(reactionResults).length<2
-)
-return;
-
-
-if(
-match.host!==playerId
-)
-return;
-
-
-const players =
-Object.values(reactionResults);
-
-
-players.sort(
-(a,b)=>a.ms-b.ms
-);
-
-
-let winner=null;
-
-
-if(
-players[0].ms<
-players[1].ms
-){
-
-winner =
-players[0].id;
-
-}
-
-
-const results={};
-
-
-players.forEach(p=>{
-
-results[p.id]={
-id:p.id,
-user:p.user,
-score:p.score,
-ms:p.ms
-};
+  if(match && match.game === "reaction"){
+    reactionClick();
+  }
 
 });
 
 
-publishRoom({
+function handleReactionFinished(data){
 
-type:"gameResult",
+  if(!match) return;
 
-winner:winner,
 
-results:results,
+  if(!match.reactionResults){
+    match.reactionResults = {};
+  }
 
-reason:"reaction"
 
-});
+  match.reactionResults[data.playerId] = data;
+
+
+  const results =
+    Object.values(match.reactionResults)
+      .sort((a,b)=>a.time-b.time);
+
+
+  rankingContent.innerHTML =
+    results.map((r,i)=>`
+
+      <div class="rankRow">
+
+        <span>
+          ${i+1}. ${escapeHTML(r.name)}
+        </span>
+
+        <strong>
+          ${r.time} ms
+        </strong>
+
+      </div>
+
+    `).join("");
+
+
+  const totalPlayers =
+    match.guest ? 2 : 1;
+
+
+  if(results.length >= totalPlayers){
+
+    const winner = results[0];
+
+    showGameResult(
+      winner.playerId === playerId,
+      winner.name +
+      " ganó con " +
+      winner.time +
+      " ms."
+    );
+
+  }
 
 }
 
@@ -3819,335 +2661,252 @@ reason:"reaction"
    TTT
 ========================================================= */
 
-function startTTTMultiplayer(){
+function startTTTGame(){
 
-showGameScreen("ttt");
-
-
-tttState={
-board:Array(9).fill(""),
-turn:0
-};
+  tttState = {
+    board:["","","","","","","","",""],
+    turn:match.host,
+    winner:null
+  };
 
 
-document.getElementById(
-"gameStatus"
-).textContent =
-match.host===playerId ?
-"Vos sos X. ¡Empezás vos!" :
-"El rival es X. Esperá tu turno.";
+  renderTTT();
 
 
-renderTTT();
-
-
-if(
-match.host===playerId
-){
-
-publishRoom({
-
-type:"tttState",
-
-board:tttState.board,
-
-turn:0
-
-});
+  document.getElementById("activeGameStatus")
+    .textContent =
+      tttState.turn === playerId
+        ? "Es tu turno"
+        : "Turno del rival";
 
 }
 
-}
-
-
-/* =========================================================
-   TTT RENDER
-========================================================= */
 
 function renderTTT(){
 
-const box =
-document.getElementById(
-"activeGameArea"
-);
+  const buttons =
+    document.querySelectorAll(".ttt button");
 
 
-box.innerHTML="";
+  buttons.forEach((button,index)=>{
+
+    button.textContent =
+      tttState.board[index] || "";
+
+  });
 
 
-const grid =
-document.createElement("div");
-
-
-grid.className="ttt";
-
-
-for(
-let i=0;
-i<9;
-i++
-){
-
-const b =
-document.createElement("button");
-
-
-b.className="tttCell";
-
-b.textContent =
-tttState.board[i];
-
-
-b.onclick=()=>{
-tttMove(i);
-};
-
-
-grid.appendChild(b);
+  document.getElementById("activeGameStatus")
+    .textContent =
+      tttState.turn === playerId
+        ? "Es tu turno"
+        : "Turno del rival";
 
 }
 
 
-box.appendChild(grid);
+function tttMove(index){
+
+  if(!match) return;
+
+  if(match.game !== "ttt") return;
+
+  if(match.state !== "playing") return;
+
+  if(tttState.turn !== playerId) return;
+
+  if(tttState.board[index]) return;
+
+  if(tttState.winner) return;
+
+
+  const symbol =
+    playerId === match.host
+      ? "X"
+      : "O";
+
+
+  tttState.board[index] =
+    symbol;
+
+
+  const result =
+    checkTTT(tttState.board);
+
+
+  if(result){
+
+    tttState.winner =
+      result === "draw"
+        ? "draw"
+        : playerId;
+
+
+    renderTTT();
+
+
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"tttState",
+        board:tttState.board,
+        turn:null,
+        winner:tttState.winner,
+        final:true,
+        playerId:playerId
+      }
+    );
+
+
+    finishTTT(result);
+
+    return;
+  }
+
+
+  tttState.turn =
+    tttState.turn === match.host
+      ? match.guest
+      : match.host;
+
+
+  renderTTT();
+
+
+  publish(
+    ROOM_PREFIX + match.id,
+    {
+      type:"tttState",
+      board:tttState.board,
+      turn:tttState.turn,
+      winner:null,
+      final:false,
+      playerId:playerId
+    }
+  );
 
 }
 
-
-/* =========================================================
-   TTT MOVE
-========================================================= */
-
-function tttMove(cell){
-
-if(!match)
-return;
-
-
-const myIndex =
-playerId===match.host ?
-0 :
-1;
-
-
-if(
-tttState.turn!==myIndex
-)
-return;
-
-
-if(
-tttState.board[cell]
-)
-return;
-
-
-const symbol =
-myIndex===0 ?
-"X" :
-"O";
-
-
-tttState.board[cell]=symbol;
-
-
-const winner =
-checkWinner(tttState.board);
-
-
-if(winner){
-
-const winnerId =
-winner==="X" ?
-match.host :
-match.guest;
-
-
-const loserId =
-winnerId===match.host ?
-match.guest :
-match.host;
-
-
-const results={};
-
-
-results[winnerId]={
-id:winnerId,
-user:getPlayerName(winnerId),
-score:100
-};
-
-
-results[loserId]={
-id:loserId,
-user:getPlayerName(loserId),
-score:0
-};
-
-
-if(match.host===playerId){
-
-publishRoom({
-
-type:"gameResult",
-
-winner:winnerId,
-
-results:results,
-
-reason:"ttt"
-
-});
-
-}
-
-
-renderTTT();
-
-return;
-
-}
-
-
-if(
-tttState.board.every(x=>x)
-){
-
-if(match.host===playerId){
-
-publishRoom({
-
-type:"gameResult",
-
-winner:null,
-
-results:{
-
-[match.host]:{
-id:match.host,
-user:getPlayerName(match.host),
-score:50
-},
-
-[match.guest]:{
-id:match.guest,
-user:getPlayerName(match.guest),
-score:50
-}
-
-},
-
-reason:"ttt"
-
-});
-
-}
-
-return;
-
-}
-
-
-tttState.turn =
-1-tttState.turn;
-
-
-document.getElementById(
-"gameStatus"
-).textContent =
-tttState.turn===(
-playerId===match.host?0:1
-) ?
-"🔥 ¡Es tu turno!" :
-"Esperando al rival...";
-
-
-publishRoom({
-
-type:"tttState",
-
-board:tttState.board,
-
-turn:tttState.turn
-
-});
-
-}
-
-
-/* =========================================================
-   TTT STATE
-========================================================= */
 
 function handleTTTState(data){
 
-tttState.board =
-data.board;
+  if(!match) return;
 
-tttState.turn =
-data.turn;
+  if(data.playerId === playerId) return;
 
 
-if(match){
+  tttState.board =
+    data.board;
 
-const myIndex =
-playerId===match.host ?
-0 :
-1;
+  tttState.turn =
+    data.turn;
 
-
-document.getElementById(
-"gameStatus"
-).textContent =
-tttState.turn===myIndex ?
-"🔥 ¡Es tu turno!" :
-"Esperando al rival...";
-
-}
+  tttState.winner =
+    data.winner;
 
 
-renderTTT();
-
-}
+  renderTTT();
 
 
-/* =========================================================
-   TTT WINNER
-========================================================= */
+  if(data.final){
 
-function checkWinner(board){
+    if(data.winner === "draw"){
 
-const lines=[
-[0,1,2],
-[3,4,5],
-[6,7,8],
-[0,3,6],
-[1,4,7],
-[2,5,8],
-[0,4,8],
-[2,4,6]
-];
+      showGameResult(
+        false,
+        "¡Empate!"
+      );
 
+    }
 
-for(
-const [a,b,c]
-of lines
-){
+    else{
 
-if(
-board[a] &&
-board[a]===board[b] &&
-board[a]===board[c]
-){
+      showGameResult(
+        data.winner === playerId,
+        data.winner === match.host
+          ? match.hostName + " ganó."
+          : match.guestName + " ganó."
+      );
 
-return board[a];
+    }
 
-}
+  }
 
 }
 
 
-return null;
+function checkTTT(board){
+
+  const wins = [
+
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+
+    [0,4,8],
+    [2,4,6]
+
+  ];
+
+
+  for(const [a,b,c] of wins){
+
+    if(
+      board[a] &&
+      board[a] === board[b] &&
+      board[a] === board[c]
+    ){
+
+      return board[a];
+
+    }
+
+  }
+
+
+  if(board.every(Boolean)){
+    return "draw";
+  }
+
+
+  return null;
+
+}
+
+
+function finishTTT(result){
+
+  if(result === "draw"){
+
+    showGameResult(
+      false,
+      "¡La partida terminó en empate!"
+    );
+
+    return;
+  }
+
+
+  const winnerSymbol =
+    result;
+
+
+  const winnerId =
+    winnerSymbol === "X"
+      ? match.host
+      : match.guest;
+
+
+  showGameResult(
+    winnerId === playerId,
+    winnerId === match.host
+      ? match.hostName + " ganó."
+      : match.guestName + " ganó."
+  );
 
 }
 
@@ -4156,565 +2915,398 @@ return null;
    DRAW
 ========================================================= */
 
-function startDrawMultiplayer(){
-
-showView("draw");
-
-
-drawResults={};
+let drawing = false;
+let lastX = 0;
+let lastY = 0;
 
 
-clearCanvas();
+function initCanvas(){
+
+  const rect =
+    canvas.getBoundingClientRect();
 
 
-document.getElementById(
-"drawStatus"
-).textContent =
-"Preparando partida...";
+  canvas.width =
+    rect.width * devicePixelRatio;
+
+  canvas.height =
+    rect.height * devicePixelRatio;
 
 
-if(
-match.host===playerId
-){
-
-const words=[
-"MOTO",
-"AVIÓN",
-"ROBOT",
-"COHETE",
-"GATO",
-"DINOSAURIO",
-"PIZZA",
-"CASCO",
-"DRON",
-"SUBMARINO"
-];
+  ctx.scale(
+    devicePixelRatio,
+    devicePixelRatio
+  );
 
 
-const word =
-words[
-Math.floor(
-Math.random()*words.length
-)
-];
-
-
-drawRound =
-Date.now().toString(36);
-
-
-drawDeadline =
-Date.now()+60000;
-
-
-publishRoom({
-
-type:"drawRound",
-
-round:drawRound,
-
-word:word,
-
-deadline:drawDeadline
-
-});
-
-}
+  ctx.lineWidth = 4;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#111";
 
 }
 
 
-/* =========================================================
-   DRAW ROUND
-========================================================= */
+function canvasPosition(e){
 
-function handleDrawRoom(data){
-
-drawRound =
-data.round;
+  const rect =
+    canvas.getBoundingClientRect();
 
 
-drawDeadline =
-data.deadline;
+  return {
 
+    x:e.clientX - rect.left,
 
-document.getElementById(
-"drawWord"
-).textContent =
-data.word;
+    y:e.clientY - rect.top
 
-
-document.getElementById(
-"drawStatus"
-).textContent =
-"🎨 ¡Dibujen!";
-
-
-clearCanvas();
-
-
-clearInterval(
-drawTimerInterval
-);
-
-
-drawTimerInterval =
-setInterval(()=>{
-
-const left =
-Math.max(
-0,
-Math.ceil(
-(drawDeadline-Date.now())/1000
-)
-);
-
-
-document.getElementById(
-"drawTimer"
-).textContent =
-left+"s";
-
-
-if(left<=0){
-
-clearInterval(
-drawTimerInterval
-);
-
-}
-
-},250);
+  };
 
 }
 
 
-/* =========================================================
-   FINISH DRAW
-========================================================= */
+canvas.addEventListener("pointerdown",e=>{
 
-function finishDrawing(){
+  if(!match || match.game !== "draw") return;
 
-if(
-!match ||
-!drawRound
-){
+  drawing = true;
 
-toast(
-"No hay una partida de dibujo."
-);
+  const p =
+    canvasPosition(e);
 
-return;
-
-}
-
-
-const image =
-canvas.toDataURL(
-"image/jpeg",
-.45
-);
-
-
-publishRoom({
-
-type:"drawSubmit",
-
-round:drawRound,
-
-id:playerId,
-
-user:username,
-
-image:image,
-
-ts:Date.now()
+  lastX = p.x;
+  lastY = p.y;
 
 });
 
 
-document.getElementById(
-"myDrawing"
-).src =
-image;
+canvas.addEventListener("pointermove",e=>{
+
+  if(!drawing) return;
+
+  const p =
+    canvasPosition(e);
 
 
-document.getElementById(
-"drawStatus"
-).textContent =
-"✓ Enviado. Esperando al rival...";
+  ctx.beginPath();
 
-}
+  ctx.moveTo(lastX,lastY);
 
+  ctx.lineTo(p.x,p.y);
 
-/* =========================================================
-   DRAW RESULT
-========================================================= */
-
-function handleDrawSubmit(data){
-
-if(
-data.round!==drawRound
-)
-return;
+  ctx.stroke();
 
 
-drawResults[data.id]=data;
+  if(match){
+
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"draw",
+        x1:lastX,
+        y1:lastY,
+        x2:p.x,
+        y2:p.y
+      }
+    );
+
+  }
 
 
-if(
-data.id===playerId
-){
-
-document.getElementById(
-"myDrawing"
-).src=data.image;
-
-}else{
-
-document.getElementById(
-"otherDrawing"
-).src=data.image;
-
-}
-
-
-if(
-Object.keys(drawResults).length<2
-)
-return;
-
-
-if(
-match.host!==playerId
-)
-return;
-
-
-const list =
-Object.values(drawResults);
-
-
-list.sort(
-(a,b)=>
-Number(a.ts)-Number(b.ts)
-);
-
-
-const first=list[0];
-const second=list[1];
-
-
-let winner=null;
-
-
-if(
-Number(first.ts)<
-Number(second.ts)
-){
-
-winner=first.id;
-
-}
-
-
-const results={};
-
-
-list.forEach(p=>{
-
-results[p.id]={
-id:p.id,
-user:p.user,
-score:p.id===winner ? 100 : 50
-};
+  lastX = p.x;
+  lastY = p.y;
 
 });
 
 
-publishRoom({
-
-type:"gameResult",
-
-winner:winner,
-
-results:results,
-
-reason:"draw"
-
+canvas.addEventListener("pointerup",()=>{
+  drawing = false;
 });
 
-}
+canvas.addEventListener("pointerleave",()=>{
+  drawing = false;
+});
 
 
-/* =========================================================
-   RESULTADO
-========================================================= */
+function clearCanvas(){
 
-function showGameResult(data){
-
-if(matchResultShown)
-return;
-
-
-matchResultShown=true;
-
-
-const results =
-data.results || {};
-
-
-const winnerId =
-data.winner;
-
-
-if(!winnerId){
-
-document.getElementById(
-"resultIcon"
-).textContent="🤝";
-
-
-document.getElementById(
-"resultTitle"
-).textContent="¡EMPATE!";
-
-
-document.getElementById(
-"resultName"
-).textContent="Nadie gana";
-
-
-document.getElementById(
-"resultSub"
-).textContent=
-"Los dos estuvieron iguales.";
-
-
-document
-.getElementById("resultOverlay")
-.classList.add("show");
-
-
-beep(550,.15);
-
-setTimeout(()=>{
-beep(700,.15);
-},160);
-
-}else{
-
-const winner =
-results[winnerId]?.user ||
-getPlayerName(winnerId);
-
-
-const iAmWinner =
-winnerId===playerId;
-
-
-document.getElementById(
-"resultIcon"
-).textContent =
-iAmWinner ? "🏆" : "💥";
-
-
-document.getElementById(
-"resultTitle"
-).textContent =
-iAmWinner ?
-"¡GANASTE!" :
-"PERDISTE";
-
-
-document.getElementById(
-"resultName"
-).textContent =
-winner;
-
-
-document.getElementById(
-"resultSub"
-).textContent =
-iAmWinner ?
-"🔥 La página determinó que sos el ganador." :
-"El resultado fue determinado automáticamente.";
-
-
-document
-.getElementById("resultOverlay")
-.classList.add("show");
-
-
-if(iAmWinner){
-
-confetti();
-victorySound();
-
-}else{
-
-beep(220,.25);
-
-}
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
 }
 
 
-/* RANKING */
+function receiveDrawing(data){
 
-for(
-const id in results
-){
-
-const p =
-results[id];
+  if(!canvas) return;
 
 
-addScore(
-p.user,
-Number(p.score)||0
-);
+  ctx.beginPath();
+
+  ctx.moveTo(
+    data.x1,
+    data.y1
+  );
+
+  ctx.lineTo(
+    data.x2,
+    data.y2
+  );
+
+  ctx.stroke();
 
 }
 
 
-/*
-La partida se libera después
-de mostrar el resultado.
-*/
+function handleDrawingFinished(data){
 
-setTimeout(
-finishMatchAfterResult,
-1800
-);
+  showGameResult(
+    data.playerId === playerId,
+    data.name + " terminó el dibujo."
+  );
 
 }
 
 
 /* =========================================================
-   TERMINAR PARTIDA
+   NUMBER GAME
 ========================================================= */
+
+function startNumberGame(){
+
+  showView("arcade");
+
+  const game =
+    document.getElementById("numberGame");
+
+  game.style.display = "block";
+
+  numberSecret =
+    Math.floor(Math.random()*100)+1;
+
+  numberAttempts = 0;
+
+  document.getElementById("numberMessage")
+    .textContent =
+      "¡Empezá a adivinar!";
+
+  document.getElementById("numberInput").value = "";
+
+  document.getElementById("numberInput").focus();
+
+}
+
+
+function guessNumber(){
+
+  const input =
+    document.getElementById("numberInput");
+
+  const value =
+    Number(input.value);
+
+
+  if(!value || value < 1 || value > 100){
+
+    document.getElementById("numberMessage")
+      .textContent =
+        "Poné un número entre 1 y 100.";
+
+    return;
+  }
+
+
+  numberAttempts++;
+
+
+  if(value === numberSecret){
+
+    document.getElementById("numberMessage")
+      .textContent =
+        "🎉 ¡Ganaste! Lo encontraste en " +
+        numberAttempts +
+        " intentos.";
+
+    publish(
+      COMMAND_TOPIC,
+      "NUMBER_WIN:" + numberAttempts
+    );
+
+    return;
+  }
+
+
+  if(value < numberSecret){
+
+    document.getElementById("numberMessage")
+      .textContent =
+        "⬆️ Es más grande.";
+
+  }
+
+  else{
+
+    document.getElementById("numberMessage")
+      .textContent =
+        "⬇️ Es más chico.";
+
+  }
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showGameResult(won,text){
+
+  if(matchResultShown) return;
+
+  matchResultShown = true;
+
+
+  document.getElementById("resultIcon")
+    .textContent =
+      won ? "🏆" : "😢";
+
+
+  document.getElementById("resultTitle")
+    .textContent =
+      won ? "¡Ganaste!" : "Fin de la partida";
+
+
+  document.getElementById("resultText")
+    .textContent =
+      text;
+
+
+  resultOverlay.classList.add("show");
+
+
+  setTimeout(()=>{
+
+    finishMatchAfterResult();
+
+  },1800);
+
+}
+
 
 function finishMatchAfterResult(){
 
-if(!match)
-return;
+  if(!match) return;
 
 
-const oldRoom =
-match.id;
+  const roomId =
+    match.id;
 
 
-if(connected){
+  publish(
+    ROOM_PREFIX + roomId,
+    {
+      type:"roomClosed",
+      roomId:roomId
+    }
+  );
 
-client.unsubscribe(
-ROOM_PREFIX+oldRoom
-);
+
+  publish(
+    LOBBY,
+    {
+      type:"roomClosed",
+      roomId:roomId
+    }
+  );
 
 
-publish(
-LOBBY,
-{
-type:"roomClosed",
-roomId:oldRoom,
-ts:Date.now()
+  mqttClient.unsubscribe(
+    ROOM_PREFIX + roomId
+  );
+
+
+  match = null;
+
+  announcePresence();
+
 }
-);
-
-}
 
 
-match=null;
-selectedGame=null;
-matchResultShown=false;
+function closeResult(){
 
+  resultOverlay.classList.remove("show");
 
-announcePresence();
+  showView("arcade");
 
 }
 
 
 /* =========================================================
-   SALIR
+   LEAVE MATCH
 ========================================================= */
 
 function leaveMatch(){
 
-if(!match)
-return;
+  if(match){
+
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"roomLeave",
+        roomId:match.id,
+        playerId:playerId
+      }
+    );
 
 
-const oldRoom =
-match.id;
+    publish(
+      ROOM_PREFIX + match.id,
+      {
+        type:"roomClosed",
+        roomId:match.id
+      }
+    );
 
 
-if(connected){
-
-publish(
-LOBBY,
-{
-type:"roomClosed",
-roomId:oldRoom,
-ts:Date.now()
-}
-);
+    publish(
+      LOBBY,
+      {
+        type:"roomClosed",
+        roomId:match.id
+      }
+    );
 
 
-publishRoom({
+    mqttClient.unsubscribe(
+      ROOM_PREFIX + match.id
+    );
 
-type:"roomLeave",
-
-roomId:oldRoom,
-
-id:playerId
-
-});
+  }
 
 
-client.unsubscribe(
-ROOM_PREFIX+oldRoom
-);
+  clearInterval(targetInterval);
 
-}
+  clearTimeout(reactionTimeout);
 
 
-match=null;
-selectedGame=null;
-matchResultShown=false;
+  match = null;
+
+  matchResultShown = false;
 
 
-document
-.getElementById("matchOverlay")
-.classList.remove("show");
+  target.style.display = "none";
 
 
-announcePresence();
+  matchOverlay.classList.remove("show");
+
+  resultOverlay.classList.remove("show");
 
 
-showView("arcade");
+  announcePresence();
 
-
-toast(
-"Saliste de la partida."
-);
-
-}
-
-
-/* =========================================================
-   PLAYER NAME
-========================================================= */
-
-function getPlayerName(id){
-
-if(id===playerId)
-return username;
-
-
-return (
-onlinePlayers.get(id)?.user ||
-"Rival"
-);
+  showView("arcade");
 
 }
 
@@ -4725,86 +3317,62 @@ onlinePlayers.get(id)?.user ||
 
 function sendChat(){
 
-const input =
-document.getElementById(
-"chatInput"
-);
+  const input =
+    document.getElementById("chatMessage");
+
+  const text =
+    input.value.trim();
 
 
-const text =
-input.value.trim();
+  if(!text) return;
+
+  if(!username){
+
+    openName();
+
+    return;
+
+  }
 
 
-if(!text)
-return;
+  publish(
+    CHAT_TOPIC,
+    {
+      type:"chat",
+      playerId:playerId,
+      name:username,
+      text:text,
+      ts:Date.now()
+    }
+  );
 
 
-publish(
-CHAT_TOPIC,
-{
-type:"chat",
-id:playerId,
-user:username,
-text:text,
-ts:Date.now()
+  input.value = "";
+
 }
-);
-
-
-input.value="";
-
-}
-
-
-document
-.getElementById("chatInput")
-.addEventListener(
-"keydown",
-e=>{
-
-if(e.key==="Enter")
-sendChat();
-
-});
 
 
 function handleChat(data){
 
-if(!data)
-return;
+  if(data.type !== "chat") return;
 
 
-const box =
-document.getElementById(
-"messages"
-);
+  const div =
+    document.createElement("div");
+
+  div.className = "message";
 
 
-const div =
-document.createElement("div");
+  div.innerHTML =
+    `<strong>${escapeHTML(data.name)}:</strong>
+     <span>${escapeHTML(data.text)}</span>`;
 
 
-div.className =
-"message "+
-(
-data.id===playerId ?
-"me" :
-""
-);
+  messages.appendChild(div);
 
 
-div.innerHTML =
-"<small>"+
-escapeHTML(data.user)+
-"</small>"+
-escapeHTML(data.text);
-
-
-box.appendChild(div);
-
-
-box.scrollTop =
-box.scrollHeight;
+  messages.scrollTop =
+    messages.scrollHeight;
 
 }
 
@@ -4813,750 +3381,141 @@ box.scrollHeight;
    ESP32
 ========================================================= */
 
-function send(command){
+function sendCommand(command){
 
-if(!connected){
-
-toast(
-"MQTT todavía no está conectado."
-);
-
-return;
-
-}
+  publish(
+    COMMAND_TOPIC,
+    command
+  );
 
 
-client.publish(
-COMMAND_TOPIC,
-command
-);
-
-
-log(
-"ESP32 ← "+command,
-"out"
-);
+  addConsole(
+    "→ " + command
+  );
 
 }
 
 
-function sendEspMsg(){
+function handleESPState(data){
 
-const input =
-document.getElementById(
-"espMsg"
-);
-
-
-const value =
-input.value.trim();
+  addConsole(
+    "ESP32 → " + data
+  );
 
 
-if(!value)
-return;
+  document.getElementById("espStatus")
+    .textContent = "ON";
+
+}
 
 
-send(
-"MSG:"+value
-);
+function addConsole(text){
+
+  const now =
+    new Date().toLocaleTimeString();
 
 
-input.value="";
+  espConsole.textContent +=
+    "\n[" + now + "] " + text;
+
+
+  espConsole.scrollTop =
+    espConsole.scrollHeight;
 
 }
 
 
 /* =========================================================
-   ADIVINAR NÚMERO
-========================================================= */
-
-let numberSecret =
-Math.floor(Math.random()*100)+1;
-
-let numberAttempts=0;
-
-
-function guessNumber(){
-
-const value =
-Number(
-document.getElementById("guess").value
-);
-
-
-const result =
-document.getElementById(
-"guessResult"
-);
-
-
-if(
-!value ||
-value<1 ||
-value>100
-){
-
-result.textContent =
-"Usá un número del 1 al 100.";
-
-return;
-
-}
-
-
-numberAttempts++;
-
-
-if(value===numberSecret){
-
-result.textContent =
-"🎉 ¡Ganaste en "+
-numberAttempts+
-" intentos!";
-
-
-showWinner(
-username,
-null,
-"¡GANASTE!",
-"La página confirmó el resultado."
-);
-
-
-numberSecret =
-Math.floor(Math.random()*100)+1;
-
-numberAttempts=0;
-
-}else{
-
-result.textContent =
-value<numberSecret ?
-"⬆ Más alto" :
-"⬇ Más bajo";
-
-}
-
-}
-
-
-/* =========================================================
-   RANKING
-========================================================= */
-
-function addScore(user,score){
-
-ranking[user] =
-(ranking[user]||0)+score;
-
-renderRanking();
-
-}
-
-
-function renderRanking(){
-
-const box =
-document.getElementById(
-"ranking"
-);
-
-
-const list =
-Object.entries(ranking)
-.sort(
-(a,b)=>b[1]-a[1]
-);
-
-
-if(!list.length){
-
-box.innerHTML =
-`
-<div class="muted">
-Todavía no hay resultados.
-</div>
-`;
-
-return;
-
-}
-
-
-box.innerHTML =
-list
-.slice(0,10)
-.map(
-(x,i)=>`
-
-<div class="rank">
-
-<span>
-
-${i===0?"👑 ":""}
-#${i+1}
-${escapeHTML(x[0])}
-
-</span>
-
-<b>
-${x[1]} pts
-</b>
-
-</div>
-
-`
-)
-.join("");
-
-}
-
-
-/* =========================================================
-   GANADOR INDIVIDUAL
-========================================================= */
-
-function showWinner(
-winner,
-loser,
-title,
-subtitle
-){
-
-document.getElementById(
-"resultIcon"
-).textContent =
-winner===username ?
-"🏆" :
-"💥";
-
-
-document.getElementById(
-"resultTitle"
-).textContent =
-winner===username ?
-"¡GANASTE!" :
-title;
-
-
-document.getElementById(
-"resultName"
-).textContent =
-winner;
-
-
-document.getElementById(
-"resultSub"
-).textContent =
-subtitle;
-
-
-document
-.getElementById("resultOverlay")
-.classList.add("show");
-
-
-if(
-winner===username
-)
-confetti();
-
-}
-
-
-/* =========================================================
-   CERRAR RESULTADO
-========================================================= */
-
-function closeResult(){
-
-document
-.getElementById("resultOverlay")
-.classList.remove("show");
-
-
-announcePresence();
-
-
-showView("arcade");
-
-}
-
-
-/* =========================================================
-   CONFETTI
-========================================================= */
-
-function confetti(){
-
-for(
-let i=0;
-i<80;
-i++
-){
-
-const c =
-document.createElement("div");
-
-
-c.className="confetti";
-
-
-c.style.left =
-Math.random()*100+"vw";
-
-
-c.style.background =
-[
-"#38e8ff",
-"#8b5cf6",
-"#39e58c",
-"#ff5577",
-"#ffd447",
-"#fff"
-][
-Math.floor(Math.random()*6)
-];
-
-
-c.style.setProperty(
-"--x",
-(Math.random()*300-150)+"px"
-);
-
-
-c.style.animationDuration =
-(1.7+Math.random()*2)+"s";
-
-
-document.body.appendChild(c);
-
-
-setTimeout(
-()=>c.remove(),
-4000
-);
-
-}
-
-}
-
-
-/* =========================================================
-   SONIDO
-========================================================= */
-
-function victorySound(){
-
-beep(523,.1);
-
-setTimeout(
-()=>beep(659,.1),
-100
-);
-
-setTimeout(
-()=>beep(784,.18),
-210
-);
-
-}
-
-
-function beep(f=600,d=.08){
-
-try{
-
-const a =
-new AudioContext();
-
-const o =
-a.createOscillator();
-
-const g =
-a.createGain();
-
-
-o.frequency.value=f;
-g.gain.value=.035;
-
-
-o.connect(g);
-g.connect(a.destination);
-
-
-o.start();
-
-
-g.gain.exponentialRampToValueAtTime(
-.0001,
-a.currentTime+d
-);
-
-
-o.stop(
-a.currentTime+d
-);
-
-}catch(e){}
-
-}
-
-
-/* =========================================================
-   CANVAS
-========================================================= */
-
-function initCanvas(){
-
-canvas =
-document.getElementById("canvas");
-
-
-ctx =
-canvas.getContext("2d");
-
-
-clearCanvas();
-
-
-canvas.addEventListener(
-"pointerdown",
-e=>{
-
-drawing=true;
-
-drawPoint(e);
-
-});
-
-
-canvas.addEventListener(
-"pointermove",
-e=>{
-
-if(drawing)
-drawPoint(e);
-
-});
-
-
-canvas.addEventListener(
-"pointerup",
-()=>{
-
-drawing=false;
-ctx.beginPath();
-
-});
-
-
-canvas.addEventListener(
-"pointerleave",
-()=>{
-
-drawing=false;
-ctx.beginPath();
-
-});
-
-}
-
-
-/* =========================================================
-   DRAW POINT
-========================================================= */
-
-function drawPoint(e){
-
-const rect =
-canvas.getBoundingClientRect();
-
-
-const x =
-(e.clientX-rect.left)*
-canvas.width/
-rect.width;
-
-
-const y =
-(e.clientY-rect.top)*
-canvas.height/
-rect.height;
-
-
-ctx.lineWidth =
-Number(
-document.getElementById(
-"brushSize"
-).value
-);
-
-
-ctx.lineCap="round";
-
-ctx.strokeStyle =
-drawColor;
-
-
-ctx.lineTo(x,y);
-
-ctx.stroke();
-
-ctx.beginPath();
-
-ctx.moveTo(x,y);
-
-}
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-function clearCanvas(){
-
-if(!ctx)
-return;
-
-
-ctx.fillStyle="#fff";
-
-
-ctx.fillRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-}
-
-
-/* =========================================================
-   COLOR
-========================================================= */
-
-function setColor(color,button){
-
-drawColor=color;
-
-
-document
-.querySelectorAll(".color")
-.forEach(
-x=>
-x.classList.remove("selected")
-);
-
-
-button.classList.add("selected");
-
-}
-
-
-/* =========================================================
-   ESCAPE
+   ESCAPE HTML
 ========================================================= */
 
 function escapeHTML(text){
 
-return String(text)
-.replace(
-/[&<>"']/g,
-c=>({
-
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
-
-}[c])
-);
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
 /* =========================================================
-   MQTT HANDLER
+   PERIODIC TASKS
 ========================================================= */
-
-function handleMQTT(topic,raw){
-
-if(topic===LOBBY){
-
-try{
-
-handleLobby(
-JSON.parse(raw)
-);
-
-}catch(e){}
-
-return;
-
-}
-
-
-if(topic===STATE_TOPIC){
-
-document.getElementById(
-"statEsp"
-).textContent =
-raw;
-
-return;
-
-}
-
-
-if(topic===CHAT_TOPIC){
-
-try{
-
-handleChat(
-JSON.parse(raw)
-);
-
-}catch(e){}
-
-return;
-
-}
-
-
-if(
-match &&
-topic===
-ROOM_PREFIX+match.id
-){
-
-try{
-
-handleRoom(
-JSON.parse(raw)
-);
-
-}catch(e){}
-
-}
-
-}
-
-
-/* =========================================================
-   CONSOLE
-========================================================= */
-
-function log(text,type=""){
-
-const box =
-document.getElementById(
-"consoleLog"
-);
-
-
-if(!box)
-return;
-
-
-const div =
-document.createElement("div");
-
-
-div.className =
-"log "+type;
-
-
-div.textContent =
-"["+
-new Date().toLocaleTimeString()+
-"] "+
-text;
-
-
-box.appendChild(div);
-
-
-box.scrollTop =
-box.scrollHeight;
-
-}
-
-
-/* =========================================================
-   TIMER
-========================================================= */
-
-const sessionStart =
-Date.now();
-
 
 setInterval(()=>{
 
-const s =
-Math.floor(
-(Date.now()-sessionStart)/1000
-);
+  const now =
+    Date.now();
 
 
-document.getElementById(
-"statTime"
-).textContent =
+  Object.keys(onlinePlayers).forEach(id=>{
 
-String(
-Math.floor(s/60)
-).padStart(2,"0")+
-":"+
-String(
-s%60
-).padStart(2,"0");
+    if(now - onlinePlayers[id].ts > 8000){
+
+      delete onlinePlayers[id];
+
+    }
+
+  });
 
 
-renderPlayers();
+  Object.keys(rooms).forEach(id=>{
 
-renderRooms();
+    if(now - rooms[id].received > 8000){
+
+      delete rooms[id];
+
+    }
+
+  });
+
+
+  document.getElementById("onlineCount")
+    .textContent =
+      Object.keys(onlinePlayers).length;
+
+
+  renderRooms();
 
 },1000);
 
 
+/*
+  Mantiene viva la sala del host.
+  Así los demás jugadores pueden seguir viéndola.
+*/
+
+setInterval(()=>{
+
+  announceRoom();
+  announcePresence();
+
+},2500);
+
+
 /* =========================================================
-   INICIO
+   START
 ========================================================= */
 
-initCanvas();
-
-connectMQTT();
+topUser.textContent =
+  username || "Sin nombre";
 
 
 if(!username){
 
-setTimeout(
-openName,
-500
-);
-
-}else{
-
-document.getElementById(
-"usernameLabel"
-).textContent =
-username;
-
-
-document.getElementById(
-"profileName"
-).textContent =
-username;
+  setTimeout(()=>{
+    openName();
+  },400);
 
 }
 
 
-log(
-"THOMY ARCADE // MULTIPLAYER ONLINE",
-"in"
-);
+connectMQTT();
+
+showView("home");
 
 </script>
 
