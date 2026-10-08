@@ -3,300 +3,380 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ESP32 Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d18">
+<title>Pixel Arena | ESP32 Arcade</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
 :root {
-    --bg:#090b12;
-    --panel:#111522;
-    --panel2:#171b2b;
-    --border:#272d42;
-    --text:#f4f5f7;
-    --muted:#9298aa;
-    --accent:#7c5cff;
-    --accent2:#a78bfa;
-    --green:#36d399;
-    --red:#ff5d73;
-    --yellow:#ffd166;
-    --blue:#42a5ff;
+    --bg:#0a0d18;
+    --panel:#12182a;
+    --panel2:#1b2339;
+    --border:#2c3651;
+    --text:#f5f6ff;
+    --muted:#9ba7c2;
+    --accent:#8870ff;
+    --accent2:#b2a4ff;
+    --green:#40dfae;
+    --red:#ff657d;
+    --yellow:#ffdb80;
+    --blue:#5cb9ff;
+    --radius:18px;
 }
 
 * { box-sizing:border-box; }
 
+html { min-height:100%; }
+
 body {
     margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:var(--bg);
+    min-height:100vh;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     color:var(--text);
+    background:
+        radial-gradient(ellipse at 8% 0%,rgba(107,80,255,.18),transparent 34%),
+        radial-gradient(ellipse at 95% 15%,rgba(35,159,255,.09),transparent 30%),
+        var(--bg);
 }
 
-button { font-family:inherit; }
+button,input { font:inherit; }
+button { -webkit-tap-highlight-color:transparent; }
+button:focus-visible,input:focus-visible { outline:2px solid var(--accent2); outline-offset:3px; }
 .hidden { display:none !important; }
+.muted { color:var(--muted); }
+h1,h2,h3,p { overflow-wrap:anywhere; }
+h1 { letter-spacing:-.04em; }
+h2 { letter-spacing:-.025em; }
 
 header {
-    height:65px;
-    background:var(--panel);
-    border-bottom:1px solid var(--border);
+    height:68px;
+    padding:0 clamp(12px,3vw,34px);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 25px;
+    gap:12px;
     position:sticky;
     top:0;
     z-index:50;
+    background:rgba(10,13,24,.88);
+    border-bottom:1px solid rgba(150,165,210,.15);
+    backdrop-filter:blur(18px);
 }
 
-.logo { font-size:20px; font-weight:bold; }
+.logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:850;
+    letter-spacing:-.035em;
+    white-space:nowrap;
+}
+.logoMark {
+    display:grid;
+    place-items:center;
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#9a82ff,#6445dc);
+    box-shadow:0 5px 22px #7453ff35;
+}
 
-nav { display:flex; gap:8px; }
+nav { display:flex; gap:5px; }
 
 .navBtn {
-    border:0;
+    border:1px solid transparent;
+    border-radius:11px;
+    padding:10px 13px;
     background:transparent;
     color:var(--muted);
-    padding:10px 14px;
-    border-radius:10px;
     cursor:pointer;
+    transition:.2s;
 }
-
 .navBtn:hover,.navBtn.active {
-    background:var(--panel2);
-    color:white;
+    color:#fff;
+    background:#24203f;
+    border-color:#554b86;
 }
 
 main {
-    max-width:1200px;
-    margin:auto;
-    padding:30px 20px 60px;
+    width:min(1200px,100%);
+    margin:0 auto;
+    padding:32px 22px 55px;
 }
 
 .view { display:none; }
 .view.active { display:block; }
 
-h1 { margin-top:0; }
-
-.panel {
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:25px;
-    margin-bottom:20px;
+.panel,.gameCard {
+    background:linear-gradient(145deg,rgba(23,31,52,.97),rgba(16,22,38,.97));
+    border:1px solid rgba(142,160,210,.17);
+    border-radius:var(--radius);
+    box-shadow:0 14px 38px rgba(0,0,0,.15);
 }
+.panel { padding:24px; margin-bottom:20px; }
 
 .btn {
-    border:0;
-    border-radius:11px;
-    background:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:1px solid transparent;
+    border-radius:12px;
+    padding:11px 17px;
     color:white;
-    padding:11px 18px;
+    background:linear-gradient(135deg,#927aff,#6d4ee9);
+    font-weight:750;
     cursor:pointer;
-    font-weight:bold;
+    box-shadow:0 5px 18px rgba(111,77,240,.19);
+    transition:transform .15s,filter .15s,border-color .15s;
 }
-
-.btn:hover { filter:brightness(1.1); }
-.btn:disabled { opacity:.55; cursor:not-allowed; }
-.btn.secondary { background:var(--panel2); border:1px solid var(--border); }
-.btn.green { background:var(--green); color:#06120d; }
-.btn.red { background:var(--red); }
-.btn.yellow { background:var(--yellow); color:#181300; }
-.muted { color:var(--muted); }
-
-.hero { text-align:center; padding:70px 20px; }
-.hero h1 { font-size:45px; margin-bottom:10px; }
-.hero p { color:var(--muted); font-size:18px; }
-
-.chatBox { height:450px; display:flex; flex-direction:column; }
-.messages {
-    flex:1;
-    overflow-y:auto;
-    background:#0c0f18;
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:15px;
+.btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+.btn:active { transform:scale(.98); }
+.btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.btn.secondary {
+    color:#e1e6fa;
+    background:#202a42;
+    border-color:#35415f;
+    box-shadow:none;
 }
-.message { margin-bottom:12px; }
-.messageName { font-size:12px; color:var(--accent2); font-weight:bold; }
-.messageText { margin-top:3px; overflow-wrap:anywhere; }
-.chatInput { display:flex; gap:10px; margin-top:12px; }
-.chatInput input {
-    flex:1;
-    min-width:0;
-    background:#0c0f18;
-    color:white;
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:12px;
-    outline:none;
+.btn.green { background:linear-gradient(135deg,#4be8b7,#25b88b); color:#08241a; }
+.btn.red { background:linear-gradient(135deg,#ff7186,#df3d60); }
+.btn.yellow { background:linear-gradient(135deg,#ffe49a,#f6be4e); color:#322000; }
+
+.hero {
+    text-align:center;
+    padding:clamp(55px,11vh,110px) 15px;
 }
+.heroEyebrow {
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    color:#c6baff;
+    background:#24203f;
+    border:1px solid #4b4275;
+    border-radius:100px;
+    padding:8px 13px;
+    font-size:13px;
+    font-weight:750;
+}
+.hero h1 {
+    font-size:clamp(38px,7vw,76px);
+    line-height:1.02;
+    margin:24px 0 15px;
+}
+.gradientText {
+    color:#b9aaff;
+    background:linear-gradient(90deg,#bbaaff,#7dcaff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.hero p {
+    max-width:590px;
+    margin:0 auto 27px;
+    color:var(--muted);
+    font-size:clamp(15px,2vw,18px);
+    line-height:1.7;
+}
+.sectionHeading {
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:22px;
+}
+.sectionHeading h1 { margin:0 0 5px; }
+.sectionHeading p { margin:0; color:var(--muted); }
 
 .arcadeGrid {
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:18px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:17px;
 }
 .gameCard {
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:22px;
+    padding:23px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    min-width:0;
+    transition:transform .2s,border-color .2s;
 }
-.gameIcon { font-size:42px; }
-.gameCard h3 { margin:12px 0 7px; }
-.gameCard p { color:var(--muted); min-height:45px; }
+.gameCard:hover {
+    transform:translateY(-4px);
+    border-color:#6956ad;
+}
+.gameIcon {
+    display:grid;
+    place-items:center;
+    width:58px;
+    height:58px;
+    border-radius:17px;
+    background:linear-gradient(145deg,#2c2b52,#1e2942);
+    font-size:29px;
+    margin-bottom:15px;
+}
+.gameCard h3 { margin:0 0 8px; font-size:19px; }
+.gameCard p { margin:0 0 20px; color:var(--muted); line-height:1.6; flex:1; }
+.gameCard .btn { margin-top:auto; }
 
 .room {
-    background:var(--panel2);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:15px;
-    margin-bottom:10px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:15px;
+    gap:14px;
+    padding:15px;
+    margin-top:10px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#171f33;
 }
-.roomInfo strong { display:block; }
+.roomInfo { min-width:0; }
+.roomInfo strong { display:block; margin-bottom:4px; }
 .roomInfo span { color:var(--muted); font-size:13px; }
+
+.chatBox { display:flex; flex-direction:column; min-height:400px; }
+.messages {
+    flex:1;
+    min-height:270px;
+    max-height:55vh;
+    overflow-y:auto;
+    padding:15px;
+    background:#0b1020;
+    border:1px solid var(--border);
+    border-radius:14px;
+}
+.message { margin-bottom:14px; }
+.messageName { font-size:12px; color:var(--accent2); font-weight:800; margin-bottom:4px; }
+.messageText { overflow-wrap:anywhere; line-height:1.5; }
+.chatInput { display:flex; gap:10px; margin-top:12px; }
+.chatInput input,.modalBox input {
+    min-width:0;
+    color:white;
+    background:#0b1020;
+    border:1px solid #303b57;
+    border-radius:12px;
+    padding:13px 14px;
+    outline:none;
+}
+.chatInput input { flex:1; }
+input:focus { border-color:#8c77ff; }
 
 .gameHeader {
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    gap:15px;
-    margin-bottom:20px;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:18px;
 }
-.score { background:var(--panel2); padding:10px 15px; border-radius:12px; }
-.gameCenter { text-align:center; padding:30px 0; }
-.countdown { font-size:90px; font-weight:bold; }
+.gameHeader h1 { font-size:clamp(22px,4vw,32px); margin:0; }
+.gameCenter { text-align:center; padding:25px 0; }
+.countdown { font-size:clamp(64px,14vw,100px); font-weight:900; color:#c2b4ff; }
+.score { display:inline-block; padding:10px 15px; border-radius:12px; background:var(--panel2); }
 
 .targetArea {
     position:relative;
-    height:400px;
-    background:#0c0f18;
+    height:clamp(250px,50vh,420px);
+    margin-top:16px;
+    background:#0b1020;
     border:1px solid var(--border);
-    border-radius:18px;
+    border-radius:16px;
     overflow:hidden;
 }
 .target {
     position:absolute;
-    width:65px;
-    height:65px;
+    width:58px;
+    height:58px;
     border-radius:50%;
-    border:0;
-    background:var(--red);
+    border:4px solid #ffb1be;
+    background:linear-gradient(135deg,#ff7287,#e63b61);
     cursor:pointer;
+    box-shadow:0 0 25px #ff567966;
     display:none;
 }
 .reactionButton {
     width:min(500px,100%);
-    height:250px;
-    font-size:40px;
+    min-height:220px;
     border:0;
     border-radius:20px;
     background:var(--red);
     color:white;
+    font-size:clamp(28px,5vw,42px);
+    font-weight:900;
     cursor:pointer;
 }
 .tttBoard {
-    width:min(420px,100%);
-    margin:20px auto;
+    width:min(390px,100%);
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+    margin:22px auto;
 }
 .tttCell {
     aspect-ratio:1;
-    background:var(--panel2);
-    border:1px solid var(--border);
-    border-radius:12px;
-    font-size:45px;
+    border:1px solid #37425f;
+    border-radius:14px;
+    background:#1b243a;
     color:white;
+    font-size:clamp(32px,8vw,52px);
+    font-weight:850;
     cursor:pointer;
 }
-
-/* DIBUJO COMPARTIDO */
+.tttCell:not(:disabled):hover { background:#302953; }
 
 .drawContainer { text-align:center; }
-
-.drawCanvas {
+.drawCanvas,.drawFightCanvas {
+    display:block;
     width:min(800px,100%);
     height:auto;
     aspect-ratio:8 / 5;
     background:#fff;
+    border:2px solid #e3e8f2;
     border-radius:12px;
-    display:block;
-    margin:15px auto;
+    margin:12px auto;
     touch-action:none;
     cursor:crosshair;
 }
-
-/* PELEAS DE DIBUJOS */
 
 .drawFightContainer { text-align:center; }
-
 .drawFightPrompt {
-    font-size:clamp(18px,3vw,26px);
-    font-weight:bold;
+    font-size:clamp(18px,3vw,25px);
+    font-weight:850;
     margin:8px 0;
-    overflow-wrap:anywhere;
+    color:#d9d0ff;
 }
-
 .drawFightTimer {
-    font-size:clamp(24px,4vw,32px);
-    font-weight:bold;
+    font-size:clamp(25px,4vw,34px);
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
     color:var(--yellow);
-    line-height:1.2;
 }
-
-.drawFightCanvas {
-    display:block;
-    width:min(800px,100%);
-    height:auto;
-    aspect-ratio:8 / 5;
-    background:#fff;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    margin:10px auto;
-    touch-action:none;
-    cursor:crosshair;
-}
-
 .drawFightActions {
     display:flex;
     justify-content:center;
+    align-items:center;
     gap:10px;
     flex-wrap:wrap;
 }
-
-.drawFightActions .btn { min-height:42px; }
-
-.drawFightWaiting {
-    margin:10px 0;
-    color:var(--muted);
-    font-size:16px;
-}
-
-.drawFightCompare { display:none; margin-top:15px; }
-
+.drawFightWaiting { color:var(--yellow); margin:12px 0; }
+.drawFightCompare { display:none; }
 .drawFightCompareGrid {
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:20px;
+    align-items:start;
+    gap:18px;
     margin-top:20px;
 }
-
 .drawFightCard {
-    background:#0c0f18;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:15px;
     min-width:0;
+    overflow:hidden;
+    padding:15px;
+    border:1px solid #303c58;
+    border-radius:17px;
+    background:#0e1525;
 }
-
-.drawFightCard h3 { margin-top:0; overflow-wrap:anywhere; }
-
+.drawFightCard h3 { margin:0 0 12px; overflow-wrap:anywhere; }
 .drawFightCard img {
     display:block;
     width:100%;
@@ -304,122 +384,119 @@ h1 { margin-top:0; }
     aspect-ratio:8 / 5;
     object-fit:contain;
     background:#fff;
-    border:1px solid #d1d5db;
+    border:1px solid #d8deea;
     border-radius:10px;
+    image-rendering:auto;
 }
+.drawFightStatus { margin-top:18px; color:var(--muted); line-height:1.6; }
 
-.drawFightStatus {
-    font-size:18px;
-    margin-top:15px;
-    color:var(--muted);
+.status {
+    padding:13px;
+    margin-top:16px;
+    background:#0c1323;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow-wrap:anywhere;
 }
-
-/* MODO DE DIBUJO: EVITAR DESPLAZAMIENTO VERTICAL */
-
-body.drawfight-mode { overflow:hidden; }
-
-body.drawfight-mode main {
-    padding:5px 12px 0;
-    max-width:1100px;
-}
-
-body.drawfight-mode #drawfight.active {
-    height:calc(100dvh - 70px);
-    overflow-y:auto;
-    overflow-x:hidden;
-}
-
-body.drawfight-mode #drawfight .gameHeader {
-    margin-bottom:5px;
-}
-
-body.drawfight-mode #drawfight .gameHeader h1 {
-    font-size:clamp(18px,3vh,27px);
-    margin:0;
-}
-
-body.drawfight-mode .drawFightContainer {
-    padding:8px;
-    margin-bottom:0;
-}
-
-body.drawfight-mode .drawFightPrompt { margin:3px 0; }
-
-body.drawfight-mode #drawFightPlay > p {
-    font-size:12px;
-    margin:3px 0;
-}
-
-body.drawfight-mode .drawFightCanvas {
-    width:min(800px,100%,calc((100dvh - 275px) * 1.6));
-    max-height:calc(100dvh - 275px);
-    margin:6px auto;
-}
-
-body.drawfight-mode .drawFightActions { gap:8px; }
-
-body.drawfight-mode .drawFightActions .btn { padding:9px 14px; }
-
-.espControls { display:flex; gap:10px; flex-wrap:wrap; }
-.status { margin-top:15px; padding:12px; background:var(--panel2); border-radius:10px; }
+.espControls { display:flex; flex-wrap:wrap; gap:10px; }
 
 .modal {
+    display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.75);
-    display:none;
+    z-index:100;
     align-items:center;
     justify-content:center;
-    z-index:100;
-    padding:20px;
+    padding:18px;
+    background:rgba(3,5,12,.8);
+    backdrop-filter:blur(8px);
 }
 .modal.active { display:flex; }
 .modalBox {
-    width:min(450px,100%);
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:25px;
+    width:min(440px,100%);
+    padding:26px;
     text-align:center;
+    background:#151d30;
+    border:1px solid #394564;
+    border-radius:22px;
+    box-shadow:0 25px 80px #0008;
 }
-.modalBox input {
-    width:100%;
-    background:#0c0f18;
-    color:white;
-    border:1px solid var(--border);
-    padding:13px;
-    border-radius:10px;
-    margin:15px 0;
-    outline:none;
-}
+.modalBox input { display:block; width:100%; margin:16px 0; }
 .modalButtons { display:flex; justify-content:center; gap:10px; }
-.resultBig { font-size:50px; font-weight:bold; margin:15px; }
+.resultBig { font-size:56px; margin:10px; }
 
-@media(max-width:700px) {
-    header { padding:0 8px; }
-    .logo { font-size:15px; }
-    nav { gap:2px; }
-    .navBtn { padding:8px 6px; font-size:11px; }
-    .hero h1 { font-size:32px; }
-    .drawFightCompareGrid { grid-template-columns:1fr; }
+footer {
+    text-align:center;
+    padding:25px;
+    color:#687590;
+    font-size:12px;
+}
+
+/* MODO PELEA: TODO EL DIBUJO EN PANTALLA */
+
+body.drawfight-mode { overflow:hidden; }
+body.drawfight-mode header { height:58px; }
+body.drawfight-mode main {
+    width:100%;
+    max-width:1100px;
+    padding:6px 12px 10px;
+}
+body.drawfight-mode #drawfight.active {
+    height:calc(100dvh - 58px - 16px);
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+body.drawfight-mode #drawfight .gameHeader { margin-bottom:5px; }
+body.drawfight-mode #drawfight .gameHeader h1 { font-size:clamp(18px,3vh,27px); }
+body.drawfight-mode .drawFightContainer { padding:8px; margin-bottom:0; }
+body.drawfight-mode .drawFightPrompt { margin:3px 0; font-size:clamp(17px,2.7vh,23px); }
+body.drawfight-mode .drawFightTimer { font-size:clamp(22px,3.2vh,29px); }
+body.drawfight-mode #drawFightPlay > p { margin:3px 0; font-size:12px; }
+body.drawfight-mode .drawFightCanvas {
+    width:min(800px,100%,calc((100dvh - 255px) * 1.6));
+    max-height:calc(100dvh - 255px);
+    margin:6px auto;
+}
+body.drawfight-mode .drawFightActions .btn { padding:9px 14px; min-height:40px; }
+
+@media(max-width:850px) {
+    .arcadeGrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    main { padding:25px 15px 45px; }
+}
+@media(max-width:600px) {
+    header { height:auto; min-height:62px; padding:9px 10px; flex-wrap:wrap; }
+    .logo { font-size:14px; }
+    .logoMark { width:32px; height:32px; }
+    nav { gap:3px; }
+    .navBtn { padding:8px 7px; font-size:11px; }
+    main { padding:22px 12px 35px; }
+    .arcadeGrid { grid-template-columns:1fr; gap:12px; }
+    .gameCard { padding:19px; }
+    .gameCard p { min-height:0; }
     .panel { padding:16px; }
-    body.drawfight-mode main { padding:4px 6px 0; }
-    body.drawfight-mode #drawfight.active { height:calc(100dvh - 65px); }
+    .drawFightCompareGrid { grid-template-columns:minmax(0,1fr); gap:13px; }
+    .drawFightCard { padding:12px; }
+    .chatInput { gap:7px; }
+    .chatInput .btn { padding:10px 12px; }
+    .room { padding:12px; }
+    body.drawfight-mode header { height:54px; min-height:54px; padding:6px 8px; }
+    body.drawfight-mode main { padding:3px 5px 5px; }
+    body.drawfight-mode #drawfight.active { height:calc(100dvh - 60px); }
     body.drawfight-mode .drawFightContainer { padding:5px; }
     body.drawfight-mode .drawFightCanvas {
-        width:min(800px,100%,calc((100dvh - 275px) * 1.6));
-        max-height:calc(100dvh - 275px);
+        width:min(800px,100%,calc((100dvh - 245px) * 1.6));
+        max-height:calc(100dvh - 245px);
     }
 }
-
-@media(max-height:600px) {
+@media(max-height:620px) {
+    body.drawfight-mode #drawfight .gameHeader { margin-bottom:2px; }
     body.drawfight-mode #drawfight .gameHeader h1 { font-size:18px; }
     body.drawfight-mode .drawFightPrompt { font-size:17px; }
     body.drawfight-mode .drawFightTimer { font-size:22px; }
     body.drawfight-mode #drawFightPlay > p { display:none; }
     body.drawfight-mode .drawFightCanvas {
-        width:min(800px,100%,calc((100dvh - 190px) * 1.6));
-        max-height:calc(100dvh - 190px);
+        width:min(800px,100%,calc((100dvh - 180px) * 1.6));
+        max-height:calc(100dvh - 180px);
         margin:4px auto;
     }
 }
@@ -428,113 +505,115 @@ body.drawfight-mode .drawFightActions .btn { padding:9px 14px; }
 
 <body>
 <header>
-    <div class="logo">🎮 ESP32 Arcade</div>
+    <div class="logo"><span class="logoMark">🎮</span><span>PIXEL ARENA</span></div>
     <nav>
-        <button class="navBtn active" onclick="showView('home')">Inicio</button>
-        <button class="navBtn" onclick="showView('chat')">Chat</button>
-        <button class="navBtn" onclick="showView('arcade')">Arcade</button>
-        <button class="navBtn" onclick="showView('esp')">ESP32</button>
+        <button class="navBtn active" data-view="home" onclick="showView('home')">Inicio</button>
+        <button class="navBtn" data-view="chat" onclick="showView('chat')">Chat</button>
+        <button class="navBtn" data-view="arcade" onclick="showView('arcade')">Arcade</button>
+        <button class="navBtn" data-view="esp" onclick="showView('esp')">ESP32</button>
     </nav>
 </header>
 
 <main>
 <section id="home" class="view active">
     <div class="hero">
-        <h1>🎮 ESP32 Arcade</h1>
-        <p>Juegos multiplayer conectados por MQTT.</p>
-        <br>
-        <button class="btn" onclick="showView('arcade')">Entrar al Arcade</button>
+        <div class="heroEyebrow">✦ ARCADE MULTIJUGADOR ✦</div>
+        <h1>Tu próxima partida<br><span class="gradientText">empieza acá.</span></h1>
+        <p>Jugá con amigos, dibujen en tiempo real y conectá tu ESP32. Todo desde una sola página.</p>
+        <button class="btn" onclick="showView('arcade')">🚀 Entrar al arcade</button>
     </div>
 </section>
 
 <section id="chat" class="view">
-    <h1>💬 Chat</h1>
+    <div class="sectionHeading">
+        <div><h1>💬 Chat</h1><p>Mensajes compartidos entre jugadores conectados.</p></div>
+    </div>
     <div class="panel chatBox">
-        <div id="messages" class="messages"></div>
+        <div id="messages" class="messages">
+            <p class="muted">Conectando al chat...</p>
+        </div>
         <div class="chatInput">
-            <input id="chatInput" placeholder="Escribí un mensaje..." maxlength="200"
+            <input id="chatInput" maxlength="200" placeholder="Escribí un mensaje..."
                 onkeydown="if(event.key==='Enter') sendChat()">
-            <button class="btn" onclick="sendChat()">Enviar</button>
+            <button class="btn" onclick="sendChat()">Enviar ↗</button>
         </div>
     </div>
 </section>
 
 <section id="arcade" class="view">
-    <h1>🕹️ Arcade</h1>
-    <p class="muted">Creá una sala o uníte a una partida.</p>
+    <div class="sectionHeading">
+        <div><h1>🕹️ Arcade</h1><p>Elegí un juego o unite a una sala abierta.</p></div>
+    </div>
 
     <div class="arcadeGrid">
         <div class="gameCard">
             <div class="gameIcon">🎯</div>
             <h3>Caza el objetivo</h3>
-            <p>El primero en tocar el objetivo varias veces gana.</p>
+            <p>Acertá al objetivo y competí por la mejor puntuación.</p>
             <button class="btn" onclick="createRoom('target')">Crear sala</button>
         </div>
         <div class="gameCard">
             <div class="gameIcon">⚡</div>
-            <h3>Reflejos</h3>
-            <p>Esperá la señal y reaccioná lo más rápido posible.</p>
+            <h3>Prueba de reflejos</h3>
+            <p>Esperá la señal y reaccioná antes que tu rival.</p>
             <button class="btn" onclick="createRoom('reaction')">Crear sala</button>
         </div>
         <div class="gameCard">
             <div class="gameIcon">❌</div>
             <h3>Tres en línea</h3>
-            <p>El clásico tres en línea para dos jugadores.</p>
+            <p>Una partida clásica de estrategia para dos jugadores.</p>
             <button class="btn" onclick="createRoom('ttt')">Crear sala</button>
         </div>
         <div class="gameCard">
             <div class="gameIcon">🔢</div>
             <h3>Adiviná el número</h3>
-            <p>Juego local para intentar adivinar el número secreto.</p>
-            <button class="btn" onclick="startNumberGame()">Jugar</button>
+            <p>Un desafío individual para descubrir el número secreto.</p>
+            <button class="btn" onclick="startNumberGame()">Jugar ahora</button>
         </div>
         <div class="gameCard">
             <div class="gameIcon">🎨</div>
             <h3>Dibujo compartido</h3>
-            <p>Los dos jugadores dibujan sobre el mismo lienzo.</p>
+            <p>Un solo lienzo, dos jugadores y dibujo en tiempo real.</p>
             <button class="btn" onclick="createRoom('draw')">Crear sala</button>
         </div>
         <div class="gameCard">
             <div class="gameIcon">⚔️</div>
             <h3>Peleas de dibujos</h3>
-            <p>Cada jugador dibuja por separado y después comparan.</p>
+            <p>Dibujá durante 30 segundos. El rival no verá tu dibujo hasta que los dos entreguen.</p>
             <button class="btn" onclick="createRoom('drawfight')">Crear sala</button>
         </div>
     </div>
 
-    <div class="panel" style="margin-top:25px">
-        <h2>🚪 Salas disponibles</h2>
+    <div class="panel" style="margin-top:24px">
+        <div class="sectionHeading">
+            <div><h2>🚪 Salas disponibles</h2><p>Unite a una partida que ya esté esperando.</p></div>
+        </div>
         <div id="rooms"><p class="muted">Buscando salas...</p></div>
     </div>
 </section>
 
 <section id="game" class="view">
     <div class="gameHeader">
-        <div>
-            <h1 id="gameTitle">Juego</h1>
-            <div id="gamePlayers" class="muted"></div>
-        </div>
+        <div><h1 id="gameTitle">Juego</h1><div id="gamePlayers" class="muted"></div></div>
         <button class="btn secondary" onclick="leaveMatch()">Salir</button>
     </div>
-
-    <div id="countdownGame" class="gameCenter">
-        <div id="countdown" class="countdown">3</div>
-    </div>
+    <div id="countdownGame" class="gameCenter"><div id="countdown" class="countdown">3</div></div>
 
     <div id="targetGame" class="hidden">
         <div class="panel gameCenter">
             <h2>🎯 ¡Cazá el objetivo!</h2>
-            <div>Tu puntuación: <strong id="targetScore">0</strong></div>
+            <p>Tu puntuación: <strong id="targetScore">0</strong> / 10</p>
             <div class="targetArea" id="targetArea">
-                <button id="target" class="target" onclick="hitTarget"></button>
+                <button id="target" class="target" aria-label="Objetivo" onclick="hitTarget()"></button>
             </div>
+            <p id="targetStatus" class="muted"></p>
         </div>
     </div>
 
     <div id="reactionGame" class="hidden">
         <div class="panel gameCenter">
-            <h2>⚡ Reflejos</h2>
-            <p id="reactionStatus">Esperá...</p>
+            <h2>⚡ Prueba de reflejos</h2>
+            <p id="reactionStatus">Esperá la señal...</p>
             <button id="reactionButton" class="reactionButton" onclick="reactionClick()">ESPERÁ</button>
         </div>
     </div>
@@ -550,44 +629,38 @@ body.drawfight-mode .drawFightActions .btn { padding:9px 14px; }
 
 <section id="draw" class="view">
     <div class="gameHeader">
-        <h1>🎨 Dibujo compartido</h1>
+        <div><h1>🎨 Dibujo compartido</h1><div class="muted">Dibujen juntos en el mismo lienzo.</div></div>
         <button class="btn secondary" onclick="leaveMatch()">Salir</button>
     </div>
     <div class="panel drawContainer">
         <div class="drawFightPrompt">🎯 Dibujá: <span id="drawObject">-</span></div>
-        <div style="font-size:28px">⏱️ <span id="drawTimer">2:00</span></div>
+        <div class="drawFightTimer">⏱️ <span id="drawTimer">2:00</span></div>
         <canvas id="drawCanvas" class="drawCanvas" width="800" height="500"></canvas>
-        <button class="btn secondary" onclick="clearDrawCanvas()">🗑️ Limpiar</button>
+        <button class="btn secondary" onclick="clearDrawCanvas()">🗑️ Limpiar lienzo</button>
     </div>
 </section>
 
 <section id="drawfight" class="view">
     <div class="gameHeader">
-        <h1>⚔️ Peleas de dibujos</h1>
+        <div><h1>⚔️ Peleas de dibujos</h1></div>
         <button class="btn secondary" onclick="leaveMatch()">Salir</button>
     </div>
 
     <div id="drawFightPlay" class="panel drawFightContainer">
         <div class="drawFightPrompt">🎯 Dibujá: <span id="drawFightObject">-</span></div>
         <div class="drawFightTimer">⏱️ <span id="drawFightTimer">0:30</span></div>
-        <p class="muted">Tenés 30 segundos. Cuando termines, tocá «Entregar dibujo».</p>
-
+        <p class="muted">Tenés 30 segundos. Tu rival no puede ver tu dibujo hasta que ambos entreguen.</p>
         <canvas id="drawFightCanvas" class="drawFightCanvas" width="800" height="500"></canvas>
-
         <div class="drawFightActions">
             <button id="drawFightClearButton" class="btn secondary" onclick="clearDrawFightCanvas()">🗑️ Limpiar</button>
             <button id="drawFightSubmitButton" class="btn green" onclick="submitDrawFight()">📤 Entregar dibujo</button>
         </div>
-
-        <div id="drawFightWaiting" class="drawFightWaiting hidden">
-            ⏳ Dibujo entregado. Esperando al rival...
-        </div>
+        <div id="drawFightWaiting" class="drawFightWaiting hidden">⏳ ¡Dibujo entregado! Esperando al rival...</div>
     </div>
 
     <div id="drawFightCompare" class="panel drawFightCompare">
-        <h2>⚔️ ¡Los dos dibujos están listos!</h2>
-        <p>Comparen los dibujos y decidan cuál quedó mejor.</p>
-
+        <h2>🎨 ¡Hora de comparar!</h2>
+        <p class="muted">Los dos dibujos están listos. Miren los resultados y decidan quién ganó.</p>
         <div class="drawFightCompareGrid">
             <div class="drawFightCard">
                 <h3 id="drawFightMyName">Tu dibujo</h3>
@@ -598,44 +671,41 @@ body.drawfight-mode .drawFightActions .btn { padding:9px 14px; }
                 <img id="drawFightEnemyImage" alt="Dibujo del rival">
             </div>
         </div>
-
         <div id="drawFightStatus" class="drawFightStatus"></div>
-        <br>
-        <button class="btn" onclick="leaveMatch()">Volver al Arcade</button>
+        <button class="btn" onclick="leaveMatch()">Volver al arcade</button>
     </div>
 </section>
 
 <section id="esp" class="view">
-    <h1>🤖 ESP32</h1>
+    <div class="sectionHeading"><div><h1>🤖 Control ESP32</h1><p>Mandá comandos al microcontrolador mediante MQTT.</p></div></div>
     <div class="panel">
-        <h2>Control</h2>
+        <h2>Controles</h2>
         <div class="espControls">
-            <button class="btn green" onclick="sendESP('ON')">🟢 ON</button>
-            <button class="btn red" onclick="sendESP('OFF')">🔴 OFF</button>
-            <button class="btn" onclick="sendESP('PING')">📡 PING</button>
+            <button class="btn green" onclick="sendESP('ON')">🟢 Encender</button>
+            <button class="btn red" onclick="sendESP('OFF')">🔴 Apagar</button>
+            <button class="btn secondary" onclick="sendESP('PING')">📡 Ping</button>
         </div>
-        <div id="espStatus" class="status">Sin datos.</div>
+        <div id="espStatus" class="status">Esperando respuesta del ESP32...</div>
     </div>
 </section>
 </main>
 
+<footer>PIXEL ARENA · ESP32 ARCADE</footer>
+
 <div id="nameModal" class="modal">
     <div class="modalBox">
         <h2>👋 ¡Bienvenido!</h2>
-        <p class="muted">Elegí el nombre que aparecerá en las partidas.</p>
+        <p class="muted">Elegí un nombre para que los demás sepan quién sos.</p>
         <input id="nameInput" maxlength="20" placeholder="Tu nombre"
             onkeydown="if(event.key==='Enter') saveName()">
-        <div class="modalButtons">
-            <button class="btn" onclick="saveName()">Continuar</button>
-        </div>
+        <div class="modalButtons"><button class="btn" onclick="saveName()">Continuar</button></div>
     </div>
 </div>
 
 <div id="waitingModal" class="modal">
     <div class="modalBox">
-        <h2>⏳ Esperando jugador</h2>
-        <p id="waitingText">Compartí esta página y esperá que alguien se una.</p>
-        <br>
+        <h2>⏳ Sala creada</h2>
+        <p id="waitingText" class="muted">Esperando que se una otro jugador...</p>
         <button class="btn secondary" onclick="cancelWaiting()">Cancelar</button>
     </div>
 </div>
@@ -644,14 +714,15 @@ body.drawfight-mode .drawFightActions .btn { padding:9px 14px; }
     <div class="modalBox">
         <div id="resultBig" class="resultBig">🏆</div>
         <h2 id="resultTitle">Resultado</h2>
-        <p id="resultText"></p>
-        <br>
-        <button class="btn" onclick="closeResult()">Volver al Arcade</button>
+        <p id="resultText" class="muted"></p>
+        <button class="btn" onclick="closeResult()">Volver al arcade</button>
     </div>
 </div>
 
 <script>
-/* MQTT */
+"use strict";
+
+/* CONFIGURACIÓN MQTT */
 const MQTT_BROKER = "wss://broker.hivemq.com:8884/mqtt";
 const COMMAND_TOPIC = "thomy/esp32c3/comandos";
 const STATE_TOPIC = "thomy/esp32c3/estado";
@@ -663,13 +734,11 @@ const MATCH_PREFIX = ROOT + "/match/";
 
 let playerId = localStorage.getItem("playerId");
 if (!playerId) {
-    playerId = "p_" + Math.random().toString(36).substring(2,10) + Date.now().toString(36);
+    playerId = "p_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
     localStorage.setItem("playerId", playerId);
 }
-
 let username = localStorage.getItem("username") || "";
-const sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-const mqttClientId = "web_" + playerId + "_" + sessionId;
+const clientId = "web_" + playerId + "_" + Math.random().toString(36).slice(2,10);
 
 let match = null;
 let rooms = {};
@@ -678,44 +747,58 @@ let reactionTimeout = null;
 let reactionStart = 0;
 let drawTimerInterval = null;
 let drawFightTimerInterval = null;
-
-let drawFightCtx = null;
+let nameCallback = null;
+let drawing = false;
+let lastX = 0, lastY = 0;
 let drawFightDrawing = false;
-let drawFightLastX = 0;
-let drawFightLastY = 0;
+let drawFightLastX = 0, drawFightLastY = 0;
+let drawFightLocalSubmitted = false;
+let drawFightRemoteSubmitted = false;
+let drawFightStartAt = 0;
 
 const DRAW_OBJECTS = [
-    "🚗 Auto","🏠 Casa","🐱 Gato","🐶 Perro","🌳 Árbol",
-    "🚀 Cohete","✈️ Avión","🚲 Bicicleta","🎸 Guitarra",
-    "🍕 Pizza","🍔 Hamburguesa","🍎 Manzana","⚽ Pelota",
-    "🎮 Joystick","🤖 Robot","👽 Alien","🐟 Pez",
-    "🦖 Dinosaurio","🌙 Luna","☀️ Sol","⭐ Estrella",
-    "☁️ Nube","🏰 Castillo","🚓 Patrullero","🏍️ Moto",
-    "🚁 Helicóptero","🛸 OVNI","⛵ Barco","🌋 Volcán","🌵 Cactus"
+    "un auto","una casa","un gato","un perro","un árbol","un cohete",
+    "un avión","una bicicleta","una guitarra","una pizza","una hamburguesa",
+   "una manzana","una pelota","un joystick","un robot","un alien",
+    "un pez","un dinosaurio","la luna","el sol","una estrella","una nube",
+    "un castillo","un patrullero","una moto","un helicóptero","un ovni",
+    "un barco","un volcán","un cactus"
 ];
+
+function gameName(game) {
+    return ({
+        target:"🎯 Caza el objetivo",
+        reaction:"⚡ Prueba de reflejos",
+        ttt:"❌ Tres en línea",
+        draw:"🎨 Dibujo compartido",
+        drawfight:"⚔️ Peleas de dibujos"
+    })[game] || game;
+}
 
 function showView(id) {
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     const view = document.getElementById(id);
     if (view) view.classList.add("active");
 
-    document.querySelectorAll(".navBtn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".navBtn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.view === id);
+    });
     document.body.classList.toggle("drawfight-mode", id === "drawfight");
 }
 
-function gameName(game) {
-    const names = {
-        target:"🎯 Caza el objetivo",
-        reaction:"⚡ Reflejos",
-        ttt:"❌ Tres en línea",
-        draw:"🎨 Dibujo compartido",
-        drawfight:"⚔️ Peleas de dibujos"
-    };
-    return names[game] || game;
+function safePublish(topic, value, options = {}) {
+    if (!mqttClient || !mqttClient.connected) return false;
+    try {
+        mqttClient.publish(topic, typeof value === "string" ? value : JSON.stringify(value), options);
+        return true;
+    } catch (err) {
+        console.error("Error MQTT:", err);
+        return false;
+    }
 }
 
 const mqttClient = mqtt.connect(MQTT_BROKER, {
-    clientId:mqttClientId,
+    clientId,
     clean:true,
     connectTimeout:10000,
     reconnectPeriod:3000
@@ -724,96 +807,104 @@ const mqttClient = mqtt.connect(MQTT_BROKER, {
 mqttClient.on("connect", () => {
     console.log("MQTT conectado");
     mqttClient.subscribe([
-        COMMAND_TOPIC, STATE_TOPIC, CHAT_TOPIC,
-        PLAYER_PREFIX + "+", ROOM_PREFIX + "+", MATCH_PREFIX + "#"
-    ]);
+        CHAT_TOPIC,
+        ROOM_PREFIX + "+",
+        MATCH_PREFIX + "#",
+        STATE_TOPIC
+    ], err => {
+        if (err) console.error("Error de suscripción:", err);
+    });
     publishPresence();
-    publishOwnRoom();
     renderRooms();
 });
 
-mqttClient.on("message", (topic, payload) => {
-    const raw = payload.toString();
-    let data;
-    try { data = JSON.parse(raw); }
-    catch {
-        handleESPMessage(topic, raw);
-        return;
-    }
-
-    if (topic === CHAT_TOPIC) {
-        addChatMessage(data.name || "Jugador", data.text || "");
-        return;
-    }
-    if (topic.startsWith(ROOM_PREFIX)) {
-        handleRoomMessage(data);
-        return;
-    }
-    if (topic.startsWith(MATCH_PREFIX)) {
-        handleMatchMessage(data);
-        return;
-    }
-    if (topic === STATE_TOPIC) handleESPMessage(topic, data);
+mqttClient.on("reconnect", () => {
+    const status = document.getElementById("espStatus");
+    if (status) status.textContent = "Reconectando a MQTT...";
 });
 
-function mqttPublish(topic, data, options = {}) {
-    if (!mqttClient.connected) return;
-    mqttClient.publish(topic, JSON.stringify(data), options);
-}
+mqttClient.on("error", err => console.error("MQTT:", err));
+
+mqttClient.on("message", (topic, payload) => {
+    const raw = payload.toString();
+    if (topic === CHAT_TOPIC) {
+        try {
+            const data = JSON.parse(raw);
+            if (data.playerId !== playerId) addChatMessage(data.name || "Jugador", data.text || "");
+        } catch {}
+        return;
+    }
+
+    if (topic.startsWith(ROOM_PREFIX)) {
+        if (!raw) {
+            delete rooms[topic.slice(ROOM_PREFIX.length)];
+            renderRooms();
+            return;
+        }
+        try { handleRoomMessage(JSON.parse(raw)); } catch {}
+        return;
+    }
+
+    if (topic.startsWith(MATCH_PREFIX)) {
+        try { handleMatchMessage(JSON.parse(raw)); } catch (err) { console.error(err); }
+        return;
+    }
+
+    if (topic === STATE_TOPIC) handleESPMessage(raw);
+});
 
 function publishPresence() {
-    mqttPublish(PLAYER_PREFIX + playerId, {
-        playerId, name:username || "Jugador", online:true, updatedAt:Date.now()
+    safePublish(PLAYER_PREFIX + playerId, {
+        playerId,
+        name:username || "Jugador",
+        online:true,
+        updatedAt:Date.now()
     }, {retain:true});
 }
 
-function publishOwnRoom() {
-    if (!match || match.state !== "waiting") return;
-    mqttPublish(ROOM_PREFIX + match.id, {
-        roomId:match.id, game:match.game, host:match.host,
-        hostName:username, state:"waiting", createdAt:match.createdAt
-    }, {retain:true});
-}
-
-function clearRoom(roomId) {
-    if (mqttClient.connected) mqttClient.publish(ROOM_PREFIX + roomId, "", {retain:true});
-}
-
-function newMatchObject(roomId, game, host, guest, guestName, state, createdAt) {
-    return {
-        id:roomId, game, host, guest, guestName, state, createdAt,
-        started:false, targetScore:0, enemyScore:null,
-        reactionTime:null, enemyReaction:null,
-        targetFinished:false, enemyTargetFinished:false,
-        tttBoard:Array(9).fill(""), tttTurn:null, tttOver:false,
-        drawObject:null, drawStarted:false, drawFinished:false,
-        drawFightObject:null, drawFightStarted:false,
-        drawFightEndTime:0, drawFightSubmitted:false,
-        drawFightMyImage:null, drawFightEnemyImage:null,
-        drawFightEnemyName:"Rival"
-    };
-}
-
+/* SALAS */
 function createRoom(game) {
     if (!username) {
         openNameModal(() => createRoom(game));
         return;
     }
+    if (!mqttClient.connected) {
+        alert("Todavía no hay conexión con el servidor. Esperá unos segundos y probá otra vez.");
+        return;
+    }
 
-    const roomId = Math.random().toString(36).substring(2,8).toUpperCase();
-    match = newMatchObject(roomId, game, playerId, null, "", "waiting", Date.now());
-    publishOwnRoom();
-    renderRooms();
+    const roomId = Math.random().toString(36).slice(2,8).toUpperCase();
+    match = {
+        id:roomId, game, host:playerId, guest:null,
+        hostName:username, guestName:"",
+        state:"waiting", createdAt:Date.now(),
+        started:false, enemyScore:null,
+        reactionTime:null, enemyReaction:null,
+        tttBoard:Array(9).fill(""), tttTurn:null, tttOver:false,
+        drawObject:null, drawStarted:false, drawFinished:false,
+        drawFightObject:null, drawFightStarted:false,
+        drawFightMyImage:null, drawFightEnemyImage:null,
+        drawFightMyName:username, drawFightEnemyName:"Rival"
+    };
 
+    publishRoom();
     document.getElementById("waitingModal").classList.add("active");
     document.getElementById("waitingText").textContent =
-        "Sala creada. Esperando que otro jugador se una...";
+        gameName(game) + " · Sala " + roomId + " · Esperando a otro jugador...";
+}
+
+function publishRoom() {
+    if (!match || match.state !== "waiting") return;
+    safePublish(ROOM_PREFIX + match.id, {
+        roomId:match.id, game:match.game, host:match.host,
+        hostName:username, state:"waiting", createdAt:match.createdAt
+    }, {retain:true});
 }
 
 function handleRoomMessage(data) {
     if (!data || !data.roomId) return;
-    if (data.state === "waiting") rooms[data.roomId] = data;
-    else delete rooms[data.roomId];
+    if (data.state === "waiting" && data.host !== playerId) rooms[data.roomId] = data;
+    else if (data.state !== "waiting") delete rooms[data.roomId];
     renderRooms();
 }
 
@@ -821,16 +912,25 @@ function renderRooms() {
     const container = document.getElementById("rooms");
     if (!container) return;
 
-    const list = Object.values(rooms).filter(r => r.host !== playerId);
+    const list = Object.values(rooms).filter(room =>
+        room.host !== playerId && room.state === "waiting"
+    );
+
+    container.innerHTML = "";
     if (!list.length) {
-        container.innerHTML = '<p class="muted">No hay salas disponibles.</p>';
+        const p = document.createElement("p");
+        p.className = "muted";
+        p.textContent = mqttClient.connected
+            ? "No hay salas disponibles por ahora. ¡Podés crear la primera!"
+            : "Conectando al servidor...";
+        container.appendChild(p);
         return;
     }
 
-    container.innerHTML = "";
+    list.sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
     list.forEach(room => {
-        const div = document.createElement("div");
-        div.className = "room";
+        const row = document.createElement("div");
+        row.className = "room";
 
         const info = document.createElement("div");
         info.className = "roomInfo";
@@ -838,15 +938,15 @@ function renderRooms() {
         strong.textContent = gameName(room.game);
         const span = document.createElement("span");
         span.textContent = "👤 " + (room.hostName || "Jugador");
-        info.append(strong, span);
+        info.append(strong,span);
 
-        const button = document.createElement("button");
-        button.className = "btn";
-        button.textContent = "Unirse";
-        button.onclick = () => joinRoom(room.roomId);
+        const join = document.createElement("button");
+        join.className = "btn";
+        join.textContent = "Unirse";
+        join.onclick = () => joinRoom(room.roomId);
 
-        div.append(info, button);
-        container.appendChild(div);
+        row.append(info,join);
+        container.appendChild(row);
     });
 }
 
@@ -855,54 +955,90 @@ function joinRoom(roomId) {
         openNameModal(() => joinRoom(roomId));
         return;
     }
-
     const room = rooms[roomId];
-    if (!room) return;
+    if (!room) {
+        alert("Esa sala ya no está disponible.");
+        return;
+    }
+    if (!mqttClient.connected) {
+        alert("No hay conexión con el servidor.");
+        return;
+    }
 
-    match = newMatchObject(roomId, room.game, room.host, playerId, username, "joining", room.createdAt);
-    publishMatch({type:"join", roomId, playerId, playerName:username});
+    match = {
+        id:roomId, game:room.game, host:room.host, guest:playerId,
+        hostName:room.hostName || "Jugador", guestName:username,
+        state:"joining", createdAt:room.createdAt,
+        started:false, enemyScore:null,
+        reactionTime:null, enemyReaction:null,
+        tttBoard:Array(9).fill(""), tttTurn:null, tttOver:false,
+        drawObject:null, drawStarted:false, drawFinished:false,
+        drawFightObject:null, drawFightStarted:false,
+        drawFightMyImage:null, drawFightEnemyImage:null,
+        drawFightMyName:username, drawFightEnemyName:room.hostName || "Rival"
+    };
+
+    safePublish(MATCH_PREFIX + match.id, {
+        type:"join", roomId, playerId, playerName:username
+    });
 }
 
 function publishMatch(data) {
     if (!match) return;
-    mqttPublish(MATCH_PREFIX + match.id, data);
+    safePublish(MATCH_PREFIX + match.id, data);
 }
 
 function handleMatchMessage(data) {
     if (!data || !match || data.roomId !== match.id) return;
 
     if (data.type === "join") {
-        if (match.host === playerId && !match.guest) {
-            match.guest = data.playerId;
-            match.guestName = data.playerName || "Jugador";
-            match.state = "ready";
-            clearRoom(match.id);
+        if (match.host !== playerId || match.guest) return;
+        match.guest = data.playerId;
+        match.guestName = data.playerName || "Jugador";
+        match.state = "ready";
 
-            publishMatch({
-                type:"accepted", roomId:match.id, host:playerId,
-                guest:match.guest, guestName:match.guestName
-            });
+        safePublish(ROOM_PREFIX + match.id, "", {retain:true});
+        delete rooms[match.id];
+        document.getElementById("waitingModal").classList.remove("active");
 
-            document.getElementById("waitingModal").classList.remove("active");
-            startCountdown();
-        }
+        publishMatch({
+            type:"accepted", roomId:match.id, host:match.host,
+            guest:match.guest, hostName:username,
+            guestName:match.guestName, game:match.game
+        });
+        startCountdown();
         return;
     }
 
     if (data.type === "accepted") {
-        if (match.guest === playerId) {
-            match.state = "ready";
-            match.host = data.host;
-            match.guest = playerId;
-            document.getElementById("waitingModal").classList.remove("active");
-            startCountdown();
-        }
+        if (match.guest !== playerId) return;
+        match.state = "ready";
+        match.host = data.host;
+        match.hostName = data.hostName || "Jugador";
+        match.guestName = username;
+        document.getElementById("waitingModal").classList.remove("active");
+        startCountdown();
+        return;
+    }
+
+    if (data.type === "roomClosed") {
+        if (data.playerId === playerId) return;
+        cleanupGame();
+        match = null;
+        document.getElementById("waitingModal").classList.remove("active");
+        document.getElementById("resultModal").classList.remove("active");
+        showView("arcade");
+        renderRooms();
         return;
     }
 
     if (data.type === "targetScore" && data.playerId !== playerId) {
         match.enemyScore = data.score;
-        updateTargetScore();
+        const status = document.getElementById("targetStatus");
+        if (status) status.textContent = "Puntuación rival: " + data.score;
+        if (data.score >= 10 && match.targetScore < 10) {
+            showResult("😵","El rival ganó","Tu rival llegó primero a 10 puntos.");
+        }
         return;
     }
 
@@ -912,20 +1048,16 @@ function handleMatchMessage(data) {
         return;
     }
 
-    if (data.type === "tttMove") {
-        if (match.game !== "ttt") return;
+    if (data.type === "tttMove" && match.game === "ttt") {
         match.tttBoard = data.board;
         match.tttTurn = data.turn;
+        match.tttOver = !!data.over;
         renderTTT();
-        if (data.over) {
-            match.tttOver = true;
-            setTimeout(() => showTTTResult(data.result), 300);
-        }
+        if (data.over) showTTTResult(data.result);
         return;
     }
 
-    if (data.type === "drawStart") {
-        if (match.game !== "draw") return;
+    if (data.type === "drawStart" && match.game === "draw") {
         match.drawObject = data.object;
         match.drawStarted = true;
         document.getElementById("drawObject").textContent = data.object;
@@ -934,33 +1066,26 @@ function handleMatchMessage(data) {
         return;
     }
 
-    if (data.type === "drawLine") {
-        if (match.game === "draw") drawRemoteLine(data);
+    if (data.type === "drawLine" && match.game === "draw") {
+        drawRemoteLine(data);
         return;
     }
 
-    if (data.type === "drawClear") {
-        if (match.game === "draw") clearDrawCanvasLocal();
+    if (data.type === "drawClear" && match.game === "draw" && data.playerId !== playerId) {
+        clearDrawCanvasLocal();
         return;
     }
 
-    if (data.type === "drawFinished") {
-        if (match.game !== "draw") return;
-        match.drawFinished = true;
-        showResult("🎨", "¡Tiempo terminado!", "Terminó la partida de dibujo compartido.");
-        return;
-    }
-
-    if (data.type === "drawFightStart") {
-        if (match.game !== "drawfight") return;
-
+    if (data.type === "drawFightStart" && match.game === "drawfight") {
         match.drawFightObject = data.object;
         match.drawFightStarted = true;
         match.drawFightEndTime = data.endTime;
-        match.drawFightSubmitted = false;
         match.drawFightMyImage = null;
         match.drawFightEnemyImage = null;
-        match.drawFightEnemyName = "Rival";
+        match.drawFightMyName = username;
+        match.drawFightEnemyName = data.hostName || match.hostName || "Rival";
+        drawFightLocalSubmitted = false;
+        drawFightRemoteSubmitted = false;
 
         document.getElementById("drawFightObject").textContent = data.object;
         document.getElementById("drawFightTimer").textContent = "0:30";
@@ -969,63 +1094,53 @@ function handleMatchMessage(data) {
         document.getElementById("drawFightWaiting").classList.add("hidden");
         document.getElementById("drawFightSubmitButton").disabled = false;
         document.getElementById("drawFightClearButton").disabled = false;
-
         clearDrawFightCanvas();
         showView("drawfight");
         startDrawFightTimer(data.endTime);
         return;
     }
 
-    if (data.type === "drawFightFinished") {
-        if (match.game !== "drawfight" || data.playerId === playerId) return;
+    if (data.type === "drawFightFinished" && match.game === "drawfight") {
+        if (data.playerId === playerId) return;
         match.drawFightEnemyImage = data.image;
-        match.drawFightEnemyName = data.playerName || "Rival";
+        match.drawFightEnemyName = data.playerName || match.drawFightEnemyName || "Rival";
+        drawFightRemoteSubmitted = true;
         checkDrawFightFinished();
+    }
+}
+
+/* INICIO DE PARTIDAS */
+function startCountdown() {
+    if (!match) return;
+    cleanupGame();
+    match.started = true;
+
+    if (match.game === "draw" || match.game === "drawfight") {
+        if (match.game === "draw") startDraw();
+        else startDrawFight();
         return;
     }
 
-    if (data.type === "roomClosed") {
-        clearDrawFightTimer();
-        clearInterval(drawTimerInterval);
-        match = null;
-        document.getElementById("waitingModal").classList.remove("active");
-        showView("arcade");
-        renderRooms();
-    }
-}
-
-function startCountdown() {
     showView("game");
-    document.getElementById("countdownGame").classList.remove("hidden");
     hideAllGames();
-
+    document.getElementById("countdownGame").classList.remove("hidden");
     document.getElementById("gameTitle").textContent = gameName(match.game);
-    const opponent = match.host === playerId ? match.guestName : "Rival";
-    document.getElementById("gamePlayers").textContent = "👤 " + username + " vs " + opponent;
+    document.getElementById("gamePlayers").textContent =
+        (match.host === playerId ? username + " vs " + match.guestName : username + " vs " + match.hostName);
 
-    let count = 3;
-    document.getElementById("countdown").textContent = count;
-    clearInterval(countdownInterval);
-
+    let n = 3;
+    document.getElementById("countdown").textContent = n;
     countdownInterval = setInterval(() => {
-        count--;
-        if (count <= 0) {
+        n--;
+        if (n <= 0) {
             clearInterval(countdownInterval);
+            countdownInterval = null;
             document.getElementById("countdownGame").classList.add("hidden");
             startMatchGame();
         } else {
-            document.getElementById("countdown").textContent = count;
+            document.getElementById("countdown").textContent = n;
         }
-    }, 1000);
-}
-
-function startMatchGame() {
-    if (!match) return;
-    if (match.game === "target") startTargetGame();
-    else if (match.game === "reaction") startReactionGame();
-    else if (match.game === "ttt") startTTTGame();
-    else if (match.game === "draw") startDraw();
-    else if (match.game === "drawfight") startDrawFight();
+    },1000);
 }
 
 function hideAllGames() {
@@ -1034,292 +1149,275 @@ function hideAllGames() {
     );
 }
 
-/* CAZA EL OBJETIVO */
+function startMatchGame() {
+    if (!match) return;
+    if (match.game === "target") startTargetGame();
+    else if (match.game === "reaction") startReactionGame();
+    else if (match.game === "ttt") startTTTGame();
+}
 
+/* OBJETIVO */
 function startTargetGame() {
     showView("game");
     document.getElementById("targetGame").classList.remove("hidden");
     match.targetScore = 0;
+    document.getElementById("targetStatus").textContent = "¡Llegá a 10 puntos!";
     updateTargetScore();
     moveTarget();
 }
-
 function updateTargetScore() {
-    if (match) document.getElementById("targetScore").textContent = match.targetScore;
+    document.getElementById("targetScore").textContent = match ? match.targetScore : 0;
 }
-
 function moveTarget() {
     const area = document.getElementById("targetArea");
     const target = document.getElementById("target");
     target.style.display = "block";
-    const maxX = Math.max(0, area.clientWidth - target.offsetWidth);
-    const maxY = Math.max(0, area.clientHeight - target.offsetHeight);
+    const maxX = Math.max(0,area.clientWidth - target.offsetWidth);
+    const maxY = Math.max(0,area.clientHeight - target.offsetHeight);
     target.style.left = Math.random() * maxX + "px";
     target.style.top = Math.random() * maxY + "px";
 }
-
 function hitTarget() {
-    if (!match || match.game !== "target") return;
+    if (!match || match.game !== "target" || match.targetScore >= 10) return;
     match.targetScore++;
     updateTargetScore();
-    publishMatch({type:"targetScore", roomId:match.id, playerId, score:match.targetScore});
+    publishMatch({type:"targetScore",roomId:match.id,playerId,score:match.targetScore});
+
     if (match.targetScore >= 10) {
-        showResult("🏆", "¡Llegaste a 10!", "Comprobá la puntuación del rival.");
-        return;
+        showResult("🏆","¡Llegaste a 10!","Revisá la puntuación de tu rival.");
+    } else {
+        moveTarget();
     }
-    moveTarget();
 }
 
 /* REFLEJOS */
-
 function startReactionGame() {
     showView("game");
     document.getElementById("reactionGame").classList.remove("hidden");
     const button = document.getElementById("reactionButton");
+    button.disabled = false;
     button.textContent = "ESPERÁ";
     button.style.background = "var(--red)";
     document.getElementById("reactionStatus").textContent = "Esperá la señal...";
+    match.reactionTime = null;
+    match.enemyReaction = null;
 
-    const delay = 1500 + Math.random() * 3000;
-    clearTimeout(reactionTimeout);
     reactionTimeout = setTimeout(() => {
+        if (!match || match.game !== "reaction") return;
         reactionStart = performance.now();
         button.textContent = "¡AHORA!";
         button.style.background = "var(--green)";
-        document.getElementById("reactionStatus").textContent = "¡TOCÁ!";
-    }, delay);
+        document.getElementById("reactionStatus").textContent = "¡Tocá ahora!";
+    },1500 + Math.random() * 3000);
 }
-
 function reactionClick() {
-    if (!match || match.game !== "reaction") return;
+    if (!match || match.game !== "reaction" || match.reactionTime !== null) return;
     const button = document.getElementById("reactionButton");
-    if (button.textContent !== "¡AHORA!") return;
+    if (button.textContent !== "¡AHORA!") {
+        if (button.textContent === "ESPERÁ") {
+            clearTimeout(reactionTimeout);
+            button.textContent = "¡Muy pronto!";
+            document.getElementById("reactionStatus").textContent = "Anticipaste la señal. Esperá y volvé a intentar.";
+            setTimeout(() => {
+                if (match && match.game === "reaction") startReactionGame();
+            },1200);
+        }
+        return;
+    }
 
     const time = Math.round(performance.now() - reactionStart);
     match.reactionTime = time;
     button.textContent = time + " ms";
-    publishMatch({type:"reaction", roomId:match.id, playerId, time});
+    button.disabled = true;
+    document.getElementById("reactionStatus").textContent = "Tu tiempo quedó registrado.";
+    publishMatch({type:"reaction",roomId:match.id,playerId,time});
     checkReactionWinner();
 }
-
 function checkReactionWinner() {
-    if (!match || match.reactionTime === null || match.enemyReaction === null) return;
-
-    if (match.reactionTime < match.enemyReaction) {
-        showResult("⚡", "¡Ganaste!", `${match.reactionTime} ms vs ${match.enemyReaction} ms`);
-    } else if (match.reactionTime > match.enemyReaction) {
-        showResult("😵", "Perdiste", `${match.reactionTime} ms vs ${match.enemyReaction} ms`);
-    } else {
-        showResult("🤝", "Empate", "Los dos tuvieron el mismo tiempo.");
-    }
+    if (!match || match.reactionTime == null || match.enemyReaction == null) return;
+    if (match.reactionTime < match.enemyReaction)
+        showResult("⚡","¡Ganaste!",`${match.reactionTime} ms contra ${match.enemyReaction} ms.`);
+    else if (match.reactionTime > match.enemyReaction)
+        showResult("😵","Ganó tu rival",`${match.reactionTime} ms contra ${match.enemyReaction} ms.`);
+    else showResult("🤝","¡Empate!",`Ambos hicieron ${match.reactionTime} ms.`);
 }
 
 /* TRES EN LÍNEA */
-
 function startTTTGame() {
     showView("game");
     document.getElementById("tttGame").classList.remove("hidden");
+    match.tttBoard = Array(9).fill("");
+    match.tttOver = false;
+    match.tttTurn = match.host;
 
-    if (match.host === playerId) {
-        match.tttTurn = match.host;
-        publishMatch({
-            type:"tttMove", roomId:match.id, playerId,
-            board:match.tttBoard, turn:match.tttTurn, over:false
-        });
-    }
+    publishMatch({
+        type:"tttMove",roomId:match.id,playerId,
+        board:match.tttBoard,turn:match.tttTurn,over:false
+    });
     renderTTT();
 }
-
 function renderTTT() {
+    if (!match) return;
     const board = document.getElementById("tttBoard");
     board.innerHTML = "";
+    const mine = match.tttTurn === playerId;
+    const symbol = match.host === playerId ? "X" : "O";
 
-    const mySymbol = match.host === playerId ? "X" : "O";
-    const myTurn = match.tttTurn === playerId;
-    document.getElementById("tttStatus").textContent =
-        match.tttOver ? "Partida terminada" :
-        myTurn ? `Tu turno (${mySymbol})` : "Turno del rival";
+    document.getElementById("tttStatus").textContent = match.tttOver
+        ? "Partida terminada"
+        : mine ? "Tu turno (" + symbol + ")" : "Turno del rival";
 
     match.tttBoard.forEach((cell,index) => {
         const button = document.createElement("button");
         button.className = "tttCell";
         button.textContent = cell;
-        button.disabled = match.tttOver || !myTurn || !!cell;
+        button.disabled = match.tttOver || !mine || !!cell;
         button.onclick = () => tttMove(index);
         board.appendChild(button);
     });
 }
-
 function tttMove(index) {
     if (!match || match.game !== "ttt" || match.tttOver ||
         match.tttTurn !== playerId || match.tttBoard[index]) return;
 
-    const symbol = match.host === playerId ? "X" : "O";
-    match.tttBoard[index] = symbol;
+    match.tttBoard[index] = match.host === playerId ? "X" : "O";
     const result = checkTTTWinner();
-
     if (result) {
         match.tttOver = true;
         publishMatch({
-            type:"tttMove", roomId:match.id, playerId,
-            board:match.tttBoard, turn:null, over:true, result
+            type:"tttMove",roomId:match.id,playerId,
+            board:match.tttBoard,turn:null,over:true,result
         });
         renderTTT();
         showTTTResult(result);
         return;
     }
 
-    match.tttTurn = match.guest === playerId ? match.host : match.guest;
+    match.tttTurn = match.host === playerId ? match.guest : match.host;
     publishMatch({
-        type:"tttMove", roomId:match.id, playerId,
-        board:match.tttBoard, turn:match.tttTurn, over:false
+        type:"tttMove",roomId:match.id,playerId,
+        board:match.tttBoard,turn:match.tttTurn,over:false
     });
     renderTTT();
 }
-
 function checkTTTWinner() {
     const b = match.tttBoard;
-    const lines = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-    ];
-
-    for (const line of lines) {
-        const [a,c,d] = line;
-        if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a];
-    }
-    return b.every(x => x) ? "draw" : null;
+    const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for (const [a,c,d] of lines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a];
+    return b.every(Boolean) ? "draw" : null;
 }
-
 function showTTTResult(result) {
+    if (!match) return;
     if (result === "draw") {
-        showResult("🤝", "Empate", "Nadie ganó.");
+        showResult("🤝","Empate","La partida terminó en empate.");
         return;
     }
     const mySymbol = match.host === playerId ? "X" : "O";
     showResult(result === mySymbol ? "🏆" : "😵",
-        result === mySymbol ? "¡Ganaste!" : "Perdiste",
-        "Tres en línea.");
+        result === mySymbol ? "¡Ganaste!" : "Ganó tu rival","Tres en línea.");
 }
 
 /* DIBUJO COMPARTIDO */
-
 const drawCanvas = document.getElementById("drawCanvas");
 const drawCtx = drawCanvas.getContext("2d");
-let drawing = false;
-let lastX = 0;
-let lastY = 0;
 
 function startDraw() {
     showView("draw");
+    match.drawStarted = false;
+    match.drawFinished = false;
+    clearDrawCanvasLocal();
 
     if (match.host === playerId) {
         const object = DRAW_OBJECTS[Math.floor(Math.random() * DRAW_OBJECTS.length)];
+        const endTime = Date.now() + 120000;
         match.drawObject = object;
         match.drawStarted = true;
-        const endTime = Date.now() + 120000;
-
         document.getElementById("drawObject").textContent = object;
         startDrawTimer(endTime);
-        publishMatch({type:"drawStart", roomId:match.id, object, endTime});
+        publishMatch({
+            type:"drawStart",roomId:match.id,object,endTime,
+            hostName:username
+        });
     }
 }
-
 function startDrawTimer(endTime) {
     clearInterval(drawTimerInterval);
-
-    function update() {
-        const remaining = Math.max(0, endTime - Date.now());
-        const seconds = Math.ceil(remaining / 1000);
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-
+    function tick() {
+        if (!match || match.game !== "draw") { clearInterval(drawTimerInterval); return; }
+        const left = Math.max(0,endTime - Date.now());
+        const secs = Math.ceil(left / 1000);
         document.getElementById("drawTimer").textContent =
-            `${min}:${String(sec).padStart(2,"0")}`;
-
-        if (remaining <= 0) {
+            Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2,"0");
+        if (left <= 0) {
             clearInterval(drawTimerInterval);
-            finishDrawGame(true);
+            finishDrawGame();
         }
     }
-
-    update();
-    drawTimerInterval = setInterval(update, 250);
+    tick();
+    drawTimerInterval = setInterval(tick,250);
 }
-
-function finishDrawGame(send) {
-    if (!match) return;
-    if (!match.drawFinished) {
-        match.drawFinished = true;
-        if (send) publishMatch({type:"drawFinished", roomId:match.id, playerId});
-    }
-    showResult("🎨", "Tiempo terminado", "Terminó la partida de dibujo compartido.");
+function finishDrawGame() {
+    if (!match || match.drawFinished) return;
+    match.drawFinished = true;
+    publishMatch({type:"drawFinished",roomId:match.id,playerId});
+    showResult("🎨","¡Tiempo terminado!","Terminó la sesión de dibujo compartido.");
 }
-
-function getCanvasPosition(canvas,event) {
+function canvasPoint(canvas,event) {
     const rect = canvas.getBoundingClientRect();
     return {
-        x:(event.clientX - rect.left) * (canvas.width / rect.width),
-        y:(event.clientY - rect.top) * (canvas.height / rect.height)
+        x:(event.clientX - rect.left) * canvas.width / rect.width,
+        y:(event.clientY - rect.top) * canvas.height / rect.height
     };
 }
-
-drawCanvas.addEventListener("pointerdown", e => {
-    if (!match || match.game !== "draw" || !match.drawStarted) return;
+drawCanvas.addEventListener("pointerdown",e => {
+    if (!match || match.game !== "draw" || !match.drawStarted || match.drawFinished) return;
     drawing = true;
-    const p = getCanvasPosition(drawCanvas,e);
-    lastX = p.x;
-    lastY = p.y;
-    drawCanvas.setPointerCapture?.(e.pointerId);
+    const p = canvasPoint(drawCanvas,e);
+    lastX = p.x; lastY = p.y;
+    drawCanvas.setPointerCapture(e.pointerId);
 });
-
-drawCanvas.addEventListener("pointermove", e => {
-    if (!drawing || !match || match.game !== "draw") return;
-    const p = getCanvasPosition(drawCanvas,e);
+drawCanvas.addEventListener("pointermove",e => {
+    if (!drawing || !match || match.game !== "draw" || match.drawFinished) return;
+    const p = canvasPoint(drawCanvas,e);
     drawCtx.beginPath();
     drawCtx.moveTo(lastX,lastY);
     drawCtx.lineTo(p.x,p.y);
     drawCtx.strokeStyle = "#000";
     drawCtx.lineWidth = 5;
     drawCtx.lineCap = "round";
+    drawCtx.lineJoin = "round";
     drawCtx.stroke();
-
-    publishMatch({type:"drawLine", roomId:match.id, x1:lastX, y1:lastY, x2:p.x, y2:p.y});
-    lastX = p.x;
-    lastY = p.y;
+    publishMatch({type:"drawLine",roomId:match.id,x1:lastX,y1:lastY,x2:p.x,y2:p.y});
+    lastX = p.x; lastY = p.y;
 });
-
-drawCanvas.addEventListener("pointerup", () => drawing = false);
-drawCanvas.addEventListener("pointercancel", () => drawing = false);
-
-function drawRemoteLine(data) {
+drawCanvas.addEventListener("pointerup",() => drawing = false);
+drawCanvas.addEventListener("pointercancel",() => drawing = false);
+function drawRemoteLine(d) {
     drawCtx.beginPath();
-    drawCtx.moveTo(data.x1,data.y1);
-    drawCtx.lineTo(data.x2,data.y2);
+    drawCtx.moveTo(d.x1,d.y1);
+    drawCtx.lineTo(d.x2,d.y2);
     drawCtx.strokeStyle = "#000";
     drawCtx.lineWidth = 5;
     drawCtx.lineCap = "round";
+    drawCtx.lineJoin = "round";
     drawCtx.stroke();
 }
-
-function clearDrawCanvas() {
-    clearDrawCanvasLocal();
-    publishMatch({type:"drawClear", roomId:match.id, playerId});
-}
-
 function clearDrawCanvasLocal() {
     drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+    drawCtx.fillStyle = "#fff";
+    drawCtx.fillRect(0,0,drawCanvas.width,drawCanvas.height);
+}
+function clearDrawCanvas() {
+    if (!match || match.game !== "draw" || match.drawFinished) return;
+    clearDrawCanvasLocal();
+    publishMatch({type:"drawClear",roomId:match.id,playerId});
 }
 
 /* PELEAS DE DIBUJOS */
-
 const drawFightCanvas = document.getElementById("drawFightCanvas");
-drawFightCtx = drawFightCanvas.getContext("2d");
+const drawFightCtx = drawFightCanvas.getContext("2d",{alpha:false});
 
 function clearDrawFightCanvas() {
-    if (!drawFightCtx) return;
-
     drawFightCtx.save();
     drawFightCtx.globalCompositeOperation = "source-over";
     drawFightCtx.fillStyle = "#ffffff";
@@ -1334,14 +1432,16 @@ function clearDrawFightCanvas() {
 
 function startDrawFight() {
     showView("drawfight");
+    drawFightLocalSubmitted = false;
+    drawFightRemoteSubmitted = false;
 
-    match.drawFightSubmitted = false;
+    match.drawFightStarted = false;
     match.drawFightMyImage = null;
     match.drawFightEnemyImage = null;
-    match.drawFightEnemyName = "Rival";
-    match.drawFightStarted = false;
+    match.drawFightMyName = username;
+    match.drawFightEnemyName = match.host === playerId ? match.guestName : match.hostName;
 
-    document.getElementById("drawFightObject").textContent = "-";
+    document.getElementById("drawFightObject").textContent = "Preparando...";
     document.getElementById("drawFightTimer").textContent = "0:30";
     document.getElementById("drawFightPlay").style.display = "block";
     document.getElementById("drawFightCompare").style.display = "none";
@@ -1354,68 +1454,65 @@ function startDrawFight() {
     if (match.host === playerId) {
         const object = DRAW_OBJECTS[Math.floor(Math.random() * DRAW_OBJECTS.length)];
         const endTime = Date.now() + 30000;
-
         match.drawFightObject = object;
         match.drawFightStarted = true;
         match.drawFightEndTime = endTime;
-
         document.getElementById("drawFightObject").textContent = object;
         startDrawFightTimer(endTime);
-        publishMatch({type:"drawFightStart", roomId:match.id, object, endTime});
+        publishMatch({
+            type:"drawFightStart",roomId:match.id,object,endTime,
+            hostName:username
+        });
     }
 }
 
 function startDrawFightTimer(endTime) {
     clearDrawFightTimer();
+    drawFightStartAt = endTime - 30000;
 
-    function update() {
+    function tick() {
         if (!match || match.game !== "drawfight") {
             clearDrawFightTimer();
             return;
         }
+        if (drawFightLocalSubmitted) {
+            clearDrawFightTimer();
+            return;
+        }
 
-        const remaining = Math.max(0,endTime - Date.now());
-        const seconds = Math.ceil(remaining / 1000);
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-
+        const left = Math.max(0,endTime - Date.now());
+        const secs = Math.ceil(left / 1000);
         document.getElementById("drawFightTimer").textContent =
-            `${min}:${String(sec).padStart(2,"0")}`;
+            Math.floor(secs / 60) + ":" + String(secs % 60).padStart(2,"0");
 
-        if (remaining <= 0) {
+        if (left <= 0) {
             clearDrawFightTimer();
             submitDrawFight();
         }
     }
 
-    update();
-    drawFightTimerInterval = setInterval(update,100);
+    tick();
+    drawFightTimerInterval = setInterval(tick,100);
 }
 
 function clearDrawFightTimer() {
-    if (drawFightTimerInterval) {
-        clearInterval(drawFightTimerInterval);
-        drawFightTimerInterval = null;
-    }
+    if (drawFightTimerInterval) clearInterval(drawFightTimerInterval);
+    drawFightTimerInterval = null;
 }
 
-drawFightCanvas.addEventListener("pointerdown", e => {
+drawFightCanvas.addEventListener("pointerdown",e => {
     if (!match || match.game !== "drawfight" ||
-        !match.drawFightStarted || match.drawFightSubmitted) return;
-
+        !match.drawFightStarted || drawFightLocalSubmitted) return;
     drawFightDrawing = true;
-    const p = getCanvasPosition(drawFightCanvas,e);
+    const p = canvasPoint(drawFightCanvas,e);
     drawFightLastX = p.x;
     drawFightLastY = p.y;
-    drawFightCanvas.setPointerCapture?.(e.pointerId);
+    drawFightCanvas.setPointerCapture(e.pointerId);
     e.preventDefault();
 });
-
-drawFightCanvas.addEventListener("pointermove", e => {
-    if (!drawFightDrawing || !match ||
-        match.game !== "drawfight" || match.drawFightSubmitted) return;
-
-    const p = getCanvasPosition(drawFightCanvas,e);
+drawFightCanvas.addEventListener("pointermove",e => {
+    if (!drawFightDrawing || !match || match.game !== "drawfight" || drawFightLocalSubmitted) return;
+    const p = canvasPoint(drawFightCanvas,e);
     drawFightCtx.beginPath();
     drawFightCtx.moveTo(drawFightLastX,drawFightLastY);
     drawFightCtx.lineTo(p.x,p.y);
@@ -1424,40 +1521,58 @@ drawFightCanvas.addEventListener("pointermove", e => {
     drawFightCtx.lineCap = "round";
     drawFightCtx.lineJoin = "round";
     drawFightCtx.stroke();
-
     drawFightLastX = p.x;
     drawFightLastY = p.y;
     e.preventDefault();
 });
+drawFightCanvas.addEventListener("pointerup",() => drawFightDrawing = false);
+drawFightCanvas.addEventListener("pointercancel",() => drawFightDrawing = false);
+drawFightCanvas.addEventListener("lostpointercapture",() => drawFightDrawing = false);
 
-drawFightCanvas.addEventListener("pointerup", () => drawFightDrawing = false);
-drawFightCanvas.addEventListener("pointercancel", () => drawFightDrawing = false);
-drawFightCanvas.addEventListener("lostpointercapture", () => drawFightDrawing = false);
+function clearMyDrawFightCanvas() {
+    if (!match || match.game !== "drawfight" ||
+        !match.drawFightStarted || drawFightLocalSubmitted) return;
+    clearDrawFightCanvas();
+}
 
 function submitDrawFight() {
     if (!match || match.game !== "drawfight" ||
-        match.drawFightSubmitted || !match.drawFightStarted) return;
+        !match.drawFightStarted || drawFightLocalSubmitted) return;
 
-    match.drawFightSubmitted = true;
     drawFightDrawing = false;
+    drawFightLocalSubmitted = true;
     clearDrawFightTimer();
 
-    /* PNG sin compresión JPEG: fondo blanco opaco y líneas nítidas. */
-    const image = drawFightCanvas.toDataURL("image/png");
+    /*
+      Exportar desde un canvas nuevo opaco:
+      1. fondo blanco real
+      2. copiar el dibujo a resolución original
+      3. generar PNG sin pérdidas
+    */
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = drawFightCanvas.width;
+    exportCanvas.height = drawFightCanvas.height;
+
+    const exportCtx = exportCanvas.getContext("2d",{alpha:false});
+    exportCtx.fillStyle = "#ffffff";
+    exportCtx.fillRect(0,0,exportCanvas.width,exportCanvas.height);
+    exportCtx.drawImage(drawFightCanvas,0,0,exportCanvas.width,exportCanvas.height);
+
+    const image = exportCanvas.toDataURL("image/png");
     match.drawFightMyImage = image;
 
     document.getElementById("drawFightSubmitButton").disabled = true;
     document.getElementById("drawFightClearButton").disabled = true;
-    drawFightCanvas.style.cursor = "default";
     document.getElementById("drawFightWaiting").classList.remove("hidden");
+    document.getElementById("drawFightWaiting").textContent =
+        "⏳ ¡Dibujo entregado! Esperando al rival...";
 
     publishMatch({
         type:"drawFightFinished",
         roomId:match.id,
         playerId,
         playerName:username,
-        image,
-        object:match.drawFightObject
+        image
     });
 
     checkDrawFightFinished();
@@ -1465,200 +1580,187 @@ function submitDrawFight() {
 
 function checkDrawFightFinished() {
     if (!match || match.game !== "drawfight") return;
-    if (!match.drawFightMyImage) return;
-
-    if (!match.drawFightEnemyImage) {
-        document.getElementById("drawFightWaiting").classList.remove("hidden");
-        return;
-    }
+    if (!drawFightLocalSubmitted || !drawFightRemoteSubmitted ||
+        !match.drawFightMyImage || !match.drawFightEnemyImage) return;
 
     clearDrawFightTimer();
     document.body.classList.remove("drawfight-mode");
 
     document.getElementById("drawFightPlay").style.display = "none";
     document.getElementById("drawFightCompare").style.display = "block";
-    document.getElementById("drawFightMyImage").src = match.drawFightMyImage;
-    document.getElementById("drawFightEnemyImage").src = match.drawFightEnemyImage;
-    document.getElementById("drawFightMyName").textContent = username;
-    document.getElementById("drawFightEnemyName").textContent = match.drawFightEnemyName;
+
+    const myImage = document.getElementById("drawFightMyImage");
+    const enemyImage = document.getElementById("drawFightEnemyImage");
+
+    myImage.onload = () => { myImage.style.backgroundColor = "#fff"; };
+    enemyImage.onload = () => { enemyImage.style.backgroundColor = "#fff"; };
+
+    myImage.src = match.drawFightMyImage;
+    enemyImage.src = match.drawFightEnemyImage;
+
+    document.getElementById("drawFightMyName").textContent = match.drawFightMyName || username;
+    document.getElementById("drawFightEnemyName").textContent = match.drawFightEnemyName || "Rival";
     document.getElementById("drawFightStatus").textContent =
-        "👀 Comparen los dibujos y decidan quién ganó.";
+        "👀 ¡Listo! Comparen los dibujos y decidan entre ustedes quién ganó.";
 }
 
-/* ADIVINÁ EL NÚMERO */
-
-let numberSecret = 0;
-let numberAttempts = 0;
-
+/* ADIVINAR NÚMERO */
 function startNumberGame() {
-    numberSecret = Math.floor(Math.random() * 100) + 1;
-    numberAttempts = 0;
-    const guess = prompt("Adiviná un número del 1 al 100:");
-    if (guess !== null) playNumberGuess(Number(guess));
-}
+    const secret = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
 
-function playNumberGuess(guess) {
-    if (!Number.isFinite(guess) || guess < 1 || guess > 100 || !Number.isInteger(guess)) {
-        alert("Poné un número entero entre 1 y 100.");
-        const next = prompt("Probá otra vez:");
-        if (next !== null) playNumberGuess(Number(next));
-        return;
+    function ask() {
+        const input = prompt("Adiviná el número secreto del 1 al 100:");
+        if (input === null) return;
+        const guess = Number(input);
+
+        if (!Number.isInteger(guess) || guess < 1 || guess > 100) {
+            alert("Ingresá un número entero entre 1 y 100.");
+            ask();
+            return;
+        }
+        attempts++;
+        if (guess === secret) {
+            alert(`🎉 ¡Correcto! Lo adivinaste en ${attempts} intento(s).`);
+            return;
+        }
+        alert(guess < secret ? "📈 El número secreto es más grande." : "📉 El número secreto es más chico.");
+        ask();
     }
-
-    numberAttempts++;
-    if (guess === numberSecret) {
-        alert(`🎉 ¡Acertaste!\nIntentos: ${numberAttempts}`);
-        return;
-    }
-
-    alert(guess < numberSecret ? "📈 Es más grande." : "📉 Es más chico.");
-    const next = prompt("Probá otra vez:");
-    if (next !== null) playNumberGuess(Number(next));
+    ask();
 }
 
 /* CHAT */
-
 function sendChat() {
     const input = document.getElementById("chatInput");
     const text = input.value.trim();
     if (!text) return;
-    mqttPublish(CHAT_TOPIC,{name:username || "Jugador",playerId,text,time:Date.now()});
+    if (!mqttClient.connected) {
+        alert("El chat todavía no está conectado.");
+        return;
+    }
+    safePublish(CHAT_TOPIC,{name:username || "Jugador",playerId,text,time:Date.now()});
+    addChatMessage(username || "Yo",text);
     input.value = "";
 }
-
 function addChatMessage(name,text) {
     const messages = document.getElementById("messages");
-    const div = document.createElement("div");
-    div.className = "message";
+    const first = messages.querySelector(".muted");
+    if (first && messages.children.length === 1) messages.innerHTML = "";
 
-    const nameDiv = document.createElement("div");
-    nameDiv.className = "messageName";
-    nameDiv.textContent = name;
-
-    const textDiv = document.createElement("div");
-    textDiv.className = "messageText";
-    textDiv.textContent = text;
-
-    div.append(nameDiv,textDiv);
-    messages.appendChild(div);
+    const row = document.createElement("div");
+    row.className = "message";
+    const title = document.createElement("div");
+    title.className = "messageName";
+    title.textContent = name;
+    const body = document.createElement("div");
+    body.className = "messageText";
+    body.textContent = text;
+    row.append(title,body);
+    messages.appendChild(row);
     messages.scrollTop = messages.scrollHeight;
 }
 
 /* ESP32 */
-
 function sendESP(command) {
     if (!mqttClient.connected) {
-        document.getElementById("espStatus").textContent = "Sin conexión MQTT.";
+        document.getElementById("espStatus").textContent = "No hay conexión MQTT.";
         return;
     }
     mqttClient.publish(COMMAND_TOPIC,command);
+    document.getElementById("espStatus").textContent = "Comando enviado: " + command;
 }
-
-function handleESPMessage(topic,data) {
-    const status = document.getElementById("espStatus");
-    if (status) status.textContent = typeof data === "string" ? data : JSON.stringify(data);
+function handleESPMessage(raw) {
+    document.getElementById("espStatus").textContent = raw || "El ESP32 envió una respuesta vacía.";
 }
 
 /* NOMBRE */
-
-let nameCallback = null;
-
 function openNameModal(callback) {
     nameCallback = callback || null;
     document.getElementById("nameModal").classList.add("active");
-    const input = document.getElementById("nameInput");
-    input.value = username || "";
-    setTimeout(() => input.focus(),100);
+    document.getElementById("nameInput").value = username;
+    setTimeout(() => document.getElementById("nameInput").focus(),100);
 }
-
 function saveName() {
-    const input = document.getElementById("nameInput");
-    const name = input.value.trim();
-    if (!name) return;
-
-    username = name.substring(0,20);
+    const value = document.getElementById("nameInput").value.trim();
+    if (!value) {
+        document.getElementById("nameInput").focus();
+        return;
+    }
+    username = value.slice(0,20);
     localStorage.setItem("username",username);
     document.getElementById("nameModal").classList.remove("active");
     publishPresence();
-
     const callback = nameCallback;
     nameCallback = null;
     if (callback) callback();
 }
 
-/* RESULTADO */
-
+/* RESULTADOS Y LIMPIEZA */
 function showResult(icon,title,text) {
     document.getElementById("resultBig").textContent = icon;
     document.getElementById("resultTitle").textContent = title;
     document.getElementById("resultText").textContent = text;
     document.getElementById("resultModal").classList.add("active");
 }
-
 function closeResult() {
     document.getElementById("resultModal").classList.remove("active");
     leaveMatch();
 }
-
-/* CANCELAR ESPERA */
-
-function cancelWaiting() {
-    if (match) {
-        clearRoom(match.id);
-        publishMatch({type:"roomClosed",roomId:match.id,playerId});
-        match = null;
-    }
-
-    document.getElementById("waitingModal").classList.remove("active");
-    renderRooms();
-}
-
-/* SALIR DE PARTIDA */
-
-function leaveMatch() {
-    if (match) {
-        publishMatch({type:"roomClosed",roomId:match.id,playerId});
-        clearRoom(match.id);
-    }
-
+function cleanupGame() {
     clearInterval(countdownInterval);
     clearInterval(drawTimerInterval);
     clearDrawFightTimer();
     clearTimeout(reactionTimeout);
-
-    match = null;
+    countdownInterval = null;
+    drawTimerInterval = null;
+    reactionTimeout = null;
     drawing = false;
     drawFightDrawing = false;
-
+}
+function cancelWaiting() {
+    if (match) {
+        safePublish(MATCH_PREFIX + match.id,{
+            type:"roomClosed",roomId:match.id,playerId
+        });
+        safePublish(ROOM_PREFIX + match.id,"",{retain:true});
+        match = null;
+    }
+    cleanupGame();
+    document.getElementById("waitingModal").classList.remove("active");
+    showView("arcade");
+    renderRooms();
+}
+function leaveMatch() {
+    if (match) {
+        safePublish(MATCH_PREFIX + match.id,{
+            type:"roomClosed",roomId:match.id,playerId
+        });
+        safePublish(ROOM_PREFIX + match.id,"",{retain:true});
+    }
+    cleanupGame();
+    match = null;
     document.getElementById("waitingModal").classList.remove("active");
     document.getElementById("resultModal").classList.remove("active");
-
     document.body.classList.remove("drawfight-mode");
     showView("arcade");
     renderRooms();
 }
 
-/* INICIO */
-
 window.addEventListener("load",() => {
     clearDrawFightCanvas();
-
-    if (!username) {
-        setTimeout(() => openNameModal(),500);
-    }
+    clearDrawCanvasLocal();
+    if (!username) setTimeout(() => openNameModal(),350);
 });
 
 window.addEventListener("beforeunload",() => {
     if (match) {
-        mqttPublish(MATCH_PREFIX + match.id,{
+        safePublish(MATCH_PREFIX + match.id,{
             type:"roomClosed",roomId:match.id,playerId
         });
-        if (mqttClient.connected) {
-            mqttClient.publish(ROOM_PREFIX + match.id,"",{retain:true});
-        }
+        safePublish(ROOM_PREFIX + match.id,"",{retain:true});
     }
-
-    mqttPublish(PLAYER_PREFIX + playerId,{
+    safePublish(PLAYER_PREFIX + playerId,{
         playerId,name:username,online:false,updatedAt:Date.now()
     },{retain:true});
 });
