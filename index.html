@@ -4,21 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ESP32 Arcade</title>
-
-<link rel="icon" href="data:image/svg+xml,
-<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22>
-<text y=%22.9em%22 font-size=%2290%22>🎮</text>
-</svg>">
+<title>ESP32 Remote Arcade</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
 
 :root{
     --bg:#090b12;
@@ -35,14 +25,15 @@
     --blue:#42a5ff;
 }
 
+*{
+    box-sizing:border-box;
+}
+
 body{
-    min-height:100vh;
-    background:
-        radial-gradient(circle at 20% 10%,#17132d 0,transparent 35%),
-        radial-gradient(circle at 90% 80%,#101e31 0,transparent 35%),
-        var(--bg);
+    margin:0;
+    background:var(--bg);
     color:var(--text);
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
 }
 
 button,
@@ -51,46 +42,36 @@ input{
 }
 
 button{
-    border:0;
     cursor:pointer;
 }
 
 .app{
-    display:flex;
     min-height:100vh;
+    display:flex;
 }
 
 /* SIDEBAR */
 
 .sidebar{
-    width:240px;
+    width:230px;
+    background:#0d101a;
     border-right:1px solid var(--border);
-    background:rgba(10,12,20,.92);
-    padding:22px 14px;
+    padding:20px 14px;
     position:fixed;
     left:0;
     top:0;
     bottom:0;
-    z-index:20;
 }
 
 .logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:5px 10px 28px;
     font-size:21px;
     font-weight:800;
+    margin-bottom:28px;
+    padding:0 10px;
 }
 
-.logo-icon{
-    width:38px;
-    height:38px;
-    border-radius:12px;
-    display:grid;
-    place-items:center;
-    background:linear-gradient(135deg,var(--accent),#4f46e5);
-    box-shadow:0 8px 30px rgba(124,92,255,.25);
+.logo span{
+    color:var(--accent2);
 }
 
 .nav{
@@ -100,123 +81,102 @@ button{
 }
 
 .nav button{
-    color:var(--muted);
+    border:0;
     background:transparent;
+    color:var(--muted);
+    padding:12px;
+    border-radius:10px;
     text-align:left;
-    padding:13px 14px;
-    border-radius:12px;
-    transition:.2s;
+    font-weight:600;
 }
 
-.nav button:hover{
+.nav button:hover,
+.nav button.active{
     background:var(--panel2);
     color:white;
 }
 
-.nav button.active{
-    color:white;
-    background:linear-gradient(90deg,rgba(124,92,255,.22),rgba(124,92,255,.07));
-}
-
-.sidebar-user{
+.connection{
     position:absolute;
-    left:14px;
-    right:14px;
-    bottom:18px;
-    padding:13px;
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:14px;
+    bottom:20px;
+    left:20px;
+    right:20px;
+    font-size:12px;
+    color:var(--muted);
 }
 
-.sidebar-user small{
-    display:block;
-    color:var(--muted);
-    margin-bottom:4px;
+.dot{
+    display:inline-block;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--red);
+    margin-right:6px;
+}
+
+.dot.online{
+    background:var(--green);
 }
 
 /* MAIN */
 
 .main{
-    margin-left:240px;
-    width:calc(100% - 240px);
+    margin-left:230px;
+    width:calc(100% - 230px);
+    min-height:100vh;
 }
 
 .topbar{
-    height:68px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 30px;
+    height:64px;
     border-bottom:1px solid var(--border);
-    background:rgba(9,11,18,.7);
-    backdrop-filter:blur(15px);
-    position:sticky;
-    top:0;
-    z-index:10;
-}
-
-.connection{
     display:flex;
     align-items:center;
-    gap:8px;
-    font-size:13px;
-    color:var(--muted);
+    justify-content:space-between;
+    padding:0 28px;
 }
 
-.dot{
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:var(--red);
-}
-
-.dot.online{
-    background:var(--green);
-    box-shadow:0 0 12px var(--green);
-}
-
-.username{
-    color:white;
+.userName{
+    color:var(--accent2);
     font-weight:700;
 }
 
-.content{
-    max-width:1200px;
-    margin:auto;
-    padding:30px;
-}
+/* VIEWS */
 
 .view{
     display:none;
+    padding:30px;
 }
 
 .view.active{
     display:block;
 }
 
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
 /* HOME */
 
 .hero{
-    padding:45px 10px 30px;
+    background:
+        radial-gradient(circle at 80% 20%,rgba(124,92,255,.25),transparent 35%),
+        var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:45px;
+    margin-bottom:25px;
 }
 
 .hero h1{
-    font-size:clamp(36px,5vw,65px);
-    line-height:1;
-    margin-bottom:16px;
-    letter-spacing:-3px;
-}
-
-.hero h1 span{
-    color:var(--accent2);
+    margin:0 0 12px;
+    font-size:42px;
 }
 
 .hero p{
-    max-width:650px;
     color:var(--muted);
     font-size:17px;
-    line-height:1.7;
+    max-width:650px;
 }
 
 .cards{
@@ -226,553 +186,463 @@ button{
 }
 
 .card{
-    background:rgba(17,21,34,.82);
+    background:var(--panel);
     border:1px solid var(--border);
-    border-radius:18px;
+    border-radius:16px;
     padding:22px;
 }
 
 .card h3{
-    margin:10px 0 8px;
+    margin-top:0;
 }
 
 .card p{
     color:var(--muted);
-    line-height:1.55;
-    font-size:14px;
 }
 
-.big-icon{
-    font-size:30px;
+/* CHAT */
+
+.chatBox{
+    height:600px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+}
+
+.chatMessages{
+    flex:1;
+    overflow-y:auto;
+    padding:18px;
+}
+
+.chatMessage{
+    margin-bottom:12px;
+}
+
+.chatMessage .name{
+    color:var(--accent2);
+    font-weight:bold;
+}
+
+.chatMessage .time{
+    color:#666d80;
+    font-size:11px;
+    margin-left:5px;
+}
+
+.chatInput{
+    border-top:1px solid var(--border);
+    display:flex;
+    padding:12px;
+    gap:10px;
+}
+
+.chatInput input{
+    flex:1;
+}
+
+/* INPUTS */
+
+input{
+    background:#0b0e17;
+    color:white;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px;
+    outline:none;
+}
+
+input:focus{
+    border-color:var(--accent);
 }
 
 /* BUTTONS */
 
 .btn{
+    border:0;
+    border-radius:10px;
     padding:11px 16px;
-    border-radius:11px;
+    background:var(--accent);
     color:white;
-    background:var(--panel2);
-    border:1px solid var(--border);
-    transition:.2s;
+    font-weight:700;
 }
 
 .btn:hover{
-    transform:translateY(-1px);
-    border-color:#454d68;
+    filter:brightness(1.1);
 }
 
-.btn.primary{
-    background:linear-gradient(135deg,var(--accent),#5b4bdc);
-    border-color:transparent;
+.btn.secondary{
+    background:var(--panel2);
+    border:1px solid var(--border);
 }
 
 .btn.green{
-    background:#123a2e;
-    color:#6ff0b5;
-    border-color:#245e4c;
+    background:var(--green);
+    color:#07110d;
 }
 
 .btn.red{
-    background:#3a1620;
-    color:#ff8b9b;
-    border-color:#63303c;
+    background:var(--red);
 }
 
-.btn:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-}
-
-/* CHAT */
-
-.chat-box{
-    height:calc(100vh - 150px);
-    min-height:500px;
-    display:flex;
-    flex-direction:column;
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    overflow:hidden;
-}
-
-.chat-header{
-    padding:18px 20px;
-    border-bottom:1px solid var(--border);
-}
-
-.chat-header h2{
-    margin-bottom:4px;
-}
-
-.chat-header p{
-    color:var(--muted);
-    font-size:13px;
-}
-
-.messages{
-    flex:1;
-    overflow-y:auto;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.message{
-    max-width:75%;
-    padding:10px 13px;
-    background:var(--panel2);
-    border-radius:12px;
-    align-self:flex-start;
-}
-
-.message.mine{
-    align-self:flex-end;
-    background:rgba(124,92,255,.22);
-}
-
-.message .name{
-    font-size:12px;
-    font-weight:800;
-    color:var(--accent2);
-    margin-bottom:4px;
-}
-
-.message .time{
-    color:#6d7384;
-    font-size:10px;
-    margin-top:5px;
-}
-
-.chat-input{
-    display:flex;
-    gap:10px;
-    padding:15px;
-    border-top:1px solid var(--border);
-}
-
-.chat-input input{
-    flex:1;
-}
-
-/* INPUT */
-
-.input{
-    width:100%;
-    background:#0b0e17;
-    border:1px solid var(--border);
-    color:white;
-    border-radius:11px;
-    padding:12px 13px;
-    outline:none;
-}
-
-.input:focus{
-    border-color:var(--accent);
+.btn.blue{
+    background:var(--blue);
 }
 
 /* ARCADE */
 
-.section-title{
-    margin-bottom:22px;
-}
-
-.section-title h1{
-    font-size:32px;
-    margin-bottom:6px;
-}
-
-.section-title p{
-    color:var(--muted);
+.sectionTitle{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
 .games{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+}
+
+.gameCard{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:22px;
+    transition:.2s;
+}
+
+.gameCard:hover{
+    transform:translateY(-3px);
+    border-color:var(--accent);
+}
+
+.gameIcon{
+    font-size:38px;
+    margin-bottom:10px;
+}
+
+.gameCard h3{
+    margin:5px 0;
+}
+
+.gameCard p{
+    color:var(--muted);
+    min-height:42px;
+}
+
+/* ROOMS */
+
+.rooms{
+    margin-top:30px;
+}
+
+.roomList{
+    display:grid;
+    gap:10px;
+}
+
+.room{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:15px 18px;
+}
+
+.roomInfo strong{
+    display:block;
+}
+
+.roomInfo span{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* GAME */
+
+.gameHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.gameArea{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    min-height:550px;
+    padding:30px;
+    position:relative;
+}
+
+.opponent{
+    color:var(--muted);
+}
+
+#countdownArea{
+    text-align:center;
+    padding-top:120px;
+}
+
+#countdownText{
+    font-size:100px;
+    font-weight:900;
+    color:var(--accent2);
+}
+
+/* TARGET */
+
+.targetInfo{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.targetBoard{
+    position:relative;
+    height:400px;
+    background:#0a0d15;
+    border:1px solid var(--border);
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.target{
+    position:absolute;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:var(--red);
+    border:5px solid white;
+    display:none;
+}
+
+/* REACTION */
+
+.reactionArea{
+    text-align:center;
+    padding-top:100px;
+}
+
+.reactionButton{
+    width:260px;
+    height:180px;
+    border:0;
+    border-radius:20px;
+    background:#24293a;
+    color:white;
+    font-size:28px;
+    font-weight:800;
+}
+
+.reactionButton.ready{
+    background:var(--green);
+    color:#06100c;
+}
+
+.reactionButton.wait{
+    background:var(--red);
+}
+
+/* TTT */
+
+.tttBoard{
+    width:330px;
+    height:330px;
+    margin:40px auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.tttCell{
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#0b0e17;
+    color:white;
+    font-size:60px;
+    font-weight:bold;
+}
+
+/* NUMBER */
+
+.numberGame{
+    text-align:center;
+    padding-top:60px;
+}
+
+.numberGame h2{
+    font-size:32px;
+}
+
+.numberInput{
+    width:180px;
+    text-align:center;
+    font-size:25px;
+}
+
+/* DRAW */
+
+.drawContainer{
+    text-align:center;
+}
+
+#drawCanvas{
+    background:white;
+    border-radius:15px;
+    max-width:100%;
+    touch-action:none;
+}
+
+/* ESP */
+
+.espGrid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:16px;
 }
 
-.game-card{
-    padding:23px;
+.espCard{
     background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    display:flex;
-    gap:18px;
-    align-items:center;
-}
-
-.game-icon{
-    min-width:65px;
-    height:65px;
-    display:grid;
-    place-items:center;
-    border-radius:17px;
-    font-size:31px;
-    background:var(--panel2);
-}
-
-.game-card h3{
-    margin-bottom:6px;
-}
-
-.game-card p{
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.5;
-    margin-bottom:13px;
-}
-
-.game-actions{
-    display:flex;
-    gap:8px;
-}
-
-/* ROOMS */
-
-.rooms-panel{
-    margin-top:25px;
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:20px;
-}
-
-.rooms-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:14px;
-}
-
-.rooms-header span{
-    color:var(--muted);
-    font-size:13px;
-}
-
-.room{
-    padding:15px;
-    border:1px solid var(--border);
-    background:var(--panel2);
-    border-radius:13px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-top:9px;
-}
-
-.room-info{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.room-icon{
-    width:42px;
-    height:42px;
-    display:grid;
-    place-items:center;
-    border-radius:11px;
-    background:#0d101a;
-}
-
-.room-name{
-    font-weight:750;
-}
-
-.room-sub{
-    color:var(--muted);
-    font-size:12px;
-    margin-top:3px;
-}
-
-.empty{
-    padding:30px 10px;
-    text-align:center;
-    color:var(--muted);
-}
-
-/* GAME */
-
-.game-screen{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:24px;
-}
-
-.game-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.game-top small{
-    color:var(--muted);
-}
-
-.game-area{
-    min-height:450px;
-    display:grid;
-    place-items:center;
-    background:#0a0d15;
     border:1px solid var(--border);
     border-radius:16px;
-    position:relative;
-    overflow:hidden;
+    padding:22px;
 }
 
-.target{
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    background:var(--red);
-    box-shadow:0 0 30px rgba(255,93,115,.5);
-    position:absolute;
-    cursor:pointer;
-    display:none;
-}
-
-.scoreboard{
-    display:flex;
-    gap:15px;
-    margin-top:16px;
-}
-
-.score{
-    flex:1;
-    padding:15px;
-    background:var(--panel2);
-    border:1px solid var(--border);
-    border-radius:13px;
-}
-
-.score small{
-    color:var(--muted);
-}
-
-.score strong{
-    display:block;
-    font-size:26px;
-    margin-top:3px;
-}
-
-/* TTT */
-
-.ttt{
-    display:grid;
-    grid-template-columns:repeat(3,100px);
-    gap:8px;
-}
-
-.cell{
-    width:100px;
-    height:100px;
-    display:grid;
-    place-items:center;
-    font-size:40px;
-    font-weight:900;
-    border-radius:13px;
-    background:var(--panel2);
-    border:1px solid var(--border);
-    cursor:pointer;
-}
-
-.cell:hover{
-    border-color:var(--accent);
-}
-
-/* NUMBER */
-
-.number-game{
-    text-align:center;
-    max-width:450px;
-    width:100%;
-}
-
-.number-game h2{
-    margin-bottom:8px;
-}
-
-.number-game p{
-    color:var(--muted);
-    margin-bottom:20px;
-}
-
-/* DRAW */
-
-.draw-wrap{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:18px;
-}
-
-#drawCanvas{
-    width:100%;
-    height:550px;
-    background:#fff;
-    border-radius:12px;
-    cursor:crosshair;
-    touch-action:none;
-}
-
-.draw-toolbar{
+.espButtons{
     display:flex;
     gap:10px;
-    margin-bottom:12px;
+    flex-wrap:wrap;
 }
 
-/* ESP */
-
-.esp-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:13px;
-    margin-top:20px;
-}
-
-.esp-status{
-    padding:20px;
-    border:1px solid var(--border);
-    border-radius:15px;
-    background:var(--panel);
-}
-
-.esp-status code{
-    color:var(--accent2);
-}
-
-/* MODAL */
+/* MODALS */
 
 .modal{
     position:fixed;
     inset:0;
-    z-index:100;
     background:rgba(0,0,0,.72);
-    backdrop-filter:blur(8px);
     display:none;
     align-items:center;
     justify-content:center;
-    padding:20px;
+    z-index:1000;
 }
 
 .modal.show{
     display:flex;
 }
 
-.modal-box{
-    width:min(460px,100%);
-    background:#111522;
+.modalBox{
+    width:min(450px,calc(100% - 30px));
+    background:var(--panel);
     border:1px solid var(--border);
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 30px 100px rgba(0,0,0,.45);
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 20px 80px rgba(0,0,0,.5);
 }
 
-.modal-box h2{
-    margin-bottom:7px;
+.modalBox h2{
+    margin-top:0;
 }
 
-.modal-box p{
+.modalBox p{
     color:var(--muted);
-    font-size:14px;
-    line-height:1.5;
-    margin-bottom:20px;
 }
 
-.modal-actions{
+.modalActions{
     display:flex;
+    gap:10px;
     justify-content:flex-end;
-    gap:9px;
-    margin-top:18px;
+    margin-top:20px;
 }
 
-.countdown{
-    font-size:90px;
-    font-weight:900;
-    color:var(--accent2);
+/* RESULT */
+
+.resultTitle{
     text-align:center;
-    padding:30px;
+    font-size:38px;
+    margin:15px 0;
+}
+
+.resultText{
+    text-align:center;
+    color:var(--muted);
+    font-size:17px;
 }
 
 /* RESPONSIVE */
 
 @media(max-width:900px){
+
     .sidebar{
-        width:75px;
-    }
-
-    .logo span,
-    .nav button span,
-    .sidebar-user{
-        display:none;
-    }
-
-    .logo{
-        justify-content:center;
-        padding-left:0;
-        padding-right:0;
-    }
-
-    .nav button{
-        text-align:center;
-        font-size:0;
-    }
-
-    .nav button:first-letter{
-        font-size:20px;
+        width:190px;
     }
 
     .main{
-        margin-left:75px;
-        width:calc(100% - 75px);
+        margin-left:190px;
+        width:calc(100% - 190px);
     }
 
     .cards,
     .games{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        border-right:0;
+        border-bottom:1px solid var(--border);
+    }
+
+    .app{
+        display:block;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .connection{
+        position:static;
+        margin-top:15px;
+    }
+
+    .cards,
+    .games,
+    .espGrid{
         grid-template-columns:1fr;
     }
 
-    .esp-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:600px){
-    .content{
+    .view{
         padding:18px;
+    }
+
+    .hero{
+        padding:25px;
+    }
+
+    .hero h1{
+        font-size:30px;
     }
 
     .topbar{
         padding:0 15px;
     }
 
-    .hero{
-        padding-top:25px;
-    }
-
-    .hero h1{
-        font-size:42px;
-    }
-
-    .ttt{
-        grid-template-columns:repeat(3,80px);
-    }
-
-    .cell{
-        width:80px;
-        height:80px;
-    }
-
-    #drawCanvas{
-        height:400px;
-    }
 }
+
 </style>
 </head>
 
@@ -780,506 +650,710 @@ button{
 
 <div class="app">
 
-<aside class="sidebar">
+    <!-- SIDEBAR -->
 
-    <div class="logo">
-        <div class="logo-icon">🎮</div>
-        <span>ESP32 Arcade</span>
-    </div>
+    <aside class="sidebar">
 
-    <nav class="nav">
-
-        <button class="active" onclick="showView('home')">
-            🏠 <span>Inicio</span>
-        </button>
-
-        <button onclick="showView('chat')">
-            💬 <span>Chat</span>
-        </button>
-
-        <button onclick="showView('arcade')">
-            🎮 <span>Arcade</span>
-        </button>
-
-        <button onclick="showView('esp')">
-            ⚡ <span>ESP32</span>
-        </button>
-
-    </nav>
-
-    <div class="sidebar-user">
-        <small>Jugador</small>
-        <strong id="sidebarUser">Sin nombre</strong>
-    </div>
-
-</aside>
-
-
-<main class="main">
-
-<header class="topbar">
-
-    <div class="connection">
-        <div id="connectionDot" class="dot"></div>
-        <span id="connectionText">Desconectado</span>
-    </div>
-
-    <button class="btn" onclick="openNameModal()">
-        👤 <span id="topUser">Sin nombre</span>
-    </button>
-
-</header>
-
-
-<div class="content">
-
-<!-- HOME -->
-
-<section id="view-home" class="view active">
-
-    <div class="hero">
-
-        <h1>
-            Bienvenido al<br>
-            <span>ESP32 Arcade.</span>
-        </h1>
-
-        <p>
-            Juegos, chat y control remoto conectados mediante MQTT.
-            Abrí la página desde otro dispositivo y jugá con tus amigos.
-        </p>
-
-        <br>
-
-        <button class="btn primary" onclick="showView('arcade')">
-            🎮 Ir al Arcade
-        </button>
-
-    </div>
-
-    <div class="cards">
-
-        <div class="card">
-            <div class="big-icon">🎮</div>
-            <h3>Multijugador</h3>
-            <p>
-                Creá una sala y otros jugadores podrán verla
-                automáticamente sin usar códigos.
-            </p>
+        <div class="logo">
+            ESP32 <span>REMOTE</span>
         </div>
 
-        <div class="card">
-            <div class="big-icon">💬</div>
-            <h3>Chat</h3>
-            <p>
-                Chat global en tiempo real mediante MQTT.
-            </p>
-        </div>
+        <nav class="nav">
 
-        <div class="card">
-            <div class="big-icon">⚡</div>
-            <h3>ESP32</h3>
-            <p>
-                Mandá comandos directamente a tu ESP32-C3.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- CHAT -->
-
-<section id="view-chat" class="view">
-
-    <div class="chat-box">
-
-        <div class="chat-header">
-            <h2>💬 Chat global</h2>
-            <p>Todos los jugadores conectados pueden verlo.</p>
-        </div>
-
-        <div id="messages" class="messages"></div>
-
-        <form class="chat-input" onsubmit="sendChat(event)">
-
-            <input
-                id="chatInput"
-                class="input"
-                autocomplete="off"
-                placeholder="Escribí un mensaje..."
-            >
-
-            <button class="btn primary">
-                Enviar
+            <button class="navBtn active"
+                    data-view="home">
+                🏠 Inicio
             </button>
 
-        </form>
-
-    </div>
-
-</section>
-
-
-<!-- ARCADE -->
-
-<section id="view-arcade" class="view">
-
-    <div class="section-title">
-        <h1>🎮 Arcade</h1>
-        <p>Elegí un juego. Las salas disponibles aparecen automáticamente.</p>
-    </div>
-
-
-    <div class="games">
-
-        <div class="game-card">
-
-            <div class="game-icon">🎯</div>
-
-            <div>
-                <h3>Caza el objetivo</h3>
-
-                <p>
-                    Tocá el objetivo tantas veces como puedas
-                    antes de que termine el tiempo.
-                </p>
-
-                <div class="game-actions">
-
-                    <button class="btn primary"
-                            onclick="createRoom('target')">
-                        Crear sala
-                    </button>
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="game-card">
-
-            <div class="game-icon">⚡</div>
-
-            <div>
-                <h3>Reflejos</h3>
-
-                <p>
-                    Esperá la señal y reaccioná lo más rápido posible.
-                </p>
-
-                <div class="game-actions">
-
-                    <button class="btn primary"
-                            onclick="createRoom('reaction')">
-                        Crear sala
-                    </button>
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="game-card">
-
-            <div class="game-icon">⭕</div>
-
-            <div>
-                <h3>Tres en línea</h3>
-
-                <p>
-                    El clásico tres en línea contra otro jugador.
-                </p>
-
-                <div class="game-actions">
-
-                    <button class="btn primary"
-                            onclick="createRoom('ttt')">
-                        Crear sala
-                    </button>
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="game-card">
-
-            <div class="game-icon">🧠</div>
-
-            <div>
-                <h3>Adiviná el número</h3>
-
-                <p>
-                    Intentá descubrir el número secreto.
-                </p>
-
-                <div class="game-actions">
-
-                    <button class="btn primary"
-                            onclick="startNumberGame()">
-                        Jugar
-                    </button>
-
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="game-card">
-
-            <div class="game-icon">🎨</div>
-
-            <div>
-                <h3>Duelo de dibujo</h3>
-
-                <p>
-                    Dibujen juntos en el mismo lienzo.
-                </p>
-
-                <div class="game-actions">
-
-                    <button class="btn primary"
-                            onclick="createRoom('draw')">
-                        Crear sala
-                    </button>
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="rooms-panel">
-
-        <div class="rooms-header">
-
-            <div>
-                <h2>🚪 Salas disponibles</h2>
-            </div>
-
-            <span id="roomCount">0 salas</span>
-
-        </div>
-
-        <div id="roomsList">
-
-            <div class="empty">
-                Buscando jugadores...
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ACTIVE GAME -->
-
-<section id="view-game" class="view">
-
-    <div class="game-screen">
-
-        <div class="game-top">
-
-            <div>
-                <h2 id="gameTitle">Juego</h2>
-                <small id="gameOpponent">Esperando...</small>
-            </div>
-
-            <button class="btn red" onclick="leaveMatch()">
-                Salir
+            <button class="navBtn"
+                    data-view="chat">
+                💬 Chat
             </button>
 
-        </div>
-
-
-        <div id="countdownArea" style="display:none;">
-            <div class="countdown" id="countdownText">3</div>
-        </div>
-
-
-        <!-- TARGET -->
-
-        <div id="targetGame" style="display:none;">
-
-            <div class="game-area" id="targetArea">
-
-                <div id="target" class="target"></div>
-
-                <div id="targetMessage">
-                    Preparado...
-                </div>
-
-            </div>
-
-            <div class="scoreboard">
-
-                <div class="score">
-                    <small id="myNameScore">Vos</small>
-                    <strong id="myScore">0</strong>
-                </div>
-
-                <div class="score">
-                    <small id="enemyNameScore">Rival</small>
-                    <strong id="enemyScore">0</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- REACTION -->
-
-        <div id="reactionGame" style="display:none;">
-
-            <div class="game-area" id="reactionArea">
-
-                <button
-                    id="reactionButton"
-                    class="btn primary"
-                    onclick="reactionClick()"
-                    style="display:none;"
-                >
-                    ¡AHORA!
-                </button>
-
-                <div id="reactionMessage">
-                    Esperando...
-                </div>
-
-            </div>
-
-            <div class="scoreboard">
-
-                <div class="score">
-                    <small>Tu tiempo</small>
-                    <strong id="myReaction">-</strong>
-                </div>
-
-                <div class="score">
-                    <small>Rival</small>
-                    <strong id="enemyReaction">-</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- TTT -->
-
-        <div id="tttGame" style="display:none;text-align:center;">
-
-            <p id="tttStatus" style="color:var(--muted);margin-bottom:20px;">
-                Preparando...
-            </p>
-
-            <div class="ttt" id="tttBoard"></div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- DRAW -->
-
-<section id="view-draw" class="view">
-
-    <div class="section-title">
-        <h1>🎨 Duelo de dibujo</h1>
-        <p>Los trazos se sincronizan en tiempo real.</p>
-    </div>
-
-    <div class="draw-wrap">
-
-        <div class="draw-toolbar">
-
-            <button class="btn" onclick="clearCanvas()">
-                🗑️ Limpiar
+            <button class="navBtn"
+                    data-view="arcade">
+                🎮 Arcade
             </button>
 
-            <button class="btn red" onclick="leaveMatch()">
-                Salir
+            <button class="navBtn"
+                    data-view="esp">
+                ⚡ ESP32
             </button>
 
+        </nav>
+
+        <div class="connection">
+            <span id="connectionDot" class="dot"></span>
+            <span id="connectionText">
+                Desconectado
+            </span>
         </div>
 
-        <canvas id="drawCanvas"></canvas>
-
-    </div>
-
-</section>
+    </aside>
 
 
-<!-- ESP -->
+    <!-- MAIN -->
 
-<section id="view-esp" class="view">
+    <main class="main">
 
-    <div class="section-title">
-        <h1>⚡ ESP32</h1>
-        <p>Mandá comandos directamente al ESP32-C3.</p>
-    </div>
+        <header class="topbar">
 
+            <div>
+                ESP32 Remote Arcade
+            </div>
 
-    <div class="esp-status">
+            <div class="userName"
+                 id="topUsername">
+                Sin nombre
+            </div>
 
-        Estado MQTT:
-        <strong id="espMQTTStatus">Desconectado</strong>
-
-        <br><br>
-
-        Último mensaje:
-        <code id="espLastMessage">-</code>
-
-    </div>
+        </header>
 
 
-    <div class="esp-grid">
+        <!-- HOME -->
 
-        <button class="btn primary" onclick="sendESP('PING')">
-            📡 PING
-        </button>
+        <section id="home"
+                 class="view active">
 
-        <button class="btn green" onclick="sendESP('ON')">
-            🟢 ON
-        </button>
+            <div class="container">
 
-        <button class="btn red" onclick="sendESP('OFF')">
-            🔴 OFF
-        </button>
+                <div class="hero">
 
-        <button class="btn primary" onclick="sendESP('GAME')">
-            🎮 GAME
-        </button>
+                    <h1>
+                        ESP32 Remote
+                    </h1>
 
-    </div>
+                    <p>
+                        Controlá tu ESP32, hablá con otros jugadores
+                        y jugá partidas multijugador desde cualquier
+                        dispositivo.
+                    </p>
 
-</section>
+                    <button class="btn"
+                            onclick="showView('arcade')">
+                        🎮 Ir al Arcade
+                    </button>
 
-</div>
-</main>
+                </div>
+
+
+                <div class="cards">
+
+                    <div class="card">
+
+                        <h3>
+                            🎮 Arcade
+                        </h3>
+
+                        <p>
+                            Creá o uníte automáticamente a salas
+                            para jugar con otra persona.
+                        </p>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>
+                            💬 Chat
+                        </h3>
+
+                        <p>
+                            Chat global en tiempo real mediante MQTT.
+                        </p>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>
+                            ⚡ ESP32
+                        </h3>
+
+                        <p>
+                            Mandá comandos directamente al ESP32-C3.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHAT -->
+
+        <section id="chat"
+                 class="view">
+
+            <div class="container">
+
+                <div class="sectionTitle">
+
+                    <h1>💬 Chat global</h1>
+
+                </div>
+
+
+                <div class="chatBox">
+
+                    <div id="chatMessages"
+                         class="chatMessages">
+                    </div>
+
+
+                    <div class="chatInput">
+
+                        <input
+                            id="chatInput"
+                            placeholder="Escribí un mensaje..."
+                            maxlength="200"
+                            autocomplete="off"
+                        >
+
+                        <button class="btn"
+                                onclick="sendChat()">
+                            Enviar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ARCADE -->
+
+        <section id="arcade"
+                 class="view">
+
+            <div class="container">
+
+                <div class="sectionTitle">
+
+                    <div>
+
+                        <h1>🎮 Arcade</h1>
+
+                        <p style="color:var(--muted)">
+                            Elegí un juego para crear una sala.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="games">
+
+
+                    <div class="gameCard">
+
+                        <div class="gameIcon">
+                            🎯
+                        </div>
+
+                        <h3>
+                            Caza el objetivo
+                        </h3>
+
+                        <p>
+                            Tocá el objetivo tantas veces como puedas.
+                        </p>
+
+                        <button class="btn"
+                                onclick="createRoom('target')">
+                            Crear sala
+                        </button>
+
+                    </div>
+
+
+                    <div class="gameCard">
+
+                        <div class="gameIcon">
+                            ⚡
+                        </div>
+
+                        <h3>
+                            Reflejos
+                        </h3>
+
+                        <p>
+                            Esperá la señal y reaccioná lo más rápido posible.
+                        </p>
+
+                        <button class="btn"
+                                onclick="createRoom('reaction')">
+                            Crear sala
+                        </button>
+
+                    </div>
+
+
+                    <div class="gameCard">
+
+                        <div class="gameIcon">
+                            ❌
+                        </div>
+
+                        <h3>
+                            Tres en línea
+                        </h3>
+
+                        <p>
+                            El clásico tres en línea para dos jugadores.
+                        </p>
+
+                        <button class="btn"
+                                onclick="createRoom('ttt')">
+                            Crear sala
+                        </button>
+
+                    </div>
+
+
+                    <div class="gameCard">
+
+                        <div class="gameIcon">
+                            🧠
+                        </div>
+
+                        <h3>
+                            Adiviná el número
+                        </h3>
+
+                        <p>
+                            Adiviná el número secreto.
+                        </p>
+
+                        <button class="btn"
+                                onclick="startLocalNumberGame()">
+                            Jugar
+                        </button>
+
+                    </div>
+
+
+                    <div class="gameCard">
+
+                        <div class="gameIcon">
+                            🎨
+                        </div>
+
+                        <h3>
+                            Duelo de dibujo
+                        </h3>
+
+                        <p>
+                            Dibujá en tiempo real con tu rival.
+                        </p>
+
+                        <button class="btn"
+                                onclick="createRoom('draw')">
+                            Crear sala
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="rooms">
+
+                    <h2>
+                        🟢 Salas disponibles
+                    </h2>
+
+                    <div id="roomList"
+                         class="roomList">
+
+                        <div style="color:var(--muted)">
+                            Buscando salas...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAME -->
+
+        <section id="game"
+                 class="view">
+
+            <div class="container">
+
+                <div class="gameHeader">
+
+                    <div>
+
+                        <h1 id="gameTitle">
+                            Juego
+                        </h1>
+
+                        <div class="opponent">
+                            Rival:
+                            <span id="opponentName">
+                                -
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="btn red"
+                            onclick="leaveMatch()">
+                        Salir
+                    </button>
+
+                </div>
+
+
+                <div class="gameArea">
+
+
+                    <div id="countdownArea">
+
+                        <div style="color:var(--muted)">
+                            Preparados...
+                        </div>
+
+                        <div id="countdownText">
+                            3
+                        </div>
+
+                    </div>
+
+
+                    <!-- TARGET -->
+
+                    <div id="targetGame"
+                         style="display:none">
+
+                        <div class="targetInfo">
+
+                            <strong>
+                                Vos:
+                                <span id="myScore">
+                                    0
+                                </span>
+                            </strong>
+
+                            <strong>
+                                Rival:
+                                <span id="enemyScore">
+                                    0
+                                </span>
+                            </strong>
+
+                            <strong>
+                                Tiempo:
+                                <span id="targetTimer">
+                                    30
+                                </span>
+                            </strong>
+
+                        </div>
+
+
+                        <div id="targetBoard"
+                             class="targetBoard">
+
+                            <button id="target"
+                                    class="target"
+                                    onclick="hitTarget()">
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- REACTION -->
+
+                    <div id="reactionGame"
+                         style="display:none">
+
+                        <div class="targetInfo">
+
+                            <strong>
+                                Vos:
+                                <span id="myReaction">
+                                    -
+                                </span>
+                            </strong>
+
+                            <strong>
+                                Rival:
+                                <span id="enemyReaction">
+                                    -
+                                </span>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="reactionArea">
+
+                            <button id="reactionButton"
+                                    class="reactionButton"
+                                    onclick="reactionClick()">
+                                ESPERÁ...
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TTT -->
+
+                    <div id="tttGame"
+                         style="display:none">
+
+                        <div style="text-align:center">
+
+                            <h2 id="tttStatus">
+                                Preparando...
+                            </h2>
+
+                            <div class="tttBoard"
+                                 id="tttBoard">
+
+                                <button class="tttCell"
+                                        onclick="tttClick(0)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(1)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(2)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(3)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(4)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(5)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(6)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(7)">
+                                </button>
+
+                                <button class="tttCell"
+                                        onclick="tttClick(8)">
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DRAW -->
+
+        <section id="draw"
+                 class="view">
+
+            <div class="container">
+
+                <div class="sectionTitle">
+
+                    <div>
+
+                        <h1>
+                            🎨 Duelo de dibujo
+                        </h1>
+
+                        <p style="color:var(--muted)">
+                            Dibujá en tiempo real.
+                        </p>
+
+                    </div>
+
+                    <button class="btn red"
+                            onclick="leaveMatch()">
+                        Salir
+                    </button>
+
+                </div>
+
+
+                <div class="drawContainer">
+
+                    <canvas id="drawCanvas"
+                            width="800"
+                            height="500">
+                    </canvas>
+
+                    <br><br>
+
+                    <button class="btn secondary"
+                            onclick="clearCanvas(true)">
+                        🗑️ Limpiar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ESP -->
+
+        <section id="esp"
+                 class="view">
+
+            <div class="container">
+
+                <h1>
+                    ⚡ Control ESP32
+                </h1>
+
+
+                <div class="espGrid">
+
+
+                    <div class="espCard">
+
+                        <h3>
+                            Conexión
+                        </h3>
+
+                        <p id="espStatus">
+                            Esperando ESP32...
+                        </p>
+
+                    </div>
+
+
+                    <div class="espCard">
+
+                        <h3>
+                            Comandos
+                        </h3>
+
+                        <div class="espButtons">
+
+                            <button class="btn green"
+                                    onclick="sendESP('ON')">
+                                🟢 ON
+                            </button>
+
+                            <button class="btn red"
+                                    onclick="sendESP('OFF')">
+                                🔴 OFF
+                            </button>
+
+                            <button class="btn blue"
+                                    onclick="sendESP('PING')">
+                                📡 PING
+                            </button>
+
+                            <button class="btn"
+                                    onclick="sendESP('GAME')">
+                                🎮 GAME
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="espCard">
+
+                        <h3>
+                            Mensaje
+                        </h3>
+
+                        <div style="display:flex;gap:10px">
+
+                            <input
+                                id="espMessage"
+                                placeholder="Mensaje para ESP32"
+                            >
+
+                            <button class="btn"
+                                    onclick="sendESPMessage()">
+                                Enviar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="espCard">
+
+                        <h3>
+                            Estado
+                        </h3>
+
+                        <div id="espLog"
+                             style="
+                                background:#0b0e17;
+                                border-radius:10px;
+                                padding:15px;
+                                min-height:100px;
+                                color:var(--muted);
+                             ">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
 
 <!-- NAME MODAL -->
 
-<div id="nameModal" class="modal">
+<div id="nameModal"
+     class="modal">
 
-    <div class="modal-box">
+    <div class="modalBox">
 
-        <h2>👋 ¿Cómo te llamás?</h2>
+        <h2>
+            👋 Bienvenido
+        </h2>
 
         <p>
             Elegí el nombre que van a ver los demás jugadores.
@@ -1287,17 +1361,15 @@ button{
 
         <input
             id="nameInput"
-            class="input"
-            maxlength="20"
             placeholder="Tu nombre"
+            maxlength="20"
+            style="width:100%"
         >
 
-        <div class="modal-actions">
+        <div class="modalActions">
 
-            <button
-                class="btn primary"
-                onclick="saveName()"
-            >
+            <button class="btn"
+                    onclick="saveUsername()">
                 Continuar
             </button>
 
@@ -1310,36 +1382,38 @@ button{
 
 <!-- WAITING MODAL -->
 
-<div id="waitingModal" class="modal">
+<div id="waitingModal"
+     class="modal">
 
-    <div class="modal-box">
+    <div class="modalBox"
+         style="text-align:center">
 
-        <h2>🚪 Sala creada</h2>
+        <h2>
+            🎮 Sala creada
+        </h2>
 
         <p>
-            La sala ya está visible para los demás jugadores.
-            Esperando a que alguien se una...
+            Juego:
+            <strong id="waitingGame">
+                -
+            </strong>
         </p>
 
-        <div style="text-align:center;padding:15px 0">
+        <p>
+            Esperando que otro jugador se una...
+        </p>
 
-            <div style="font-size:45px">
-                🎮
-            </div>
-
-            <strong id="waitingGame">
-                Juego
-            </strong>
-
+        <div style="
+            font-size:45px;
+            margin:25px 0;
+        ">
+            ⏳
         </div>
 
-        <div class="modal-actions">
-
-            <button class="btn red" onclick="cancelRoom()">
-                Cancelar
-            </button>
-
-        </div>
+        <button class="btn red"
+                onclick="cancelWaitingRoom()">
+            Cancelar
+        </button>
 
     </div>
 
@@ -1348,25 +1422,26 @@ button{
 
 <!-- RESULT MODAL -->
 
-<div id="resultModal" class="modal">
+<div id="resultModal"
+     class="modal">
 
-    <div class="modal-box" style="text-align:center">
+    <div class="modalBox"
+         style="text-align:center">
 
-        <div style="font-size:60px" id="resultEmoji">
+        <div id="resultTitle"
+             class="resultTitle">
             🏆
         </div>
 
-        <h2 id="resultTitle">
-            Resultado
-        </h2>
+        <div id="resultText"
+             class="resultText">
+        </div>
 
-        <p id="resultText">
-            -
-        </p>
+        <div class="modalActions"
+             style="justify-content:center">
 
-        <div class="modal-actions" style="justify-content:center">
-
-            <button class="btn primary" onclick="closeResult()">
+            <button class="btn"
+                    onclick="closeResult()">
                 Volver al Arcade
             </button>
 
@@ -1378,55 +1453,6 @@ button{
 
 
 <script>
-/* =========================================================
-   CONFIGURACIÓN
-========================================================= */
-
-const MQTT_BROKER =
-    "wss://broker.hivemq.com:8884/mqtt";
-
-const COMMAND_TOPIC =
-    "thomy/esp32c3/comandos";
-
-const STATE_TOPIC =
-    "thomy/esp32c3/estado";
-
-
-/*
-    MUY IMPORTANTE:
-
-    Cada cosa tiene su propio topic.
-
-    Chat:
-        v7/chat
-
-    Jugadores:
-        v7/players/ID
-
-    Salas:
-        v7/rooms/ID
-
-    Partidas:
-        v7/match/ID
-
-    Así un mensaje de chat NO puede romper una sala.
-*/
-
-const ROOT =
-    "thomy/esp32c3/v7";
-
-const CHAT_TOPIC =
-    ROOT + "/chat";
-
-const PLAYER_PREFIX =
-    ROOT + "/players/";
-
-const ROOM_PREFIX =
-    ROOT + "/rooms/";
-
-const MATCH_PREFIX =
-    ROOT + "/match/";
-
 
 /* =========================================================
    IDENTIDAD
@@ -1444,25 +1470,16 @@ if(!playerId){
         "esp32PlayerId",
         playerId
     );
-}
 
+}
 
 let username =
     localStorage.getItem("esp32Username") || "";
 
 
-/*
-    IMPORTANTE:
-
-    playerId = identidad permanente
-
-    sessionId = conexión MQTT actual
-
-    Así dos pestañas no se expulsan entre sí.
-*/
-
 const sessionId =
     crypto.randomUUID();
+
 
 const mqttClientId =
     "Web-" +
@@ -1475,136 +1492,55 @@ const mqttClientId =
    MQTT
 ========================================================= */
 
-let mqttClient = null;
-
-let mqttConnected = false;
-
-
-/* jugadores recibidos */
-
-const players = {};
+const MQTT_BROKER =
+    "wss://broker.hivemq.com:8884/mqtt";
 
 
-/* salas recibidas */
+const COMMAND_TOPIC =
+    "thomy/esp32c3/comandos";
 
-const rooms = {};
+
+const STATE_TOPIC =
+    "thomy/esp32c3/estado";
 
 
-/* partida actual */
+const ROOT =
+    "thomy/esp32c3/v7";
+
+
+const CHAT_TOPIC =
+    ROOT + "/chat";
+
+
+const PLAYER_PREFIX =
+    ROOT + "/players/";
+
+
+const ROOM_PREFIX =
+    ROOT + "/rooms/";
+
+
+const MATCH_PREFIX =
+    ROOT + "/match/";
+
+
+let mqttClient =
+    null;
+
+
+let mqttConnected =
+    false;
+
+
+/* =========================================================
+   PLAYERS / ROOMS / MATCH
+========================================================= */
+
+let players = {};
+
+let rooms = {};
 
 let match = null;
-
-
-/* timers */
-
-let heartbeatTimer = null;
-let roomTimer = null;
-
-
-/* =========================================================
-   UI
-========================================================= */
-
-function showView(name){
-
-    document
-        .querySelectorAll(".view")
-        .forEach(v =>
-            v.classList.remove("active")
-        );
-
-    const element =
-        document.getElementById(
-            "view-" + name
-        );
-
-    if(element)
-        element.classList.add("active");
-
-
-    document
-        .querySelectorAll(".nav button")
-        .forEach(button =>
-            button.classList.remove("active")
-        );
-
-
-    if(name === "home")
-        document.querySelectorAll(".nav button")[0].classList.add("active");
-
-    if(name === "chat")
-        document.querySelectorAll(".nav button")[1].classList.add("active");
-
-    if(name === "arcade")
-        document.querySelectorAll(".nav button")[2].classList.add("active");
-
-    if(name === "esp")
-        document.querySelectorAll(".nav button")[3].classList.add("active");
-}
-
-
-/* =========================================================
-   NOMBRE
-========================================================= */
-
-function openNameModal(){
-
-    document
-        .getElementById("nameModal")
-        .classList.add("show");
-
-    setTimeout(()=>{
-
-        document
-            .getElementById("nameInput")
-            .focus();
-
-    },100);
-}
-
-
-function saveName(){
-
-    const input =
-        document
-            .getElementById("nameInput");
-
-    const value =
-        input.value.trim();
-
-
-    if(!value){
-
-        input.focus();
-
-        return;
-    }
-
-
-    username = value.substring(0,20);
-
-    localStorage.setItem(
-        "esp32Username",
-        username
-    );
-
-
-    document
-        .getElementById("topUser")
-        .textContent = username;
-
-    document
-        .getElementById("sidebarUser")
-        .textContent = username;
-
-
-    document
-        .getElementById("nameModal")
-        .classList.remove("show");
-
-
-    publishPresence();
-}
 
 
 /* =========================================================
@@ -1613,18 +1549,8 @@ function saveName(){
 
 function connectMQTT(){
 
-    if(mqttClient){
-
-        try{
-            mqttClient.end(true);
-        }catch(e){}
-
-    }
-
-
     console.log(
-        "Conectando MQTT...",
-        mqttClientId
+        "Conectando MQTT..."
     );
 
 
@@ -1633,200 +1559,133 @@ function connectMQTT(){
             MQTT_BROKER,
             {
                 clientId:mqttClientId,
-
                 clean:true,
-
-                reconnectPeriod:2000,
-
-                connectTimeout:10000,
-
-                keepalive:30
+                reconnectPeriod:3000,
+                connectTimeout:10000
             }
         );
 
 
-    mqttClient.on(
-        "connect",
-        onMQTTConnect
-    );
+    mqttClient.on("connect",()=>{
+
+        console.log(
+            "MQTT conectado"
+        );
+
+
+        mqttConnected = true;
+
+
+        setConnection(
+            true
+        );
+
+
+        const topics = [
+
+            COMMAND_TOPIC,
+
+            STATE_TOPIC,
+
+            CHAT_TOPIC,
+
+            PLAYER_PREFIX + "+",
+
+            ROOM_PREFIX + "+",
+
+            MATCH_PREFIX + "#"
+
+        ];
+
+
+        mqttClient.subscribe(
+            topics,
+            err=>{
+
+                if(err){
+
+                    console.error(
+                        "Error subscribe:",
+                        err
+                    );
+
+                }else{
+
+                    console.log(
+                        "MQTT subscriptions OK"
+                    );
+
+                }
+
+            }
+        );
+
+
+        publishPresence();
+
+        renderRooms();
+
+    });
+
+
+    mqttClient.on("reconnect",()=>{
+
+        setConnection(
+            false,
+            "Reconectando..."
+        );
+
+    });
+
+
+    mqttClient.on("close",()=>{
+
+        mqttConnected = false;
+
+        setConnection(
+            false
+        );
+
+    });
+
+
+    mqttClient.on("error",err=>{
+
+        console.error(
+            "MQTT error:",
+            err
+        );
+
+        mqttConnected = false;
+
+        setConnection(
+            false
+        );
+
+    });
 
 
     mqttClient.on(
         "message",
-        onMQTTMessage
-    );
+        (topic,payload)=>{
+
+            const text =
+                payload.toString();
 
 
-    mqttClient.on(
-        "error",
-        error => {
-
-            console.error(
-                "MQTT ERROR",
-                error
+            handleMQTTMessage(
+                topic,
+                text
             );
 
         }
     );
 
-
-    mqttClient.on(
-        "close",
-        () => {
-
-            mqttConnected = false;
-
-            updateConnection();
-
-        }
-    );
-
-
-    mqttClient.on(
-        "offline",
-        () => {
-
-            mqttConnected = false;
-
-            updateConnection();
-
-        }
-    );
-
-
-    mqttClient.on(
-        "reconnect",
-        () => {
-
-            document
-                .getElementById("connectionText")
-                .textContent =
-                    "Reconectando...";
-
-        }
-    );
-}
-
-
-function onMQTTConnect(){
-
-    mqttConnected = true;
-
-    updateConnection();
-
-
-    /*
-        Suscripciones.
-
-        El + permite recibir cualquier jugador/sala.
-
-        Ejemplo:
-
-        v7/rooms/123
-        v7/rooms/456
-    */
-
-    const topics = [
-
-        COMMAND_TOPIC,
-
-        STATE_TOPIC,
-
-        CHAT_TOPIC,
-
-        PLAYER_PREFIX + "+",
-
-        ROOM_PREFIX + "+",
-
-        MATCH_PREFIX + "#"
-
-    ];
-
-
-    mqttClient.subscribe(
-        topics,
-        {qos:0},
-        error => {
-
-            if(error){
-
-                console.error(
-                    "Error suscribiendo:",
-                    error
-                );
-
-                return;
-            }
-
-
-            console.log(
-                "Suscripciones MQTT listas"
-            );
-
-
-            /*
-                Una vez suscriptos:
-
-                - HiveMQ nos entrega retained players
-                - HiveMQ nos entrega retained rooms
-
-                Entonces podemos reconstruir
-                el lobby aunque acabemos de refrescar.
-            */
-
-            publishPresence();
-
-            if(match)
-                publishRoom();
-
-
-            renderRooms();
-
-        }
-    );
-}
-
-
-function updateConnection(){
-
-    const dot =
-        document.getElementById(
-            "connectionDot"
-        );
-
-    const text =
-        document.getElementById(
-            "connectionText"
-        );
-
-
-    if(mqttConnected){
-
-        dot.classList.add("online");
-
-        text.textContent =
-            "Conectado";
-
-    }else{
-
-        dot.classList.remove("online");
-
-        text.textContent =
-            "Desconectado";
-    }
-
-
-    document
-        .getElementById("espMQTTStatus")
-        .textContent =
-            mqttConnected
-                ? "Conectado"
-                : "Desconectado";
 }
 
 
 /* =========================================================
-   PUBLISH
+   MQTT PUBLISH
 ========================================================= */
 
 function publish(
@@ -1838,661 +1697,53 @@ function publish(
     if(
         !mqttClient ||
         !mqttConnected
-    ){
-
-        return false;
-    }
+    )
+        return;
 
 
-    mqttClient.publish(
-
-        topic,
-
+    const payload =
         typeof data === "string"
             ? data
-            : JSON.stringify(data),
-
-        {
-            qos:0,
-            ...options
-        }
-
-    );
-
-
-    return true;
-}
-
-
-/* =========================================================
-   PRESENCIA
-========================================================= */
-
-function publishPresence(){
-
-    if(!username)
-        return;
-
-
-    publish(
-
-        PLAYER_PREFIX + playerId,
-
-        {
-            type:"presence",
-
-            playerId,
-
-            name:username,
-
-            busy:!!match,
-
-            ts:Date.now()
-
-        },
-
-        {
-            retain:true
-        }
-
-    );
-}
-
-
-function removeOwnPresence(){
-
-    if(
-        !mqttClient ||
-        !mqttConnected
-    )
-        return;
+            : JSON.stringify(data);
 
 
     mqttClient.publish(
-
-        PLAYER_PREFIX + playerId,
-
-        "",
-
-        {
-            retain:true,
-            qos:0
-        }
-
+        topic,
+        payload,
+        options
     );
+
 }
 
 
 /* =========================================================
-   SALAS
+   MQTT MESSAGE ROUTER
 ========================================================= */
 
-function gameName(game){
-
-    const names = {
-
-        target:"🎯 Caza el objetivo",
-
-        reaction:"⚡ Reflejos",
-
-        ttt:"⭕ Tres en línea",
-
-        draw:"🎨 Duelo de dibujo"
-
-    };
-
-
-    return names[game] || game;
-}
-
-
-function createRoom(game){
-
-    if(!username){
-
-        openNameModal();
-
-        return;
-    }
-
-
-    if(match){
-
-        alert(
-            "Ya estás en una partida."
-        );
-
-        return;
-    }
-
-
-    if(!mqttConnected){
-
-        alert(
-            "Todavía no estás conectado a MQTT."
-        );
-
-        return;
-    }
-
-
-    const roomId =
-        playerId.substring(0,8) +
-        "-" +
-        Math.random()
-            .toString(36)
-            .substring(2,7);
-
-
-    match = {
-
-        id:roomId,
-
-        game,
-
-        host:playerId,
-
-        guest:null,
-
-        state:"waiting",
-
-        createdAt:Date.now(),
-
-        started:false,
-
-        targetScore:0,
-
-        enemyScore:null,
-
-        reactionTime:null,
-
-        enemyReaction:null,
-
-        targetFinished:false,
-
-        enemyTargetFinished:false,
-
-        tttBoard:Array(9).fill(""),
-
-        tttTurn:null,
-
-        tttOver:false
-
-    };
-
-
-    /*
-        Sala propia.
-
-        Retained = true.
-
-        El otro navegador puede entrar
-        aunque haya abierto la página después.
-    */
-
-    publishRoom();
-
-
-    document
-        .getElementById("waitingGame")
-        .textContent =
-            gameName(game);
-
-
-    document
-        .getElementById("waitingModal")
-        .classList.add("show");
-
-
-    publishPresence();
-
-
-    console.log(
-        "SALA CREADA:",
-        match
-    );
-}
-
-
-function publishRoom(){
-
-    if(!match)
-        return;
-
-
-    if(match.host !== playerId)
-        return;
-
-
-    publish(
-
-        ROOM_PREFIX + match.id,
-
-        {
-            type:"room",
-
-            roomId:match.id,
-
-            game:match.game,
-
-            host:match.host,
-
-            hostName:username,
-
-            state:match.state,
-
-            ts:Date.now()
-
-        },
-
-        {
-            retain:true
-        }
-
-    );
-}
-
-
-function clearRoom(roomId){
-
-    if(
-        !mqttClient ||
-        !mqttConnected
-    )
-        return;
-
-
-    mqttClient.publish(
-
-        ROOM_PREFIX + roomId,
-
-        "",
-
-        {
-            retain:true,
-            qos:0
-        }
-
-    );
-
-
-    delete rooms[roomId];
-
-    renderRooms();
-}
-
-
-function cancelRoom(){
-
-    if(!match)
-        return;
-
-
-    const roomId =
-        match.id;
-
-
-    if(match.host === playerId){
-
-        clearRoom(roomId);
-
-    }
-
-
-    publishMatch({
-
-        type:"roomClosed",
-
-        roomId
-
-    });
-
-
-    match = null;
-
-
-    document
-        .getElementById("waitingModal")
-        .classList.remove("show");
-
-
-    publishPresence();
-
-    showView("arcade");
-}
-
-
-/* =========================================================
-   RENDER ROOMS
-========================================================= */
-
-function renderRooms(){
-
-    const list =
-        document.getElementById(
-            "roomsList"
-        );
-
-    const now =
-        Date.now();
-
-
-    /*
-        Las salas tienen timeout.
-
-        Si el host cerró el navegador
-        sin poder borrar retained,
-        desaparecen solas.
-    */
-
-    Object.keys(rooms)
-        .forEach(id => {
-
-            if(
-                now - rooms[id].ts >
-                10000
-            ){
-
-                delete rooms[id];
-
-            }
-
-        });
-
-
-    const available =
-        Object.values(rooms)
-            .filter(room => {
-
-                if(!room)
-                    return false;
-
-                if(room.host === playerId)
-                    return false;
-
-                if(room.state !== "waiting")
-                    return false;
-
-                if(
-                    Date.now() - room.ts >
-                    10000
-                )
-                    return false;
-
-                return true;
-
-            });
-
-
-    document
-        .getElementById("roomCount")
-        .textContent =
-            available.length +
-            (
-                available.length === 1
-                    ? " sala"
-                    : " salas"
-            );
-
-
-    if(!available.length){
-
-        list.innerHTML = `
-            <div class="empty">
-                No hay salas disponibles.<br>
-                <small>Cuando alguien cree una aparecerá acá automáticamente.</small>
-            </div>
-        `;
-
-        return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    available
-        .forEach(room => {
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "room";
-
-
-            div.innerHTML = `
-
-                <div class="room-info">
-
-                    <div class="room-icon">
-                        ${gameIcon(room.game)}
-                    </div>
-
-                    <div>
-
-                        <div class="room-name">
-                            ${escapeHTML(
-                                room.hostName ||
-                                "Jugador"
-                            )}
-                        </div>
-
-                        <div class="room-sub">
-                            ${gameName(room.game)}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <button
-                    class="btn primary"
-                    onclick="joinRoom('${room.roomId}')"
-                >
-                    Unirme
-                </button>
-
-            `;
-
-
-            list.appendChild(div);
-
-        });
-}
-
-
-function gameIcon(game){
-
-    const icons = {
-
-        target:"🎯",
-
-        reaction:"⚡",
-
-        ttt:"⭕",
-
-        draw:"🎨"
-
-    };
-
-    return icons[game] || "🎮";
-}
-
-
-function escapeHTML(value){
-
-    return String(value)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-}
-
-
-/* =========================================================
-   JOIN ROOM
-========================================================= */
-
-function joinRoom(roomId){
-
-    if(!username){
-
-        openNameModal();
-
-        return;
-    }
-
-
-    const room =
-        rooms[roomId];
-
-
-    if(!room)
-        return;
-
-
-    if(match){
-
-        alert(
-            "Ya estás en una partida."
-        );
-
-        return;
-    }
-
-
-    match = {
-
-        id:roomId,
-
-        game:room.game,
-
-        host:room.host,
-
-        guest:playerId,
-
-        hostName:room.hostName,
-
-        state:"joining",
-
-        createdAt:Date.now(),
-
-        started:false,
-
-        targetScore:0,
-
-        enemyScore:null,
-
-        reactionTime:null,
-
-        enemyReaction:null,
-
-        targetFinished:false,
-
-        enemyTargetFinished:false,
-
-        tttBoard:Array(9).fill(""),
-
-        tttTurn:null,
-
-        tttOver:false
-
-    };
-
-
-    /*
-        IMPORTANTE:
-
-        El JOIN va al topic de la partida.
-
-        NO va al topic de la sala.
-
-        De esta forma jamás destruye
-        el anuncio retained de la sala.
-    */
-
-    publishMatch({
-
-        type:"join",
-
-        roomId,
-
-        playerId,
-
-        playerName:username,
-
-        ts:Date.now()
-
-    });
-
-
-    publishPresence();
-
-
-    document
-        .getElementById("roomsList")
-        .innerHTML = `
-            <div class="empty">
-                Conectando con ${escapeHTML(
-                    room.hostName
-                )}...
-            </div>
-        `;
-}
-
-
-/* =========================================================
-   MATCH TOPIC
-========================================================= */
-
-function matchTopic(){
-
-    if(!match)
-        return null;
-
-
-    return MATCH_PREFIX + match.id;
-}
-
-
-function publishMatch(data){
-
-    if(!match)
-        return;
-
-
-    publish(
-        matchTopic(),
-        data
-    );
-}
-
-
-/* =========================================================
-   RECIBIR MQTT
-========================================================= */
-
-function onMQTTMessage(
+function handleMQTTMessage(
     topic,
-    payload
+    text
 ){
 
-    const text =
-        payload.toString();
+    if(topic === CHAT_TOPIC){
+
+        handleChatMessage(
+            text
+        );
+
+        return;
+    }
 
 
-    console.log(
-        "MQTT:",
-        topic,
-        text
-    );
+    if(topic === STATE_TOPIC){
 
+        handleESPState(
+            text
+        );
 
-    /*
-        PLAYER
-    */
+        return;
+    }
+
 
     if(
         topic.startsWith(
@@ -2509,10 +1760,6 @@ function onMQTTMessage(
     }
 
 
-    /*
-        ROOM
-    */
-
     if(
         topic.startsWith(
             ROOM_PREFIX
@@ -2528,10 +1775,6 @@ function onMQTTMessage(
     }
 
 
-    /*
-        MATCH
-    */
-
     if(
         topic.startsWith(
             MATCH_PREFIX
@@ -2545,41 +1788,399 @@ function onMQTTMessage(
         return;
     }
 
+}
 
-    /*
-        CHAT
-    */
 
-    if(topic === CHAT_TOPIC){
+/* =========================================================
+   CONNECTION UI
+========================================================= */
 
-        handleChatMessage(
-            text
+function setConnection(
+    online,
+    text
+){
+
+    const dot =
+        document.getElementById(
+            "connectionDot"
+        );
+
+
+    const label =
+        document.getElementById(
+            "connectionText"
+        );
+
+
+    if(online){
+
+        dot.classList.add(
+            "online"
+        );
+
+        label.textContent =
+            "MQTT conectado";
+
+    }else{
+
+        dot.classList.remove(
+            "online"
+        );
+
+        label.textContent =
+            text || "Desconectado";
+
+    }
+
+}
+
+
+/* =========================================================
+   USERNAME
+========================================================= */
+
+function saveUsername(){
+
+    const input =
+        document.getElementById(
+            "nameInput"
+        );
+
+
+    const name =
+        input.value.trim();
+
+
+    if(!name){
+
+        alert(
+            "Escribí un nombre."
         );
 
         return;
     }
 
 
-    /*
-        ESP32 STATE
-    */
+    username =
+        name.substring(
+            0,
+            20
+        );
 
-    if(topic === STATE_TOPIC){
 
-        document
-            .getElementById(
-                "espLastMessage"
-            )
-            .textContent =
-                text;
+    localStorage.setItem(
+        "esp32Username",
+        username
+    );
 
-        return;
-    }
+
+    document
+        .getElementById(
+            "nameModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
+
+    updateUsernameUI();
+
+    publishPresence();
+
+}
+
+
+function updateUsernameUI(){
+
+    document
+        .getElementById(
+            "topUsername"
+        )
+        .textContent =
+            username || "Sin nombre";
+
 }
 
 
 /* =========================================================
-   PLAYER TOPIC
+   VIEWS
+========================================================= */
+
+function showView(
+    view
+){
+
+    document
+        .querySelectorAll(
+            ".view"
+        )
+        .forEach(v=>{
+
+            v.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const element =
+        document.getElementById(
+            view
+        );
+
+
+    if(element){
+
+        element.classList.add(
+            "active"
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".navBtn"
+        )
+        .forEach(btn=>{
+
+            btn.classList.toggle(
+                "active",
+                btn.dataset.view === view
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function sendChat(){
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text)
+        return;
+
+
+    publish(
+        CHAT_TOPIC,
+        {
+            type:"chat",
+
+            playerId,
+
+            name:username,
+
+            text,
+
+            ts:Date.now()
+        }
+    );
+
+
+    input.value = "";
+
+}
+
+
+function handleChatMessage(
+    text
+){
+
+    let data;
+
+
+    try{
+
+        data =
+            JSON.parse(text);
+
+    }catch(e){
+
+        return;
+    }
+
+
+    if(
+        data.type !== "chat"
+    )
+        return;
+
+
+    renderChatMessage(
+        data
+    );
+
+}
+
+
+function renderChatMessage(
+    data
+){
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.className =
+        "chatMessage";
+
+
+    const time =
+        new Date(
+            data.ts || Date.now()
+        );
+
+
+    div.innerHTML = `
+
+        <span class="name">
+            ${escapeHTML(data.name || "Jugador")}
+        </span>
+
+        <span class="time">
+            ${time.toLocaleTimeString([],{
+                hour:"2-digit",
+                minute:"2-digit"
+            })}
+        </span>
+
+        <div>
+            ${escapeHTML(data.text || "")}
+        </div>
+
+    `;
+
+
+    container.appendChild(
+        div
+    );
+
+
+    container.scrollTop =
+        container.scrollHeight;
+
+}
+
+
+function escapeHTML(
+    value
+){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   PLAYER PRESENCE
+========================================================= */
+
+function publishPresence(){
+
+    if(!username)
+        return;
+
+
+    const presence = {
+
+        type:"presence",
+
+        playerId,
+
+        name:username,
+
+        busy:!!match,
+
+        ts:Date.now(),
+
+        room:null
+
+    };
+
+
+    /*
+       MUY IMPORTANTE:
+
+       Si somos host y estamos esperando,
+       mandamos la sala también dentro del
+       heartbeat de presence.
+
+       Así los demás jugadores pueden verla
+       aunque el mensaje retained de /rooms/
+       no llegue correctamente.
+    */
+
+    if(
+        match &&
+        match.host === playerId &&
+        (
+            match.state === "waiting" ||
+            match.state === "ready"
+        )
+    ){
+
+        presence.room = {
+
+            roomId:match.id,
+
+            game:match.game,
+
+            host:playerId,
+
+            hostName:username,
+
+            state:match.state,
+
+            ts:Date.now()
+
+        };
+
+    }
+
+
+    publish(
+
+        PLAYER_PREFIX + playerId,
+
+        presence,
+
+        {
+            retain:true
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   PLAYER MESSAGE
 ========================================================= */
 
 function handlePlayerTopic(
@@ -2593,56 +2194,381 @@ function handlePlayerTopic(
         );
 
 
+    /*
+       Si la presence desapareció,
+       eliminamos jugador y sus salas.
+    */
+
     if(!text){
 
         delete players[id];
+
+
+        Object.keys(
+            rooms
+        ).forEach(
+            roomId=>{
+
+                if(
+                    rooms[roomId].host === id
+                ){
+
+                    delete rooms[roomId];
+
+                }
+
+            }
+        );
+
+
+        renderRooms();
 
         return;
     }
 
 
+    let data;
+
+
     try{
 
-        const data =
+        data =
             JSON.parse(text);
-
-
-        players[id] =
-            data;
 
     }catch(e){
 
-        console.warn(
-            "Presence inválida:",
-            text
+        return;
+    }
+
+
+    players[id] =
+        data;
+
+
+    /*
+       Si trae una sala,
+       reconstruimos la sala localmente.
+    */
+
+    if(
+        data.room &&
+        data.room.roomId
+    ){
+
+        const room =
+            data.room;
+
+
+        if(
+            room.state === "waiting" ||
+            room.state === "ready"
+        ){
+
+            rooms[
+                room.roomId
+            ] = {
+
+                roomId:
+                    room.roomId,
+
+                game:
+                    room.game,
+
+                host:
+                    room.host,
+
+                hostName:
+                    room.hostName ||
+                    data.name ||
+                    "Jugador",
+
+                state:
+                    room.state,
+
+                ts:
+                    Date.now()
+
+            };
+
+        }
+
+    }else{
+
+        /*
+           Si dejó de mandar room,
+           borramos sus salas.
+        */
+
+        Object.keys(
+            rooms
+        ).forEach(
+            roomId=>{
+
+                if(
+                    rooms[roomId].host === id
+                ){
+
+                    delete rooms[roomId];
+
+                }
+
+            }
         );
 
     }
+
+
+    renderRooms();
+
 }
 
 
 /* =========================================================
-   ROOM TOPIC
+   ROOMS
 ========================================================= */
+
+function gameName(
+    game
+){
+
+    const names = {
+
+        target:"🎯 Caza el objetivo",
+
+        reaction:"⚡ Reflejos",
+
+        ttt:"❌ Tres en línea",
+
+        draw:"🎨 Duelo de dibujo"
+
+    };
+
+
+    return names[game] ||
+        game;
+
+}
+
+
+function createRoom(
+    game
+){
+
+    if(!username){
+
+        document
+            .getElementById(
+                "nameModal"
+            )
+            .classList.add(
+                "show"
+            );
+
+        return;
+    }
+
+
+    if(match){
+
+        alert(
+            "Ya estás en una partida."
+        );
+
+        return;
+    }
+
+
+    const roomId =
+        crypto.randomUUID();
+
+
+    match = {
+
+        id:
+            roomId,
+
+        game:
+            game,
+
+        host:
+            playerId,
+
+        guest:
+            null,
+
+        guestName:
+            "",
+
+        state:
+            "waiting",
+
+        createdAt:
+            Date.now(),
+
+        started:
+            false,
+
+        targetScore:
+            0,
+
+        enemyScore:
+            null,
+
+        reactionTime:
+            null,
+
+        enemyReaction:
+            null,
+
+        targetFinished:
+            false,
+
+        enemyTargetFinished:
+            false,
+
+        tttBoard:
+            Array(9).fill(""),
+
+        tttTurn:
+            null,
+
+        tttOver:
+            false
+
+    };
+
+
+    /*
+       Publicamos room retained.
+    */
+
+    publishRoom();
+
+
+    /*
+       También publicamos presence con room.
+    */
+
+    publishPresence();
+
+
+    document
+        .getElementById(
+            "waitingGame"
+        )
+        .textContent =
+            gameName(game);
+
+
+    document
+        .getElementById(
+            "waitingModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+
+    console.log(
+        "Sala creada:",
+        roomId
+    );
+
+}
+
+
+function publishRoom(){
+
+    if(!match)
+        return;
+
+
+    publish(
+
+        ROOM_PREFIX +
+        match.id,
+
+        {
+
+            type:"room",
+
+            roomId:
+                match.id,
+
+            game:
+                match.game,
+
+            host:
+                match.host,
+
+            hostName:
+                username,
+
+            state:
+                match.state,
+
+            ts:
+                Date.now()
+
+        },
+
+        {
+            retain:true
+        }
+
+    );
+
+}
+
+
+function clearRoom(
+    roomId
+){
+
+    if(!roomId)
+        return;
+
+
+    publish(
+
+        ROOM_PREFIX +
+        roomId,
+
+        "",
+
+        {
+            retain:true
+        }
+
+    );
+
+
+    delete rooms[
+        roomId
+    ];
+
+
+    renderRooms();
+
+}
+
 
 function handleRoomTopic(
     topic,
     text
 ){
 
-    const id =
+    const roomId =
         topic.substring(
             ROOM_PREFIX.length
         );
 
 
-    /*
-        retained borrado
-    */
-
     if(!text){
 
-        delete rooms[id];
+        delete rooms[
+            roomId
+        ];
 
         renderRooms();
 
@@ -2650,26 +2576,347 @@ function handleRoomTopic(
     }
 
 
+    let data;
+
+
     try{
 
-        const room =
+        data =
             JSON.parse(text);
-
-
-        rooms[id] =
-            room;
-
-
-        renderRooms();
 
     }catch(e){
 
-        console.warn(
-            "Sala inválida:",
-            text
+        return;
+    }
+
+
+    if(
+        data.type !== "room"
+    )
+        return;
+
+
+    if(
+        data.host === playerId
+    )
+        return;
+
+
+    rooms[
+        roomId
+    ] = {
+
+        roomId,
+
+        game:
+            data.game,
+
+        host:
+            data.host,
+
+        hostName:
+            data.hostName ||
+            "Jugador",
+
+        state:
+            data.state,
+
+        ts:
+            Date.now()
+
+    };
+
+
+    renderRooms();
+
+}
+
+
+function renderRooms(){
+
+    const list =
+        document.getElementById(
+            "roomList"
         );
 
+
+    if(!list)
+        return;
+
+
+    list.innerHTML = "";
+
+
+    const now =
+        Date.now();
+
+
+    const available =
+        Object.values(
+            rooms
+        ).filter(
+            room=>{
+
+                if(
+                    room.host === playerId
+                )
+                    return false;
+
+
+                if(
+                    room.state !== "waiting"
+                )
+                    return false;
+
+
+                return (
+                    now -
+                    (room.ts || 0)
+                ) < 10000;
+
+            }
+        );
+
+
+    if(
+        available.length === 0
+    ){
+
+        list.innerHTML = `
+
+            <div style="
+                color:var(--muted);
+                padding:15px;
+            ">
+                No hay salas disponibles.
+            </div>
+
+        `;
+
+        return;
     }
+
+
+    available
+        .forEach(room=>{
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "room";
+
+
+            div.innerHTML = `
+
+                <div class="roomInfo">
+
+                    <strong>
+                        ${escapeHTML(
+                            room.hostName
+                        )}
+                    </strong>
+
+                    <span>
+                        ${gameName(
+                            room.game
+                        )}
+                    </span>
+
+                </div>
+
+                <button
+                    class="btn"
+                    onclick="joinRoom('${room.roomId}')"
+                >
+                    Unirse
+                </button>
+
+            `;
+
+
+            list.appendChild(
+                div
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   JOIN ROOM
+========================================================= */
+
+function joinRoom(
+    roomId
+){
+
+    if(!username){
+
+        document
+            .getElementById(
+                "nameModal"
+            )
+            .classList.add(
+                "show"
+            );
+
+        return;
+    }
+
+
+    if(match){
+
+        alert(
+            "Ya estás en una partida."
+        );
+
+        return;
+    }
+
+
+    const room =
+        rooms[roomId];
+
+
+    if(!room){
+
+        alert(
+            "La sala ya no existe."
+        );
+
+        renderRooms();
+
+        return;
+    }
+
+
+    match = {
+
+        id:
+            roomId,
+
+        game:
+            room.game,
+
+        host:
+            room.host,
+
+        guest:
+            playerId,
+
+        hostName:
+            room.hostName,
+
+        guestName:
+            username,
+
+        state:
+            "joining",
+
+        createdAt:
+            Date.now(),
+
+        started:
+            false,
+
+        targetScore:
+            0,
+
+        enemyScore:
+            null,
+
+        reactionTime:
+            null,
+
+        enemyReaction:
+            null,
+
+        targetFinished:
+            false,
+
+        enemyTargetFinished:
+            false,
+
+        tttBoard:
+            Array(9).fill(""),
+
+        tttTurn:
+            null,
+
+        tttOver:
+            false
+
+    };
+
+
+    publishMatch({
+
+        type:
+            "join",
+
+        roomId,
+
+        playerId,
+
+        playerName:
+            username,
+
+        ts:
+            Date.now()
+
+    });
+
+
+    publishPresence();
+
+
+    document
+        .getElementById(
+            "waitingGame"
+        )
+        .textContent =
+            gameName(
+                room.game
+            );
+
+
+    document
+        .getElementById(
+            "waitingModal"
+        )
+        .classList.add(
+            "show"
+        );
+
+}
+
+
+/* =========================================================
+   MATCH PUBLISH
+========================================================= */
+
+function publishMatch(
+    data
+){
+
+    if(!match)
+        return;
+
+
+    publish(
+
+        MATCH_PREFIX +
+        match.id,
+
+        data
+
+    );
+
 }
 
 
@@ -2677,7 +2924,9 @@ function handleRoomTopic(
    MATCH MESSAGE
 ========================================================= */
 
-function handleMatchMessage(text){
+function handleMatchMessage(
+    text
+){
 
     let data;
 
@@ -2704,9 +2953,13 @@ function handleMatchMessage(text){
         return;
 
 
-    /* JOIN */
+    /* =========================
+       JOIN
+    ========================= */
 
-    if(data.type === "join"){
+    if(
+        data.type === "join"
+    ){
 
         if(
             match.host !== playerId
@@ -2720,65 +2973,86 @@ function handleMatchMessage(text){
             return;
 
 
+        if(
+            match.guest
+        )
+            return;
+
+
         match.guest =
             data.playerId;
 
+
         match.guestName =
-            data.playerName;
+            data.playerName ||
+            "Jugador";
 
 
         match.state =
             "ready";
 
 
-        /*
-            Avisamos al invitado
-            que el host lo aceptó.
-        */
+        console.log(
+            "Jugador unido:",
+            match.guestName
+        );
+
 
         publishMatch({
 
-            type:"accepted",
+            type:
+                "accepted",
 
-            roomId:match.id,
+            roomId:
+                match.id,
 
-            host:playerId,
+            host:
+                playerId,
 
-            hostName:username,
+            hostName:
+                username,
 
-            guest:match.guest,
+            guest:
+                match.guest,
 
-            guestName:match.guestName
+            guestName:
+                match.guestName
 
         });
 
 
-        /*
-            También avisamos
-            al lobby que la sala
-            ya no está disponible.
-        */
-
-        clearRoom(match.id);
-
-
-        /*
-            Cuenta regresiva.
-        */
-
-        setTimeout(
-            startCountdown,
-            300
+        clearRoom(
+            match.id
         );
 
 
+        document
+            .getElementById(
+                "waitingModal"
+            )
+            .classList.remove(
+                "show"
+            );
+
+
+        publishPresence();
+
+
+        startCountdown();
+
+
         return;
+
     }
 
 
-    /* ACCEPTED */
+    /* =========================
+       ACCEPTED
+    ========================= */
 
-    if(data.type === "accepted"){
+    if(
+        data.type === "accepted"
+    ){
 
         if(
             data.guest !== playerId
@@ -2791,89 +3065,138 @@ function handleMatchMessage(text){
 
 
         match.hostName =
-            data.hostName;
+            data.hostName ||
+            "Jugador";
 
 
         match.guest =
             playerId;
 
 
-        clearRoom(match.id);
+        document
+            .getElementById(
+                "waitingModal"
+            )
+            .classList.remove(
+                "show"
+            );
 
 
-        setTimeout(
-            startCountdown,
-            300
+        clearRoom(
+            match.id
         );
 
 
+        publishPresence();
+
+
+        startCountdown();
+
+
         return;
+
     }
 
 
-    /* START */
+    /*
+       El START ya no es necesario.
+       Ambos jugadores empiezan cuando
+       reciben JOIN / ACCEPTED.
+    */
 
-    if(data.type === "start"){
-
-        if(match.started)
-            return;
-
-
-        match.started = true;
-
-        startMatchGame();
+    if(
+        data.type === "start"
+    ){
 
         return;
+
     }
 
 
-    /* TARGET */
+    /* =========================
+       TARGET
+    ========================= */
 
-    if(data.type === "targetScore"){
+    if(
+        data.type === "targetScore"
+    ){
 
         match.enemyScore =
-            Number(data.score) || 0;
+            Number(
+                data.score
+            ) || 0;
+
 
         match.enemyTargetFinished =
             true;
 
 
-        document
-            .getElementById("enemyScore")
-            .textContent =
+        const enemy =
+            document.getElementById(
+                "enemyScore"
+            );
+
+
+        if(enemy){
+
+            enemy.textContent =
                 match.enemyScore;
+
+        }
 
 
         checkTargetResult();
 
+
         return;
+
     }
 
 
-    /* REACTION */
+    /* =========================
+       REACTION
+    ========================= */
 
-    if(data.type === "reaction"){
+    if(
+        data.type === "reaction"
+    ){
 
         match.enemyReaction =
-            Number(data.time);
+            Number(
+                data.time
+            );
 
 
-        document
-            .getElementById("enemyReaction")
-            .textContent =
+        const enemy =
+            document.getElementById(
+                "enemyReaction"
+            );
+
+
+        if(enemy){
+
+            enemy.textContent =
                 match.enemyReaction +
                 " ms";
+
+        }
 
 
         checkReactionResult();
 
+
         return;
+
     }
 
 
-    /* TTT */
+    /* =========================
+       TTT
+    ========================= */
 
-    if(data.type === "tttMove"){
+    if(
+        data.type === "tttMove"
+    ){
 
         applyRemoteTTTMove(
             data.index,
@@ -2881,32 +3204,47 @@ function handleMatchMessage(text){
         );
 
         return;
+
     }
 
 
-    /* DRAW */
+    /* =========================
+       DRAW
+    ========================= */
 
-    if(data.type === "drawLine"){
+    if(
+        data.type === "drawLine"
+    ){
 
         drawRemoteLine(
             data
         );
 
         return;
+
     }
 
 
-    if(data.type === "drawClear"){
+    if(
+        data.type === "drawClear"
+    ){
 
-        clearCanvas(false);
+        clearCanvas(
+            false
+        );
 
         return;
+
     }
 
 
-    /* CLOSE */
+    /* =========================
+       ROOM CLOSED
+    ========================= */
 
-    if(data.type === "roomClosed"){
+    if(
+        data.type === "roomClosed"
+    ){
 
         if(
             match &&
@@ -2915,19 +3253,36 @@ function handleMatchMessage(text){
 
             match = null;
 
+
             document
                 .getElementById(
                     "waitingModal"
                 )
-                .classList.remove("show");
+                .classList.remove(
+                    "show"
+                );
 
-            showView("arcade");
+
+            document
+                .getElementById(
+                    "resultModal"
+                )
+                .classList.remove(
+                    "show"
+                );
+
+
+            showView(
+                "arcade"
+            );
+
 
             publishPresence();
 
         }
 
     }
+
 }
 
 
@@ -2945,30 +3300,21 @@ function startCountdown(){
         return;
 
 
-    /*
-        Solo el host manda START.
-
-        Esto evita que ambos jugadores
-        empiecen dos veces.
-    */
-
-    if(match.host === playerId){
-
-        publishMatch({
-
-            type:"start",
-
-            roomId:match.id
-
-        });
-
-    }
+    document
+        .getElementById(
+            "waitingModal"
+        )
+        .classList.remove(
+            "show"
+        );
 
 
-    let count = 3;
+    showView(
+        "game"
+    );
 
 
-    showView("game");
+    hideAllGames();
 
 
     document
@@ -2979,7 +3325,7 @@ function startCountdown(){
             "block";
 
 
-    hideAllGames();
+    let count = 3;
 
 
     document
@@ -2993,12 +3339,25 @@ function startCountdown(){
     const timer =
         setInterval(()=>{
 
+            if(!match){
+
+                clearInterval(
+                    timer
+                );
+
+                return;
+
+            }
+
+
             count--;
 
 
             if(count <= 0){
 
-                clearInterval(timer);
+                clearInterval(
+                    timer
+                );
 
 
                 document
@@ -3009,12 +3368,15 @@ function startCountdown(){
                         "none";
 
 
-                match.started = true;
+                match.started =
+                    true;
+
 
                 startMatchGame();
 
 
                 return;
+
             }
 
 
@@ -3025,7 +3387,9 @@ function startCountdown(){
                 .textContent =
                     count;
 
+
         },1000);
+
 }
 
 
@@ -3039,185 +3403,200 @@ function startMatchGame(){
         return;
 
 
-    hideAllGames();
-
-
     document
         .getElementById(
             "gameTitle"
         )
         .textContent =
-            gameName(match.game);
-
-
-    document
-        .getElementById(
-            "gameOpponent"
-        )
-        .textContent =
-            "Contra " +
-            (
-                match.host === playerId
-                    ? (
-                        match.guestName ||
-                        "Jugador"
-                    )
-                    : (
-                        match.hostName ||
-                        "Jugador"
-                    )
+            gameName(
+                match.game
             );
 
 
-    if(match.game === "target")
-        startTargetGame();
-
-
-    if(match.game === "reaction")
-        startReactionGame();
-
-
-    if(match.game === "ttt")
-        startTTT();
-
-
-    if(match.game === "draw")
-        startDraw();
-}
-
-
-function hideAllGames(){
-
-    [
-        "targetGame",
-        "reactionGame",
-        "tttGame"
-    ]
-    .forEach(id => {
-
-        document
-            .getElementById(id)
-            .style.display =
-                "none";
-
-    });
-}
-
-
-/* =========================================================
-   TARGET
-========================================================= */
-
-let targetTimer = null;
-
-let targetScore = 0;
-
-
-function startTargetGame(){
-
-    targetScore = 0;
-
-
-    match.targetScore = 0;
-
-    match.targetFinished = false;
-
-    match.enemyTargetFinished = false;
-
-    match.enemyScore = null;
-
-
     document
         .getElementById(
-            "myScore"
-        )
-        .textContent = "0";
-
-
-    document
-        .getElementById(
-            "enemyScore"
-        )
-        .textContent = "0";
-
-
-    document
-        .getElementById(
-            "myNameScore"
-        )
-        .textContent =
-            username;
-
-
-    document
-        .getElementById(
-            "enemyNameScore"
+            "opponentName"
         )
         .textContent =
             match.host === playerId
                 ? (
                     match.guestName ||
-                    "Rival"
+                    "Jugador"
                 )
                 : (
                     match.hostName ||
-                    "Rival"
+                    "Jugador"
                 );
 
+
+    if(
+        match.game === "target"
+    ){
+
+        startTargetGame();
+
+    }
+    else if(
+        match.game === "reaction"
+    ){
+
+        startReactionGame();
+
+    }
+    else if(
+        match.game === "ttt"
+    ){
+
+        startTTT();
+
+    }
+    else if(
+        match.game === "draw"
+    ){
+
+        startDraw();
+
+    }
+
+}
+
+
+/* =========================================================
+   HIDE GAMES
+========================================================= */
+
+function hideAllGames(){
 
     document
         .getElementById(
             "targetGame"
         )
         .style.display =
-            "block";
+            "none";
 
 
     document
         .getElementById(
-            "targetMessage"
+            "reactionGame"
         )
-        .textContent =
-            "¡YA!";
+        .style.display =
+            "none";
 
 
-    moveTarget();
-
-
-    const start =
-        Date.now();
-
-
-    clearInterval(targetTimer);
-
-
-    targetTimer =
-        setInterval(()=>{
-
-            if(
-                Date.now() - start >=
-                30000
-            ){
-
-                clearInterval(targetTimer);
-
-
-                finishTarget();
-
-
-            }
-
-        },100);
+    document
+        .getElementById(
+            "tttGame"
+        )
+        .style.display =
+            "none";
 
 }
 
 
-function moveTarget(){
+/* =========================================================
+   TARGET GAME
+========================================================= */
 
-    const area =
+let targetTimerInterval =
+    null;
+
+
+let targetSpawnTimeout =
+    null;
+
+
+function startTargetGame(){
+
+    hideAllGames();
+
+
+    const game =
         document.getElementById(
-            "targetArea"
+            "targetGame"
         );
+
+
+    game.style.display =
+        "block";
+
+
+    match.targetScore =
+        0;
+
+
+    match.enemyScore =
+        0;
+
+
+    match.targetFinished =
+        false;
+
+
+    match.enemyTargetFinished =
+        false;
+
+
+    document
+        .getElementById(
+            "myScore"
+        )
+        .textContent =
+            "0";
+
+
+    document
+        .getElementById(
+            "enemyScore"
+        )
+        .textContent =
+            "0";
+
+
+    let time = 30;
+
+
+    document
+        .getElementById(
+            "targetTimer"
+        )
+        .textContent =
+            time;
+
+
+    spawnTarget();
+
+
+    targetTimerInterval =
+        setInterval(()=>{
+
+            time--;
+
+
+            document
+                .getElementById(
+                    "targetTimer"
+                )
+                .textContent =
+                    time;
+
+
+            if(time <= 0){
+
+                clearInterval(
+                    targetTimerInterval
+                );
+
+
+                finishTargetGame();
+
+            }
+
+        },1000);
+
+}
+
+
+function spawnTarget(){
 
     const target =
         document.getElementById(
@@ -3225,76 +3604,78 @@ function moveTarget(){
         );
 
 
-    const rect =
-        area.getBoundingClientRect();
-
-
-    const size = 65;
-
-
-    const x =
-        Math.random() *
-        Math.max(
-            10,
-            rect.width - size
+    const board =
+        document.getElementById(
+            "targetBoard"
         );
 
 
-    const y =
-        Math.random() *
+    const maxX =
         Math.max(
-            10,
-            rect.height - size
+            0,
+            board.clientWidth -
+            target.offsetWidth
+        );
+
+
+    const maxY =
+        Math.max(
+            0,
+            board.clientHeight -
+            target.offsetHeight
         );
 
 
     target.style.left =
-        x + "px";
+        Math.random() *
+        maxX +
+        "px";
+
 
     target.style.top =
-        y + "px";
+        Math.random() *
+        maxY +
+        "px";
+
 
     target.style.display =
         "block";
+
 }
 
 
-document
-    .getElementById("target")
-    .addEventListener(
-        "click",
-        ()=>{
-            
-            if(
-                !match ||
-                match.game !== "target"
-            )
-                return;
+function hitTarget(){
+
+    if(
+        !match ||
+        !match.started ||
+        match.game !== "target"
+    )
+        return;
 
 
-            targetScore++;
-
-            match.targetScore =
-                targetScore;
+    match.targetScore++;
 
 
-            document
-                .getElementById(
-                    "myScore"
-                )
-                .textContent =
-                    targetScore;
+    document
+        .getElementById(
+            "myScore"
+        )
+        .textContent =
+            match.targetScore;
 
 
-            moveTarget();
+    spawnTarget();
 
-        }
-    );
+}
 
 
-function finishTarget(){
+function finishTargetGame(){
 
-    if(!match)
+    if(
+        !match ||
+        match.targetFinished
+    )
         return;
 
 
@@ -3312,28 +3693,29 @@ function finishTarget(){
 
     publishMatch({
 
-        type:"targetScore",
+        type:
+            "targetScore",
 
-        roomId:match.id,
+        roomId:
+            match.id,
 
         playerId,
 
-        score:targetScore
+        score:
+            match.targetScore
 
     });
 
 
     checkTargetResult();
+
 }
 
 
 function checkTargetResult(){
 
-    if(!match)
-        return;
-
-
     if(
+        !match ||
         !match.targetFinished ||
         !match.enemyTargetFinished
     )
@@ -3341,74 +3723,64 @@ function checkTargetResult(){
 
 
     let title;
-    let emoji;
-    let text;
 
 
     if(
-        targetScore >
+        match.targetScore >
         match.enemyScore
     ){
 
-        title = "¡Ganaste!";
-
-        emoji = "🏆";
-
-        text =
-            `${targetScore} a ${match.enemyScore}`;
+        title =
+            "🏆 ¡Ganaste!";
 
     }
     else if(
-        targetScore <
+        match.targetScore <
         match.enemyScore
     ){
 
-        title = "Perdiste";
-
-        emoji = "😢";
-
-        text =
-            `${targetScore} a ${match.enemyScore}`;
+        title =
+            "😢 Perdiste";
 
     }
     else{
 
-        title = "Empate";
-
-        emoji = "🤝";
-
-        text =
-            `${targetScore} a ${match.enemyScore}`;
+        title =
+            "🤝 Empate";
 
     }
 
 
     showResult(
-        emoji,
+
         title,
-        text
+
+        `Vos ${match.targetScore} - ${match.enemyScore} Rival`
+
     );
+
 }
 
 
 /* =========================================================
-   REACTION
+   REACTION GAME
 ========================================================= */
 
-let reactionStart = 0;
+let reactionTimeout =
+    null;
 
-let reactionTimeout = null;
 
-let reactionDone = false;
+let reactionStartedAt =
+    0;
+
+
+let reactionClicked =
+    false;
 
 
 function startReactionGame(){
 
-    reactionDone = false;
-
-    match.reactionTime = null;
-
-    match.enemyReaction = null;
+    hideAllGames();
 
 
     document
@@ -3425,18 +3797,16 @@ function startReactionGame(){
         );
 
 
-    const message =
-        document.getElementById(
-            "reactionMessage"
-        );
+    button.className =
+        "reactionButton wait";
 
 
-    button.style.display =
-        "none";
+    button.textContent =
+        "ESPERÁ...";
 
 
-    message.textContent =
-        "Esperá...";
+    reactionClicked =
+        false;
 
 
     const delay =
@@ -3444,45 +3814,87 @@ function startReactionGame(){
         Math.random() * 4000;
 
 
-    clearTimeout(
-        reactionTimeout
-    );
-
-
     reactionTimeout =
         setTimeout(()=>{
 
-            reactionStart =
+            if(
+                !match
+            )
+                return;
+
+
+            reactionStartedAt =
                 performance.now();
 
 
-            button.style.display =
-                "inline-block";
+            button.className =
+                "reactionButton ready";
 
 
-            message.textContent =
-                "";
+            button.textContent =
+                "¡AHORA!";
 
         },delay);
+
 }
 
 
 function reactionClick(){
 
     if(
-        reactionDone ||
-        !match
+        !match ||
+        match.game !== "reaction" ||
+        !match.started
     )
         return;
 
 
-    reactionDone = true;
+    if(
+        reactionClicked
+    )
+        return;
+
+
+    const button =
+        document.getElementById(
+            "reactionButton"
+        );
+
+
+    /*
+       Si todavía no empezó:
+       falsa salida.
+    */
+
+    if(
+        !reactionStartedAt
+    ){
+
+        button.textContent =
+            "¡MUY PRONTO!";
+
+
+        setTimeout(
+            ()=>{
+                startReactionGame();
+            },
+            1000
+        );
+
+
+        return;
+
+    }
+
+
+    reactionClicked =
+        true;
 
 
     const time =
         Math.round(
             performance.now() -
-            reactionStart
+            reactionStartedAt
         );
 
 
@@ -3498,19 +3910,13 @@ function reactionClick(){
             time + " ms";
 
 
-    document
-        .getElementById(
-            "reactionButton"
-        )
-        .style.display =
-            "none";
-
-
     publishMatch({
 
-        type:"reaction",
+        type:
+            "reaction",
 
-        roomId:match.id,
+        roomId:
+            match.id,
 
         playerId,
 
@@ -3519,17 +3925,19 @@ function reactionClick(){
     });
 
 
+    button.textContent =
+        time + " ms";
+
+
     checkReactionResult();
+
 }
 
 
 function checkReactionResult(){
 
-    if(!match)
-        return;
-
-
     if(
+        !match ||
         match.reactionTime === null ||
         match.enemyReaction === null
     )
@@ -3537,7 +3945,6 @@ function checkReactionResult(){
 
 
     let title;
-    let emoji;
 
 
     if(
@@ -3546,10 +3953,7 @@ function checkReactionResult(){
     ){
 
         title =
-            "¡Ganaste!";
-
-        emoji =
-            "⚡";
+            "⚡ ¡Ganaste!";
 
     }
     else if(
@@ -3558,28 +3962,25 @@ function checkReactionResult(){
     ){
 
         title =
-            "Perdiste";
-
-        emoji =
-            "🐢";
+            "😢 Perdiste";
 
     }
     else{
 
         title =
-            "Empate";
-
-        emoji =
-            "🤝";
+            "🤝 Empate";
 
     }
 
 
     showResult(
-        emoji,
+
         title,
-        `Vos: ${match.reactionTime} ms — Rival: ${match.enemyReaction} ms`
+
+        `Vos ${match.reactionTime} ms - ${match.enemyReaction} ms Rival`
+
     );
+
 }
 
 
@@ -3587,78 +3988,54 @@ function checkReactionResult(){
    TTT
 ========================================================= */
 
-let mySymbol = null;
-
-
 function startTTT(){
+
+    hideAllGames();
+
+
+    document
+        .getElementById(
+            "tttGame"
+        )
+        .style.display =
+            "block";
+
 
     match.tttBoard =
         Array(9).fill("");
+
 
     match.tttOver =
         false;
 
 
-    /*
-        El host empieza.
-    */
-
     match.tttTurn =
         match.host;
 
 
-    mySymbol =
-        match.host === playerId
-            ? "X"
-            : "O";
-
-
     renderTTT();
 
-
-    updateTTTStatus();
 }
 
 
 function renderTTT(){
 
-    const board =
-        document.getElementById(
-            "tttBoard"
+    const cells =
+        document.querySelectorAll(
+            ".tttCell"
         );
 
 
-    board.innerHTML = "";
-
-
-    match.tttBoard
-        .forEach((value,index)=>{
-
-            const cell =
-                document.createElement(
-                    "button"
-                );
-
-
-            cell.className =
-                "cell";
-
+    cells.forEach(
+        (cell,index)=>{
 
             cell.textContent =
-                value;
+                match.tttBoard[index] ||
+                "";
 
+        }
+    );
 
-            cell.onclick =
-                ()=>tttMove(index);
-
-
-            board.appendChild(cell);
-
-        });
-}
-
-
-function updateTTTStatus(){
 
     const status =
         document.getElementById(
@@ -3666,42 +4043,111 @@ function updateTTTStatus(){
         );
 
 
-    if(match.tttOver){
+    if(
+        match.tttOver
+    ){
 
         return;
+
     }
 
 
     if(
-        match.tttTurn ===
-        playerId
+        match.tttTurn === playerId
     ){
 
         status.textContent =
-            `Tu turno (${mySymbol})`;
-
-    }else{
-
-        status.textContent =
-            "Turno del rival";
+            "🟢 Es tu turno";
 
     }
+    else{
+
+        status.textContent =
+            "⏳ Turno del rival";
+
+    }
+
 }
 
 
-function tttMove(index){
+function tttClick(
+    index
+){
 
-    if(!match)
-        return;
-
-
-    if(match.tttOver)
+    if(
+        !match ||
+        match.game !== "ttt"
+    )
         return;
 
 
     if(
-        match.tttTurn !==
-        playerId
+        match.tttOver
+    )
+        return;
+
+
+    if(
+        match.tttTurn !== playerId
+    )
+        return;
+
+
+    if(
+        match.tttBoard[index]
+    )
+        return;
+
+
+    const symbol =
+        match.host === playerId
+            ? "X"
+            : "O";
+
+
+    match.tttBoard[index] =
+        symbol;
+
+
+    publishMatch({
+
+        type:
+            "tttMove",
+
+        roomId:
+            match.id,
+
+        playerId,
+
+        index,
+
+        symbol
+
+    });
+
+
+    match.tttTurn =
+        match.host === playerId
+            ? match.guest
+            : match.host;
+
+
+    renderTTT();
+
+
+    checkTTT();
+
+}
+
+
+function applyRemoteTTTMove(
+    index,
+    symbol
+){
+
+    if(
+        !match ||
+        match.game !== "ttt"
     )
         return;
 
@@ -3713,174 +4159,28 @@ function tttMove(index){
 
 
     match.tttBoard[index] =
-        mySymbol;
-
-
-    renderTTT();
-
-
-    publishMatch({
-
-        type:"tttMove",
-
-        roomId:match.id,
-
-        playerId,
-
-        index,
-
-        symbol:mySymbol
-
-    });
-
-
-    const winner =
-        checkTTTWinner(
-            match.tttBoard
-        );
-
-
-    if(winner){
-
-        match.tttOver =
-            true;
-
-
-        showResult(
-            winner === mySymbol
-                ? "🏆"
-                : "😢",
-
-            winner === mySymbol
-                ? "¡Ganaste!"
-                : "Perdiste",
-
-            `Ganó ${winner}`
-        );
-
-
-        return;
-    }
-
-
-    if(
-        match.tttBoard
-            .every(Boolean)
-    ){
-
-        match.tttOver =
-            true;
-
-
-        showResult(
-            "🤝",
-            "Empate",
-            "Nadie ganó."
-        );
-
-
-        return;
-    }
-
-
-    match.tttTurn =
-        match.host === playerId
-            ? match.guest
-            : match.host;
-
-
-    updateTTTStatus();
-}
-
-
-function applyRemoteTTTMove(
-    index,
-    symbol
-){
-
-    if(!match)
-        return;
-
-
-    if(match.tttBoard[index])
-        return;
-
-
-    match.tttBoard[index] =
         symbol;
-
-
-    renderTTT();
-
-
-    const winner =
-        checkTTTWinner(
-            match.tttBoard
-        );
-
-
-    if(winner){
-
-        match.tttOver =
-            true;
-
-
-        showResult(
-            winner === mySymbol
-                ? "🏆"
-                : "😢",
-
-            winner === mySymbol
-                ? "¡Ganaste!"
-                : "Perdiste",
-
-            `Ganó ${winner}`
-        );
-
-
-        return;
-    }
-
-
-    if(
-        match.tttBoard
-            .every(Boolean)
-    ){
-
-        match.tttOver =
-            true;
-
-
-        showResult(
-            "🤝",
-            "Empate",
-            "Nadie ganó."
-        );
-
-
-        return;
-    }
 
 
     match.tttTurn =
         symbol === "X"
-            ? (
-                match.host === playerId
-                    ? match.guest
-                    : match.host
-            )
-            : (
-                match.host === playerId
-                    ? match.guest
-                    : match.host
-            );
+            ? match.guest
+            : match.host;
 
 
-    updateTTTStatus();
+    renderTTT();
+
+
+    checkTTT();
+
 }
 
 
-function checkTTTWinner(board){
+function checkTTT(){
+
+    const board =
+        match.tttBoard;
+
 
     const wins = [
 
@@ -3909,14 +4209,63 @@ function checkTTTWinner(board){
             board[a] === board[c]
         ){
 
-            return board[a];
+            match.tttOver =
+                true;
+
+
+            const winner =
+                board[a];
+
+
+            const mySymbol =
+                match.host === playerId
+                    ? "X"
+                    : "O";
+
+
+            if(
+                winner === mySymbol
+            ){
+
+                showResult(
+                    "🏆 ¡Ganaste!",
+                    "Tres en línea"
+                );
+
+            }else{
+
+                showResult(
+                    "😢 Perdiste",
+                    "Tres en línea"
+                );
+
+            }
+
+
+            return;
 
         }
 
     }
 
 
-    return null;
+    if(
+        board.every(
+            cell=>cell !== ""
+        )
+    ){
+
+        match.tttOver =
+            true;
+
+
+        showResult(
+            "🤝 Empate",
+            "Tablero completo"
+        );
+
+    }
+
 }
 
 
@@ -3924,11 +4273,21 @@ function checkTTTWinner(board){
    DRAW
 ========================================================= */
 
-let canvas = null;
+let canvas =
+    document.getElementById(
+        "drawCanvas"
+    );
 
-let ctx = null;
 
-let drawing = false;
+let ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+
+let drawing =
+    false;
+
 
 let lastX = 0;
 
@@ -3937,13 +4296,10 @@ let lastY = 0;
 
 function startDraw(){
 
-    showView("draw");
+    showView(
+        "draw"
+    );
 
-    initCanvas();
-}
-
-
-function initCanvas(){
 
     canvas =
         document.getElementById(
@@ -3951,137 +4307,181 @@ function initCanvas(){
         );
 
 
-    if(!canvas)
-        return;
-
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-
-    const ratio =
-        window.devicePixelRatio || 1;
-
-
-    canvas.width =
-        rect.width * ratio;
-
-
-    canvas.height =
-        rect.height * ratio;
-
-
     ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
 
 
-    ctx.scale(
-        ratio,
-        ratio
-    );
+    setupCanvas();
+
+}
 
 
-    ctx.lineWidth = 4;
+function setupCanvas(){
 
-    ctx.lineCap = "round";
-
-    ctx.strokeStyle = "#111";
-
-
-    canvas.onpointerdown =
-        e => {
+    canvas.addEventListener(
+        "pointerdown",
+        e=>{
 
             drawing = true;
 
-            const p =
-                canvasPoint(e);
-
-            lastX = p.x;
-
-            lastY = p.y;
-
-        };
+            const rect =
+                canvas.getBoundingClientRect();
 
 
-    canvas.onpointermove =
-        e => {
+            lastX =
+                (e.clientX - rect.left) *
+                (canvas.width / rect.width);
+
+
+            lastY =
+                (e.clientY - rect.top) *
+                (canvas.height / rect.height);
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointerup",
+        ()=>{
+
+            drawing = false;
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointerleave",
+        ()=>{
+
+            drawing = false;
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointermove",
+        e=>{
 
             if(!drawing)
                 return;
 
 
-            const p =
-                canvasPoint(e);
+            const rect =
+                canvas.getBoundingClientRect();
 
 
-            drawLine(
+            const x =
+                (e.clientX - rect.left) *
+                (canvas.width / rect.width);
+
+
+            const y =
+                (e.clientY - rect.top) *
+                (canvas.height / rect.height);
+
+
+            ctx.beginPath();
+
+            ctx.moveTo(
                 lastX,
-                lastY,
-                p.x,
-                p.y
+                lastY
             );
 
+            ctx.lineTo(
+                x,
+                y
+            );
 
-            publishMatch({
+            ctx.strokeStyle =
+                "#111";
 
-                type:"drawLine",
+            ctx.lineWidth =
+                4;
 
-                roomId:match.id,
+            ctx.lineCap =
+                "round";
 
-                x1:lastX,
-                y1:lastY,
-
-                x2:p.x,
-                y2:p.y
-
-            });
-
-
-            lastX = p.x;
-
-            lastY = p.y;
-
-        };
+            ctx.stroke();
 
 
-    canvas.onpointerup =
-        () => {
+            if(
+                match &&
+                match.game === "draw"
+            ){
 
-            drawing = false;
+                publishMatch({
 
-        };
+                    type:
+                        "drawLine",
+
+                    roomId:
+                        match.id,
+
+                    x1:
+                        lastX,
+
+                    y1:
+                        lastY,
+
+                    x2:
+                        x,
+
+                    y2:
+                        y
+
+                });
+
+            }
 
 
-    canvas.onpointerleave =
-        () => {
+            lastX =
+                x;
 
-            drawing = false;
+            lastY =
+                y;
 
-        };
+        }
+    );
+
 }
 
 
-function canvasPoint(e){
+function startDraw(){
 
-    const rect =
-        canvas.getBoundingClientRect();
+    showView(
+        "draw"
+    );
 
 
-    return {
+    if(!canvas){
 
-        x:e.clientX - rect.left,
+        canvas =
+            document.getElementById(
+                "drawCanvas"
+            );
 
-        y:e.clientY - rect.top
+        ctx =
+            canvas.getContext(
+                "2d"
+            );
 
-    };
+    }
+
+
+    clearCanvas(
+        false
+    );
+
 }
 
 
-function drawLine(
-    x1,
-    y1,
-    x2,
-    y2
+function drawRemoteLine(
+    data
 ){
 
     if(!ctx)
@@ -4090,57 +4490,43 @@ function drawLine(
 
     ctx.beginPath();
 
-    ctx.moveTo(x1,y1);
-
-    ctx.lineTo(x2,y2);
-
-    ctx.stroke();
-}
-
-
-function drawRemoteLine(data){
-
-    if(
-        !canvas ||
-        !ctx
-    ){
-
-        initCanvas();
-
-    }
-
-
-    drawLine(
+    ctx.moveTo(
         data.x1,
-        data.y1,
+        data.y1
+    );
+
+    ctx.lineTo(
         data.x2,
         data.y2
     );
+
+    ctx.strokeStyle =
+        "#111";
+
+    ctx.lineWidth =
+        4;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.stroke();
+
 }
 
 
-function clearCanvas(send=true){
+function clearCanvas(
+    send
+){
 
-    if(!canvas || !ctx){
-
-        initCanvas();
-
-    }
-
-
-    if(!canvas || !ctx)
+    if(!ctx)
         return;
-
-
-    const rect =
-        canvas.getBoundingClientRect();
 
 
     ctx.clearRect(
         0,
         0,
-        rect.width,
-        rect.height
+        canvas.width,
+        canvas.height
     );
 
 
@@ -4151,13 +4537,18 @@ function clearCanvas(send=true){
 
         publishMatch({
 
-            type:"drawClear",
+            type:
+                "drawClear",
 
-            roomId:match.id
+            roomId:
+                match.id,
+
+            playerId
 
         });
 
     }
+
 }
 
 
@@ -4165,14 +4556,19 @@ function clearCanvas(send=true){
    NUMBER GAME
 ========================================================= */
 
-let numberSecret = 0;
+let numberTarget =
+    0;
 
-let numberAttempts = 0;
+
+let numberAttempts =
+    0;
 
 
-function startNumberGame(){
+function startLocalNumberGame(){
 
-    showView("game");
+    showView(
+        "game"
+    );
 
 
     hideAllGames();
@@ -4180,24 +4576,11 @@ function startNumberGame(){
 
     document
         .getElementById(
-            "gameTitle"
+            "countdownArea"
         )
-        .textContent =
-            "🧠 Adiviná el número";
+        .style.display =
+            "none";
 
-
-    document
-        .getElementById(
-            "gameOpponent"
-        )
-        .textContent =
-            "Juego individual";
-
-
-    /*
-        Reutilizamos targetGame
-        como contenedor simple.
-    */
 
     const game =
         document.getElementById(
@@ -4211,51 +4594,52 @@ function startNumberGame(){
 
     game.innerHTML = `
 
-        <div class="number-game">
+        <div class="numberGame">
 
-            <h2>🔢 Adiviná el número</h2>
+            <h2>
+                🧠 Adiviná el número
+            </h2>
 
-            <p>
-                Estoy pensando un número
-                entre 1 y 100.
+            <p style="color:var(--muted)">
+                Estoy pensando un número del 1 al 100.
             </p>
 
             <input
-                id="numberInput"
-                class="input"
+                id="numberGuess"
+                class="numberInput"
                 type="number"
                 min="1"
                 max="100"
-                placeholder="Número"
+                placeholder="?"
             >
 
             <br><br>
 
             <button
-                class="btn primary"
+                class="btn"
                 onclick="guessNumber()"
             >
                 Adivinar
             </button>
 
-            <br><br>
-
-            <strong id="numberResult">
+            <p id="numberHint">
                 Intentos: 0
-            </strong>
+            </p>
 
         </div>
 
     `;
 
 
-    numberSecret =
+    numberTarget =
         Math.floor(
-            Math.random()*100
+            Math.random() * 100
         ) + 1;
 
 
-    numberAttempts = 0;
+    numberAttempts =
+        0;
+
 }
 
 
@@ -4263,259 +4647,80 @@ function guessNumber(){
 
     const input =
         document.getElementById(
-            "numberInput"
+            "numberGuess"
         );
 
 
-    const result =
+    const hint =
         document.getElementById(
-            "numberResult"
+            "numberHint"
         );
 
 
-    const value =
-        Number(input.value);
+    const guess =
+        Number(
+            input.value
+        );
 
 
     if(
-        value < 1 ||
-        value > 100
-    ){
-
-        result.textContent =
-            "Poné un número entre 1 y 100.";
-
+        guess < 1 ||
+        guess > 100
+    )
         return;
-    }
 
 
     numberAttempts++;
 
 
-    if(value === numberSecret){
+    if(
+        guess === numberTarget
+    ){
 
-        result.textContent =
-            `🎉 ¡Correcto! Lo adivinaste en ${numberAttempts} intentos.`;
-
-        return;
-    }
-
-
-    if(value < numberSecret){
-
-        result.textContent =
-            `⬆️ Más alto. Intentos: ${numberAttempts}`;
-
-    }else{
-
-        result.textContent =
-            `⬇️ Más bajo. Intentos: ${numberAttempts}`;
-
-    }
-}
+        hint.textContent =
+            "🎉 ¡Ganaste en " +
+            numberAttempts +
+            " intentos!";
 
 
-/* =========================================================
-   CHAT
-========================================================= */
-
-function sendChat(event){
-
-    event.preventDefault();
-
-
-    if(!username){
-
-        openNameModal();
-
-        return;
-    }
-
-
-    const input =
-        document.getElementById(
-            "chatInput"
+        sendESP(
+            "NUMBER_WIN:" +
+            numberAttempts
         );
 
 
-    const text =
-        input.value.trim();
-
-
-    if(!text)
         return;
 
-
-    if(!mqttConnected){
-
-        alert(
-            "No estás conectado a MQTT."
-        );
-
-        return;
-    }
-
-
-    publish(
-
-        CHAT_TOPIC,
-
-        {
-            type:"chat",
-
-            playerId,
-
-            name:username,
-
-            text,
-
-            ts:Date.now()
-
-        }
-
-    );
-
-
-    input.value = "";
-
-    input.focus();
-}
-
-
-function handleChatMessage(text){
-
-    let data;
-
-
-    try{
-
-        data =
-            JSON.parse(text);
-
-    }catch(e){
-
-        return;
     }
 
 
     if(
-        data.type !== "chat"
-    )
-        return;
+        guess < numberTarget
+    ){
 
+        hint.textContent =
+            "⬆️ Es más alto. Intentos: " +
+            numberAttempts;
 
-    addChatMessage(
-        data
-    );
-}
+    }else{
 
+        hint.textContent =
+            "⬇️ Es más bajo. Intentos: " +
+            numberAttempts;
 
-function addChatMessage(data){
-
-    const container =
-        document.getElementById(
-            "messages"
-        );
-
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.className =
-        "message" +
-        (
-            data.playerId === playerId
-                ? " mine"
-                : ""
-        );
-
-
-    const date =
-        new Date(
-            data.ts || Date.now()
-        );
-
-
-    div.innerHTML = `
-
-        <div class="name">
-            ${escapeHTML(
-                data.name ||
-                "Jugador"
-            )}
-        </div>
-
-        <div>
-            ${escapeHTML(
-                data.text ||
-                ""
-            )}
-        </div>
-
-        <div class="time">
-            ${date.toLocaleTimeString(
-                [],
-                {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            )}
-        </div>
-
-    `;
-
-
-    container.appendChild(div);
-
-
-    container.scrollTop =
-        container.scrollHeight;
-}
-
-
-/* =========================================================
-   ESP32
-========================================================= */
-
-function sendESP(command){
-
-    if(!mqttConnected){
-
-        alert(
-            "MQTT todavía no está conectado."
-        );
-
-        return;
     }
 
-
-    publish(
-        COMMAND_TOPIC,
-        command
-    );
 }
 
 
 /* =========================================================
-   RESULTADO
+   RESULT
 ========================================================= */
 
 function showResult(
-    emoji,
     title,
     text
 ){
-
-    document
-        .getElementById(
-            "resultEmoji"
-        )
-        .textContent =
-            emoji;
-
 
     document
         .getElementById(
@@ -4537,7 +4742,10 @@ function showResult(
         .getElementById(
             "resultModal"
         )
-        .classList.add("show");
+        .classList.add(
+            "show"
+        );
+
 }
 
 
@@ -4547,10 +4755,13 @@ function closeResult(){
         .getElementById(
             "resultModal"
         )
-        .classList.remove("show");
+        .classList.remove(
+            "show"
+        );
 
 
     leaveMatch();
+
 }
 
 
@@ -4560,11 +4771,16 @@ function closeResult(){
 
 function leaveMatch(){
 
-    if(!match){
+    if(
+        !match
+    ){
 
-        showView("arcade");
+        showView(
+            "arcade"
+        );
 
         return;
+
     }
 
 
@@ -4572,59 +4788,221 @@ function leaveMatch(){
         match;
 
 
-    publishMatch({
-
-        type:"roomClosed",
-
-        roomId:oldMatch.id
-
-    });
-
-
     if(
-        oldMatch.host === playerId
+        oldMatch
     ){
 
-        clearRoom(
-            oldMatch.id
+        publish(
+
+            MATCH_PREFIX +
+            oldMatch.id,
+
+            {
+
+                type:
+                    "roomClosed",
+
+                roomId:
+                    oldMatch.id,
+
+                playerId
+
+            }
+
         );
+
+
+        if(
+            oldMatch.host === playerId
+        ){
+
+            clearRoom(
+                oldMatch.id
+            );
+
+        }
 
     }
 
 
-    clearInterval(
-        targetTimer
-    );
+    if(
+        targetTimerInterval
+    ){
+
+        clearInterval(
+            targetTimerInterval
+        );
+
+        targetTimerInterval =
+            null;
+
+    }
 
 
-    clearTimeout(
+    if(
         reactionTimeout
-    );
+    ){
+
+        clearTimeout(
+            reactionTimeout
+        );
+
+        reactionTimeout =
+            null;
+
+    }
 
 
-    match = null;
-
-
-    document
-        .getElementById(
-            "resultModal"
-        )
-        .classList.remove("show");
+    match =
+        null;
 
 
     document
         .getElementById(
             "waitingModal"
         )
-        .classList.remove("show");
+        .classList.remove(
+            "show"
+        );
+
+
+    document
+        .getElementById(
+            "resultModal"
+        )
+        .classList.remove(
+            "show"
+        );
 
 
     publishPresence();
 
 
-    showView("arcade");
+    showView(
+        "arcade"
+    );
+
 
     renderRooms();
+
+}
+
+
+/* =========================================================
+   CANCEL WAITING
+========================================================= */
+
+function cancelWaitingRoom(){
+
+    leaveMatch();
+
+}
+
+
+/* =========================================================
+   ESP32
+========================================================= */
+
+function sendESP(
+    command
+){
+
+    publish(
+        COMMAND_TOPIC,
+        command
+    );
+
+
+    addESPLog(
+        "→ " + command
+    );
+
+}
+
+
+function sendESPMessage(){
+
+    const input =
+        document.getElementById(
+            "espMessage"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text)
+        return;
+
+
+    sendESP(
+        "MSG:" + text
+    );
+
+
+    input.value = "";
+
+}
+
+
+function handleESPState(
+    text
+){
+
+    document
+        .getElementById(
+            "espStatus"
+        )
+        .textContent =
+            text;
+
+
+    addESPLog(
+        "ESP32: " + text
+    );
+
+}
+
+
+function addESPLog(
+    text
+){
+
+    const log =
+        document.getElementById(
+            "espLog"
+        );
+
+
+    const line =
+        document.createElement(
+            "div"
+        );
+
+
+    line.textContent =
+        "[" +
+        new Date().toLocaleTimeString() +
+        "] " +
+        text;
+
+
+    log.appendChild(
+        line
+    );
+
+
+    while(
+        log.children.length > 20
+    ){
+
+        log.removeChild(
+            log.firstChild
+        );
+
+    }
+
 }
 
 
@@ -4642,8 +5020,8 @@ function heartbeat(){
 
 
     /*
-        Solo el host mantiene viva
-        la sala.
+       El host mantiene publicada la sala
+       mientras está esperando.
     */
 
     if(
@@ -4660,81 +5038,83 @@ function heartbeat(){
     }
 
 
-    renderRooms();
-}
-
-
-/* =========================================================
-   STARTUP
-========================================================= */
-
-function startup(){
-
-    document
-        .getElementById(
-            "topUser"
-        )
-        .textContent =
-            username ||
-            "Sin nombre";
-
-
-    document
-        .getElementById(
-            "sidebarUser"
-        )
-        .textContent =
-            username ||
-            "Sin nombre";
-
-
-    if(!username){
-
-        setTimeout(
-            openNameModal,
-            500
-        );
-
-    }
-
-
-    connectMQTT();
-
-
     /*
-        Cada 2.5 segundos:
-
-        - presencia
-        - sala
-        - limpieza de salas viejas
+       Refresca salas.
     */
 
-    heartbeatTimer =
-        setInterval(
-            heartbeat,
-            2500
-        );
+    Object.keys(
+        rooms
+    ).forEach(
+        roomId=>{
+
+            const room =
+                rooms[roomId];
+
+
+            if(
+                Date.now() -
+                (room.ts || 0)
+                > 10000
+            ){
+
+                delete rooms[
+                    roomId
+                ];
+
+            }
+
+        }
+    );
+
+
+    renderRooms();
+
 }
 
 
-startup();
-
-
 /* =========================================================
-   ENTER EN NOMBRE
+   NAVIGATION
 ========================================================= */
 
 document
-    .getElementById("nameInput")
+    .querySelectorAll(
+        ".navBtn"
+    )
+    .forEach(
+        button=>{
+
+            button.addEventListener(
+                "click",
+                ()=>{
+
+                    showView(
+                        button.dataset.view
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   CHAT ENTER
+========================================================= */
+
+document
+    .getElementById(
+        "chatInput"
+    )
     .addEventListener(
         "keydown",
-        e => {
+        e=>{
 
             if(
                 e.key === "Enter"
             ){
 
-                saveName();
+                sendChat();
 
             }
 
@@ -4743,7 +5123,26 @@ document
 
 
 /* =========================================================
-   CERRAR AL SALIR
+   DRAW INIT
+========================================================= */
+
+canvas =
+    document.getElementById(
+        "drawCanvas"
+    );
+
+
+ctx =
+    canvas.getContext(
+        "2d"
+    );
+
+
+setupCanvas();
+
+
+/* =========================================================
+   BEFORE UNLOAD
 ========================================================= */
 
 window.addEventListener(
@@ -4751,16 +5150,21 @@ window.addEventListener(
     ()=>{
 
         /*
-            Intentamos borrar
-            nuestra presencia.
-
-            No siempre el navegador
-            permite enviar MQTT antes
-            de cerrar, por eso además
-            usamos timestamps.
+           Eliminamos nuestra presence.
         */
 
-        removeOwnPresence();
+        publish(
+
+            PLAYER_PREFIX +
+            playerId,
+
+            "",
+
+            {
+                retain:true
+            }
+
+        );
 
 
         if(
@@ -4768,8 +5172,17 @@ window.addEventListener(
             match.host === playerId
         ){
 
-            clearRoom(
-                match.id
+            publish(
+
+                ROOM_PREFIX +
+                match.id,
+
+                "",
+
+                {
+                    retain:true
+                }
+
             );
 
         }
@@ -4779,66 +5192,46 @@ window.addEventListener(
 
 
 /* =========================================================
-   LIMPIAR SALAS VIEJAS
+   STARTUP
 ========================================================= */
 
-setInterval(
-    ()=>{
+function startup(){
 
-        const now =
-            Date.now();
+    updateUsernameUI();
 
 
-        Object.keys(rooms)
-            .forEach(id => {
+    if(!username){
 
-                if(
-                    now - rooms[id].ts >
-                    10000
-                ){
+        setTimeout(
+            ()=>{
 
-                    delete rooms[id];
+                document
+                    .getElementById(
+                        "nameModal"
+                    )
+                    .classList.add(
+                        "show"
+                    );
 
-                }
-
-            });
-
-
-        renderRooms();
-
-    },
-    3000
-);
-
-
-/* =========================================================
-   CANVAS RESPONSIVE
-========================================================= */
-
-window.addEventListener(
-    "resize",
-    ()=>{
-
-        if(
-            document
-                .getElementById(
-                    "view-draw"
-                )
-                .classList.contains(
-                    "active"
-                )
-        ){
-
-            /*
-                No reinicializamos
-                automáticamente porque
-                borraría el dibujo.
-            */
-
-        }
+            },
+            500
+        );
 
     }
-);
+
+
+    connectMQTT();
+
+
+    setInterval(
+        heartbeat,
+        2500
+    );
+
+}
+
+
+startup();
 
 </script>
 
