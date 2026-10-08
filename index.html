@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ESP32 Remote Arcade</title>
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
-
 :root{
     --bg:#090b12;
     --panel:#111522;
@@ -36,8 +34,7 @@ body{
     font-family:Arial,Helvetica,sans-serif;
 }
 
-button,
-input{
+button,input{
     font:inherit;
 }
 
@@ -49,8 +46,6 @@ button{
     min-height:100vh;
     display:flex;
 }
-
-/* SIDEBAR */
 
 .sidebar{
     width:230px;
@@ -118,8 +113,6 @@ button{
     background:var(--green);
 }
 
-/* MAIN */
-
 .main{
     margin-left:230px;
     width:calc(100% - 230px);
@@ -140,8 +133,6 @@ button{
     font-weight:700;
 }
 
-/* VIEWS */
-
 .view{
     display:none;
     padding:30px;
@@ -155,8 +146,6 @@ button{
     max-width:1200px;
     margin:auto;
 }
-
-/* HOME */
 
 .hero{
     background:
@@ -200,8 +189,6 @@ button{
     color:var(--muted);
 }
 
-/* CHAT */
-
 .chatBox{
     height:600px;
     background:var(--panel);
@@ -243,8 +230,6 @@ button{
     flex:1;
 }
 
-/* INPUTS */
-
 input{
     background:#0b0e17;
     color:white;
@@ -257,8 +242,6 @@ input{
 input:focus{
     border-color:var(--accent);
 }
-
-/* BUTTONS */
 
 .btn{
     border:0;
@@ -290,8 +273,6 @@ input:focus{
 .btn.blue{
     background:var(--blue);
 }
-
-/* ARCADE */
 
 .sectionTitle{
     display:flex;
@@ -333,8 +314,6 @@ input:focus{
     min-height:42px;
 }
 
-/* ROOMS */
-
 .rooms{
     margin-top:30px;
 }
@@ -362,8 +341,6 @@ input:focus{
     color:var(--muted);
     font-size:13px;
 }
-
-/* GAME */
 
 .gameHeader{
     display:flex;
@@ -396,8 +373,6 @@ input:focus{
     color:var(--accent2);
 }
 
-/* TARGET */
-
 .targetInfo{
     display:flex;
     justify-content:space-between;
@@ -422,8 +397,6 @@ input:focus{
     border:5px solid white;
     display:none;
 }
-
-/* REACTION */
 
 .reactionArea{
     text-align:center;
@@ -450,8 +423,6 @@ input:focus{
     background:var(--red);
 }
 
-/* TTT */
-
 .tttBoard{
     width:330px;
     height:330px;
@@ -470,8 +441,6 @@ input:focus{
     font-weight:bold;
 }
 
-/* NUMBER */
-
 .numberGame{
     text-align:center;
     padding-top:60px;
@@ -487,10 +456,30 @@ input:focus{
     font-size:25px;
 }
 
-/* DRAW */
+/* DIBUJO */
 
 .drawContainer{
     text-align:center;
+}
+
+.drawInfo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:35px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.drawObject{
+    font-size:25px;
+    font-weight:800;
+}
+
+.drawTimer{
+    font-size:25px;
+    font-weight:800;
+    color:var(--yellow);
 }
 
 #drawCanvas{
@@ -498,9 +487,8 @@ input:focus{
     border-radius:15px;
     max-width:100%;
     touch-action:none;
+    cursor:crosshair;
 }
-
-/* ESP */
 
 .espGrid{
     display:grid;
@@ -520,8 +508,6 @@ input:focus{
     gap:10px;
     flex-wrap:wrap;
 }
-
-/* MODALS */
 
 .modal{
     position:fixed;
@@ -561,8 +547,6 @@ input:focus{
     margin-top:20px;
 }
 
-/* RESULT */
-
 .resultTitle{
     text-align:center;
     font-size:38px;
@@ -574,8 +558,6 @@ input:focus{
     color:var(--muted);
     font-size:17px;
 }
-
-/* RESPONSIVE */
 
 @media(max-width:900px){
 
@@ -592,7 +574,6 @@ input:focus{
     .games{
         grid-template-columns:repeat(2,1fr);
     }
-
 }
 
 @media(max-width:650px){
@@ -640,9 +621,7 @@ input:focus{
     .topbar{
         padding:0 15px;
     }
-
 }
-
 </style>
 </head>
 
@@ -650,696 +629,603 @@ input:focus{
 
 <div class="app">
 
-    <!-- SIDEBAR -->
+<aside class="sidebar">
 
-    <aside class="sidebar">
+    <div class="logo">
+        ESP32 <span>REMOTE</span>
+    </div>
 
-        <div class="logo">
-            ESP32 <span>REMOTE</span>
-        </div>
+    <nav class="nav">
 
-        <nav class="nav">
+        <button class="navBtn active" data-view="home">
+            🏠 Inicio
+        </button>
 
-            <button class="navBtn active"
-                    data-view="home">
-                🏠 Inicio
-            </button>
+        <button class="navBtn" data-view="chat">
+            💬 Chat
+        </button>
 
-            <button class="navBtn"
-                    data-view="chat">
-                💬 Chat
-            </button>
+        <button class="navBtn" data-view="arcade">
+            🎮 Arcade
+        </button>
 
-            <button class="navBtn"
-                    data-view="arcade">
-                🎮 Arcade
-            </button>
+        <button class="navBtn" data-view="esp">
+            ⚡ ESP32
+        </button>
 
-            <button class="navBtn"
-                    data-view="esp">
-                ⚡ ESP32
-            </button>
+    </nav>
 
-        </nav>
+    <div class="connection">
+        <span id="connectionDot" class="dot"></span>
+        <span id="connectionText">
+            Desconectado
+        </span>
+    </div>
 
-        <div class="connection">
-            <span id="connectionDot" class="dot"></span>
-            <span id="connectionText">
-                Desconectado
-            </span>
-        </div>
+</aside>
 
-    </aside>
+<main class="main">
 
+<header class="topbar">
 
-    <!-- MAIN -->
+    <div>
+        ESP32 Remote Arcade
+    </div>
 
-    <main class="main">
+    <div class="userName" id="topUsername">
+        Sin nombre
+    </div>
 
-        <header class="topbar">
+</header>
 
-            <div>
-                ESP32 Remote Arcade
-            </div>
 
-            <div class="userName"
-                 id="topUsername">
-                Sin nombre
-            </div>
+<!-- HOME -->
 
-        </header>
+<section id="home" class="view active">
 
+<div class="container">
 
-        <!-- HOME -->
+<div class="hero">
 
-        <section id="home"
-                 class="view active">
+    <h1>
+        ESP32 Remote
+    </h1>
 
-            <div class="container">
+    <p>
+        Controlá tu ESP32, hablá con otros jugadores
+        y jugá partidas multijugador desde cualquier dispositivo.
+    </p>
 
-                <div class="hero">
+    <button class="btn"
+            onclick="showView('arcade')">
+        🎮 Ir al Arcade
+    </button>
 
-                    <h1>
-                        ESP32 Remote
-                    </h1>
+</div>
 
-                    <p>
-                        Controlá tu ESP32, hablá con otros jugadores
-                        y jugá partidas multijugador desde cualquier
-                        dispositivo.
-                    </p>
+<div class="cards">
 
-                    <button class="btn"
-                            onclick="showView('arcade')">
-                        🎮 Ir al Arcade
-                    </button>
+<div class="card">
+    <h3>🎮 Arcade</h3>
+    <p>
+        Creá o uníte automáticamente a salas
+        para jugar con otra persona.
+    </p>
+</div>
 
-                </div>
+<div class="card">
+    <h3>💬 Chat</h3>
+    <p>
+        Chat global en tiempo real mediante MQTT.
+    </p>
+</div>
 
+<div class="card">
+    <h3>⚡ ESP32</h3>
+    <p>
+        Mandá comandos directamente al ESP32-C3.
+    </p>
+</div>
 
-                <div class="cards">
+</div>
 
-                    <div class="card">
+</div>
 
-                        <h3>
-                            🎮 Arcade
-                        </h3>
+</section>
 
-                        <p>
-                            Creá o uníte automáticamente a salas
-                            para jugar con otra persona.
-                        </p>
 
-                    </div>
+<!-- CHAT -->
 
+<section id="chat" class="view">
 
-                    <div class="card">
+<div class="container">
 
-                        <h3>
-                            💬 Chat
-                        </h3>
+<div class="sectionTitle">
+    <h1>💬 Chat global</h1>
+</div>
 
-                        <p>
-                            Chat global en tiempo real mediante MQTT.
-                        </p>
+<div class="chatBox">
 
-                    </div>
+<div id="chatMessages"
+     class="chatMessages">
+</div>
 
+<div class="chatInput">
 
-                    <div class="card">
+<input
+    id="chatInput"
+    placeholder="Escribí un mensaje..."
+    maxlength="200"
+    autocomplete="off"
+>
 
-                        <h3>
-                            ⚡ ESP32
-                        </h3>
+<button class="btn"
+        onclick="sendChat()">
+    Enviar
+</button>
 
-                        <p>
-                            Mandá comandos directamente al ESP32-C3.
-                        </p>
+</div>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-            </div>
+</section>
 
-        </section>
 
+<!-- ARCADE -->
 
-        <!-- CHAT -->
+<section id="arcade" class="view">
 
-        <section id="chat"
-                 class="view">
+<div class="container">
 
-            <div class="container">
+<div class="sectionTitle">
 
-                <div class="sectionTitle">
+<div>
 
-                    <h1>💬 Chat global</h1>
+<h1>🎮 Arcade</h1>
 
-                </div>
+<p style="color:var(--muted)">
+    Elegí un juego para crear una sala.
+</p>
 
+</div>
 
-                <div class="chatBox">
+</div>
 
-                    <div id="chatMessages"
-                         class="chatMessages">
-                    </div>
+<div class="games">
 
+<div class="gameCard">
 
-                    <div class="chatInput">
+<div class="gameIcon">🎯</div>
 
-                        <input
-                            id="chatInput"
-                            placeholder="Escribí un mensaje..."
-                            maxlength="200"
-                            autocomplete="off"
-                        >
+<h3>Caza el objetivo</h3>
 
-                        <button class="btn"
-                                onclick="sendChat()">
-                            Enviar
-                        </button>
+<p>
+    Tocá el objetivo tantas veces como puedas.
+</p>
 
-                    </div>
+<button class="btn"
+        onclick="createRoom('target')">
+    Crear sala
+</button>
 
-                </div>
+</div>
 
-            </div>
 
-        </section>
+<div class="gameCard">
 
+<div class="gameIcon">⚡</div>
 
-        <!-- ARCADE -->
+<h3>Reflejos</h3>
 
-        <section id="arcade"
-                 class="view">
+<p>
+    Esperá la señal y reaccioná lo más rápido posible.
+</p>
 
-            <div class="container">
+<button class="btn"
+        onclick="createRoom('reaction')">
+    Crear sala
+</button>
 
-                <div class="sectionTitle">
+</div>
 
-                    <div>
 
-                        <h1>🎮 Arcade</h1>
+<div class="gameCard">
 
-                        <p style="color:var(--muted)">
-                            Elegí un juego para crear una sala.
-                        </p>
+<div class="gameIcon">❌</div>
 
-                    </div>
+<h3>Tres en línea</h3>
 
-                </div>
+<p>
+    El clásico tres en línea para dos jugadores.
+</p>
 
+<button class="btn"
+        onclick="createRoom('ttt')">
+    Crear sala
+</button>
 
-                <div class="games">
+</div>
 
 
-                    <div class="gameCard">
+<div class="gameCard">
 
-                        <div class="gameIcon">
-                            🎯
-                        </div>
+<div class="gameIcon">🧠</div>
 
-                        <h3>
-                            Caza el objetivo
-                        </h3>
+<h3>Adiviná el número</h3>
 
-                        <p>
-                            Tocá el objetivo tantas veces como puedas.
-                        </p>
+<p>
+    Adiviná el número secreto.
+</p>
 
-                        <button class="btn"
-                                onclick="createRoom('target')">
-                            Crear sala
-                        </button>
+<button class="btn"
+        onclick="startLocalNumberGame()">
+    Jugar
+</button>
 
-                    </div>
+</div>
 
 
-                    <div class="gameCard">
+<div class="gameCard">
 
-                        <div class="gameIcon">
-                            ⚡
-                        </div>
+<div class="gameIcon">🎨</div>
 
-                        <h3>
-                            Reflejos
-                        </h3>
+<h3>Duelo de dibujo</h3>
 
-                        <p>
-                            Esperá la señal y reaccioná lo más rápido posible.
-                        </p>
+<p>
+    Dibujá el objeto antes de que se termine el tiempo.
+</p>
 
-                        <button class="btn"
-                                onclick="createRoom('reaction')">
-                            Crear sala
-                        </button>
+<button class="btn"
+        onclick="createRoom('draw')">
+    Crear sala
+</button>
 
-                    </div>
+</div>
 
+</div>
 
-                    <div class="gameCard">
 
-                        <div class="gameIcon">
-                            ❌
-                        </div>
+<div class="rooms">
 
-                        <h3>
-                            Tres en línea
-                        </h3>
+<h2>🟢 Salas disponibles</h2>
 
-                        <p>
-                            El clásico tres en línea para dos jugadores.
-                        </p>
+<div id="roomList"
+     class="roomList">
 
-                        <button class="btn"
-                                onclick="createRoom('ttt')">
-                            Crear sala
-                        </button>
+<div style="color:var(--muted)">
+    Buscando salas...
+</div>
 
-                    </div>
+</div>
 
+</div>
 
-                    <div class="gameCard">
+</div>
 
-                        <div class="gameIcon">
-                            🧠
-                        </div>
+</section>
 
-                        <h3>
-                            Adiviná el número
-                        </h3>
 
-                        <p>
-                            Adiviná el número secreto.
-                        </p>
+<!-- GAME -->
 
-                        <button class="btn"
-                                onclick="startLocalNumberGame()">
-                            Jugar
-                        </button>
+<section id="game" class="view">
 
-                    </div>
+<div class="container">
 
+<div class="gameHeader">
 
-                    <div class="gameCard">
+<div>
 
-                        <div class="gameIcon">
-                            🎨
-                        </div>
+<h1 id="gameTitle">
+    Juego
+</h1>
 
-                        <h3>
-                            Duelo de dibujo
-                        </h3>
+<div class="opponent">
+    Rival:
+    <span id="opponentName">-</span>
+</div>
 
-                        <p>
-                            Dibujá en tiempo real con tu rival.
-                        </p>
+</div>
 
-                        <button class="btn"
-                                onclick="createRoom('draw')">
-                            Crear sala
-                        </button>
+<button class="btn red"
+        onclick="leaveMatch()">
+    Salir
+</button>
 
-                    </div>
+</div>
 
-                </div>
 
+<div class="gameArea">
 
-                <div class="rooms">
+<div id="countdownArea">
 
-                    <h2>
-                        🟢 Salas disponibles
-                    </h2>
+<div style="color:var(--muted)">
+    Preparados...
+</div>
 
-                    <div id="roomList"
-                         class="roomList">
+<div id="countdownText">
+    3
+</div>
 
-                        <div style="color:var(--muted)">
-                            Buscando salas...
-                        </div>
+</div>
 
-                    </div>
 
-                </div>
+<!-- TARGET -->
 
-            </div>
+<div id="targetGame"
+     style="display:none">
 
-        </section>
+<div class="targetInfo">
 
+<strong>
+    Vos:
+    <span id="myScore">0</span>
+</strong>
 
-        <!-- GAME -->
+<strong>
+    Rival:
+    <span id="enemyScore">0</span>
+</strong>
 
-        <section id="game"
-                 class="view">
+<strong>
+    Tiempo:
+    <span id="targetTimer">30</span>
+</strong>
 
-            <div class="container">
+</div>
 
-                <div class="gameHeader">
+<div id="targetBoard"
+     class="targetBoard">
 
-                    <div>
+<button id="target"
+        class="target"
+        onclick="hitTarget">
+</button>
 
-                        <h1 id="gameTitle">
-                            Juego
-                        </h1>
+</div>
 
-                        <div class="opponent">
-                            Rival:
-                            <span id="opponentName">
-                                -
-                            </span>
-                        </div>
+</div>
 
-                    </div>
 
-                    <button class="btn red"
-                            onclick="leaveMatch()">
-                        Salir
-                    </button>
+<!-- REACTION -->
 
-                </div>
+<div id="reactionGame"
+     style="display:none">
 
+<div class="targetInfo">
 
-                <div class="gameArea">
+<strong>
+    Vos:
+    <span id="myReaction">-</span>
+</strong>
 
+<strong>
+    Rival:
+    <span id="enemyReaction">-</span>
+</strong>
 
-                    <div id="countdownArea">
+</div>
 
-                        <div style="color:var(--muted)">
-                            Preparados...
-                        </div>
+<div class="reactionArea">
 
-                        <div id="countdownText">
-                            3
-                        </div>
+<button id="reactionButton"
+        class="reactionButton"
+        onclick="reactionClick()">
+    ESPERÁ...
+</button>
 
-                    </div>
+</div>
 
+</div>
 
-                    <!-- TARGET -->
 
-                    <div id="targetGame"
-                         style="display:none">
+<!-- TTT -->
 
-                        <div class="targetInfo">
+<div id="tttGame"
+     style="display:none">
 
-                            <strong>
-                                Vos:
-                                <span id="myScore">
-                                    0
-                                </span>
-                            </strong>
+<div style="text-align:center">
 
-                            <strong>
-                                Rival:
-                                <span id="enemyScore">
-                                    0
-                                </span>
-                            </strong>
+<h2 id="tttStatus">
+    Preparando...
+</h2>
 
-                            <strong>
-                                Tiempo:
-                                <span id="targetTimer">
-                                    30
-                                </span>
-                            </strong>
+<div class="tttBoard"
+     id="tttBoard">
 
-                        </div>
+<button class="tttCell" onclick="tttClick(0)"></button>
+<button class="tttCell" onclick="tttClick(1)"></button>
+<button class="tttCell" onclick="tttClick(2)"></button>
+<button class="tttCell" onclick="tttClick(3)"></button>
+<button class="tttCell" onclick="tttClick(4)"></button>
+<button class="tttCell" onclick="tttClick(5)"></button>
+<button class="tttCell" onclick="tttClick(6)"></button>
+<button class="tttCell" onclick="tttClick(7)"></button>
+<button class="tttCell" onclick="tttClick(8)"></button>
 
+</div>
 
-                        <div id="targetBoard"
-                             class="targetBoard">
+</div>
 
-                            <button id="target"
-                                    class="target"
-                                    onclick="hitTarget()">
-                            </button>
+</div>
 
-                        </div>
+</div>
 
-                    </div>
+</div>
 
+</div>
 
-                    <!-- REACTION -->
+</section>
 
-                    <div id="reactionGame"
-                         style="display:none">
 
-                        <div class="targetInfo">
+<!-- DRAW -->
 
-                            <strong>
-                                Vos:
-                                <span id="myReaction">
-                                    -
-                                </span>
-                            </strong>
+<section id="draw" class="view">
 
-                            <strong>
-                                Rival:
-                                <span id="enemyReaction">
-                                    -
-                                </span>
-                            </strong>
+<div class="container">
 
-                        </div>
+<div class="sectionTitle">
 
+<div>
 
-                        <div class="reactionArea">
+<h1>
+    🎨 Duelo de dibujo
+</h1>
 
-                            <button id="reactionButton"
-                                    class="reactionButton"
-                                    onclick="reactionClick()">
-                                ESPERÁ...
-                            </button>
+<p style="color:var(--muted)">
+    Dibujá el objeto antes de que termine el tiempo.
+</p>
 
-                        </div>
+</div>
 
-                    </div>
+<button class="btn red"
+        onclick="leaveMatch()">
+    Salir
+</button>
 
+</div>
 
-                    <!-- TTT -->
 
-                    <div id="tttGame"
-                         style="display:none">
+<div class="drawContainer">
 
-                        <div style="text-align:center">
 
-                            <h2 id="tttStatus">
-                                Preparando...
-                            </h2>
+<div class="drawInfo">
 
-                            <div class="tttBoard"
-                                 id="tttBoard">
+<div class="drawObject">
+    🎯 Dibujá:
+    <span id="drawObject">
+        -
+    </span>
+</div>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(0)">
-                                </button>
+<div class="drawTimer">
+    ⏱️
+    <span id="drawTimer">
+        2:00
+    </span>
+</div>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(1)">
-                                </button>
+</div>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(2)">
-                                </button>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(3)">
-                                </button>
+<canvas id="drawCanvas"
+        width="800"
+        height="500">
+</canvas>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(4)">
-                                </button>
+<br><br>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(5)">
-                                </button>
+<button class="btn secondary"
+        onclick="clearCanvas(true)">
+    🗑️ Limpiar
+</button>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(6)">
-                                </button>
+</div>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(7)">
-                                </button>
+</div>
 
-                                <button class="tttCell"
-                                        onclick="tttClick(8)">
-                                </button>
+</section>
 
-                            </div>
 
-                        </div>
+<!-- ESP -->
 
-                    </div>
+<section id="esp" class="view">
 
+<div class="container">
 
-                </div>
+<h1>
+    ⚡ Control ESP32
+</h1>
 
-            </div>
+<div class="espGrid">
 
-        </section>
+<div class="espCard">
 
+<h3>Conexión</h3>
 
-        <!-- DRAW -->
+<p id="espStatus">
+    Esperando ESP32...
+</p>
 
-        <section id="draw"
-                 class="view">
+</div>
 
-            <div class="container">
 
-                <div class="sectionTitle">
+<div class="espCard">
 
-                    <div>
+<h3>Comandos</h3>
 
-                        <h1>
-                            🎨 Duelo de dibujo
-                        </h1>
+<div class="espButtons">
 
-                        <p style="color:var(--muted)">
-                            Dibujá en tiempo real.
-                        </p>
+<button class="btn green"
+        onclick="sendESP('ON')">
+    🟢 ON
+</button>
 
-                    </div>
+<button class="btn red"
+        onclick="sendESP('OFF')">
+    🔴 OFF
+</button>
 
-                    <button class="btn red"
-                            onclick="leaveMatch()">
-                        Salir
-                    </button>
+<button class="btn blue"
+        onclick="sendESP('PING')">
+    📡 PING
+</button>
 
-                </div>
+<button class="btn"
+        onclick="sendESP('GAME')">
+    🎮 GAME
+</button>
 
+</div>
 
-                <div class="drawContainer">
+</div>
 
-                    <canvas id="drawCanvas"
-                            width="800"
-                            height="500">
-                    </canvas>
 
-                    <br><br>
+<div class="espCard">
 
-                    <button class="btn secondary"
-                            onclick="clearCanvas(true)">
-                        🗑️ Limpiar
-                    </button>
+<h3>Mensaje</h3>
 
-                </div>
+<div style="display:flex;gap:10px">
 
-            </div>
+<input
+    id="espMessage"
+    placeholder="Mensaje para ESP32"
+>
 
-        </section>
+<button class="btn"
+        onclick="sendESPMessage()">
+    Enviar
+</button>
 
+</div>
 
-        <!-- ESP -->
+</div>
 
-        <section id="esp"
-                 class="view">
 
-            <div class="container">
+<div class="espCard">
 
-                <h1>
-                    ⚡ Control ESP32
-                </h1>
+<h3>Estado</h3>
 
+<div id="espLog"
+     style="
+        background:#0b0e17;
+        border-radius:10px;
+        padding:15px;
+        min-height:100px;
+        color:var(--muted);
+     ">
+</div>
 
-                <div class="espGrid">
+</div>
 
+</div>
 
-                    <div class="espCard">
+</div>
 
-                        <h3>
-                            Conexión
-                        </h3>
+</section>
 
-                        <p id="espStatus">
-                            Esperando ESP32...
-                        </p>
-
-                    </div>
-
-
-                    <div class="espCard">
-
-                        <h3>
-                            Comandos
-                        </h3>
-
-                        <div class="espButtons">
-
-                            <button class="btn green"
-                                    onclick="sendESP('ON')">
-                                🟢 ON
-                            </button>
-
-                            <button class="btn red"
-                                    onclick="sendESP('OFF')">
-                                🔴 OFF
-                            </button>
-
-                            <button class="btn blue"
-                                    onclick="sendESP('PING')">
-                                📡 PING
-                            </button>
-
-                            <button class="btn"
-                                    onclick="sendESP('GAME')">
-                                🎮 GAME
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="espCard">
-
-                        <h3>
-                            Mensaje
-                        </h3>
-
-                        <div style="display:flex;gap:10px">
-
-                            <input
-                                id="espMessage"
-                                placeholder="Mensaje para ESP32"
-                            >
-
-                            <button class="btn"
-                                    onclick="sendESPMessage()">
-                                Enviar
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="espCard">
-
-                        <h3>
-                            Estado
-                        </h3>
-
-                        <div id="espLog"
-                             style="
-                                background:#0b0e17;
-                                border-radius:10px;
-                                padding:15px;
-                                min-height:100px;
-                                color:var(--muted);
-                             ">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
+</main>
 
 </div>
 
@@ -1349,105 +1235,99 @@ input:focus{
 <div id="nameModal"
      class="modal">
 
-    <div class="modalBox">
+<div class="modalBox">
 
-        <h2>
-            👋 Bienvenido
-        </h2>
+<h2>👋 Bienvenido</h2>
 
-        <p>
-            Elegí el nombre que van a ver los demás jugadores.
-        </p>
+<p>
+    Elegí el nombre que van a ver los demás jugadores.
+</p>
 
-        <input
-            id="nameInput"
-            placeholder="Tu nombre"
-            maxlength="20"
-            style="width:100%"
-        >
+<input
+    id="nameInput"
+    placeholder="Tu nombre"
+    maxlength="20"
+    style="width:100%"
+>
 
-        <div class="modalActions">
+<div class="modalActions">
 
-            <button class="btn"
-                    onclick="saveUsername()">
-                Continuar
-            </button>
+<button class="btn"
+        onclick="saveUsername()">
+    Continuar
+</button>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </div>
 
 
-<!-- WAITING MODAL -->
+<!-- WAITING -->
 
 <div id="waitingModal"
      class="modal">
 
-    <div class="modalBox"
-         style="text-align:center">
+<div class="modalBox"
+     style="text-align:center">
 
-        <h2>
-            🎮 Sala creada
-        </h2>
+<h2>🎮 Sala creada</h2>
 
-        <p>
-            Juego:
-            <strong id="waitingGame">
-                -
-            </strong>
-        </p>
+<p>
+    Juego:
+    <strong id="waitingGame">-</strong>
+</p>
 
-        <p>
-            Esperando que otro jugador se una...
-        </p>
+<p>
+    Esperando que otro jugador se una...
+</p>
 
-        <div style="
-            font-size:45px;
-            margin:25px 0;
-        ">
-            ⏳
-        </div>
+<div style="
+    font-size:45px;
+    margin:25px 0;
+">
+    ⏳
+</div>
 
-        <button class="btn red"
-                onclick="cancelWaitingRoom()">
-            Cancelar
-        </button>
+<button class="btn red"
+        onclick="cancelWaitingRoom()">
+    Cancelar
+</button>
 
-    </div>
+</div>
 
 </div>
 
 
-<!-- RESULT MODAL -->
+<!-- RESULT -->
 
 <div id="resultModal"
      class="modal">
 
-    <div class="modalBox"
-         style="text-align:center">
+<div class="modalBox"
+     style="text-align:center">
 
-        <div id="resultTitle"
-             class="resultTitle">
-            🏆
-        </div>
+<div id="resultTitle"
+     class="resultTitle">
+    🏆
+</div>
 
-        <div id="resultText"
-             class="resultText">
-        </div>
+<div id="resultText"
+     class="resultText">
+</div>
 
-        <div class="modalActions"
-             style="justify-content:center">
+<div class="modalActions"
+     style="justify-content:center">
 
-            <button class="btn"
-                    onclick="closeResult()">
-                Volver al Arcade
-            </button>
+<button class="btn"
+        onclick="closeResult()">
+    Volver al Arcade
+</button>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </div>
 
@@ -1476,10 +1356,8 @@ if(!playerId){
 let username =
     localStorage.getItem("esp32Username") || "";
 
-
 const sessionId =
     crypto.randomUUID();
-
 
 const mqttClientId =
     "Web-" +
@@ -1495,51 +1373,32 @@ const mqttClientId =
 const MQTT_BROKER =
     "wss://broker.hivemq.com:8884/mqtt";
 
-
 const COMMAND_TOPIC =
     "thomy/esp32c3/comandos";
-
 
 const STATE_TOPIC =
     "thomy/esp32c3/estado";
 
-
 const ROOT =
     "thomy/esp32c3/v7";
-
 
 const CHAT_TOPIC =
     ROOT + "/chat";
 
-
 const PLAYER_PREFIX =
     ROOT + "/players/";
-
 
 const ROOM_PREFIX =
     ROOT + "/rooms/";
 
-
 const MATCH_PREFIX =
     ROOT + "/match/";
 
-
-let mqttClient =
-    null;
-
-
-let mqttConnected =
-    false;
-
-
-/* =========================================================
-   PLAYERS / ROOMS / MATCH
-========================================================= */
+let mqttClient = null;
+let mqttConnected = false;
 
 let players = {};
-
 let rooms = {};
-
 let match = null;
 
 
@@ -1548,11 +1407,6 @@ let match = null;
 ========================================================= */
 
 function connectMQTT(){
-
-    console.log(
-        "Conectando MQTT..."
-    );
-
 
     mqttClient =
         mqtt.connect(
@@ -1565,38 +1419,22 @@ function connectMQTT(){
             }
         );
 
-
     mqttClient.on("connect",()=>{
-
-        console.log(
-            "MQTT conectado"
-        );
-
 
         mqttConnected = true;
 
-
-        setConnection(
-            true
-        );
-
+        setConnection(true);
 
         const topics = [
 
             COMMAND_TOPIC,
-
             STATE_TOPIC,
-
             CHAT_TOPIC,
-
             PLAYER_PREFIX + "+",
-
             ROOM_PREFIX + "+",
-
             MATCH_PREFIX + "#"
 
         ];
-
 
         mqttClient.subscribe(
             topics,
@@ -1609,24 +1447,15 @@ function connectMQTT(){
                         err
                     );
 
-                }else{
-
-                    console.log(
-                        "MQTT subscriptions OK"
-                    );
-
                 }
 
             }
         );
 
-
         publishPresence();
-
         renderRooms();
 
     });
-
 
     mqttClient.on("reconnect",()=>{
 
@@ -1637,17 +1466,13 @@ function connectMQTT(){
 
     });
 
-
     mqttClient.on("close",()=>{
 
         mqttConnected = false;
 
-        setConnection(
-            false
-        );
+        setConnection(false);
 
     });
-
 
     mqttClient.on("error",err=>{
 
@@ -1658,24 +1483,17 @@ function connectMQTT(){
 
         mqttConnected = false;
 
-        setConnection(
-            false
-        );
+        setConnection(false);
 
     });
-
 
     mqttClient.on(
         "message",
         (topic,payload)=>{
 
-            const text =
-                payload.toString();
-
-
             handleMQTTMessage(
                 topic,
-                text
+                payload.toString()
             );
 
         }
@@ -1683,10 +1501,6 @@ function connectMQTT(){
 
 }
 
-
-/* =========================================================
-   MQTT PUBLISH
-========================================================= */
 
 function publish(
     topic,
@@ -1700,12 +1514,10 @@ function publish(
     )
         return;
 
-
     const payload =
         typeof data === "string"
             ? data
             : JSON.stringify(data);
-
 
     mqttClient.publish(
         topic,
@@ -1717,7 +1529,7 @@ function publish(
 
 
 /* =========================================================
-   MQTT MESSAGE ROUTER
+   ROUTER
 ========================================================= */
 
 function handleMQTTMessage(
@@ -1727,23 +1539,17 @@ function handleMQTTMessage(
 
     if(topic === CHAT_TOPIC){
 
-        handleChatMessage(
-            text
-        );
-
+        handleChatMessage(text);
         return;
-    }
 
+    }
 
     if(topic === STATE_TOPIC){
 
-        handleESPState(
-            text
-        );
-
+        handleESPState(text);
         return;
-    }
 
+    }
 
     if(
         topic.startsWith(
@@ -1757,8 +1563,8 @@ function handleMQTTMessage(
         );
 
         return;
-    }
 
+    }
 
     if(
         topic.startsWith(
@@ -1772,8 +1578,8 @@ function handleMQTTMessage(
         );
 
         return;
-    }
 
+    }
 
     if(
         topic.startsWith(
@@ -1781,18 +1587,16 @@ function handleMQTTMessage(
         )
     ){
 
-        handleMatchMessage(
-            text
-        );
-
+        handleMatchMessage(text);
         return;
+
     }
 
 }
 
 
 /* =========================================================
-   CONNECTION UI
+   CONNECTION
 ========================================================= */
 
 function setConnection(
@@ -1805,27 +1609,21 @@ function setConnection(
             "connectionDot"
         );
 
-
     const label =
         document.getElementById(
             "connectionText"
         );
 
-
     if(online){
 
-        dot.classList.add(
-            "online"
-        );
+        dot.classList.add("online");
 
         label.textContent =
             "MQTT conectado";
 
     }else{
 
-        dot.classList.remove(
-            "online"
-        );
+        dot.classList.remove("online");
 
         label.textContent =
             text || "Desconectado";
@@ -1841,15 +1639,11 @@ function setConnection(
 
 function saveUsername(){
 
-    const input =
-        document.getElementById(
-            "nameInput"
-        );
-
-
     const name =
-        input.value.trim();
-
+        document
+            .getElementById("nameInput")
+            .value
+            .trim();
 
     if(!name){
 
@@ -1860,28 +1654,17 @@ function saveUsername(){
         return;
     }
 
-
     username =
-        name.substring(
-            0,
-            20
-        );
-
+        name.substring(0,20);
 
     localStorage.setItem(
         "esp32Username",
         username
     );
 
-
     document
-        .getElementById(
-            "nameModal"
-        )
-        .classList.remove(
-            "show"
-        );
-
+        .getElementById("nameModal")
+        .classList.remove("show");
 
     updateUsernameUI();
 
@@ -1893,9 +1676,7 @@ function saveUsername(){
 function updateUsernameUI(){
 
     document
-        .getElementById(
-            "topUsername"
-        )
+        .getElementById("topUsername")
         .textContent =
             username || "Sin nombre";
 
@@ -1906,42 +1687,23 @@ function updateUsernameUI(){
    VIEWS
 ========================================================= */
 
-function showView(
-    view
-){
+function showView(view){
 
     document
-        .querySelectorAll(
-            ".view"
-        )
+        .querySelectorAll(".view")
         .forEach(v=>{
-
-            v.classList.remove(
-                "active"
-            );
-
+            v.classList.remove("active");
         });
 
-
     const element =
-        document.getElementById(
-            view
-        );
-
+        document.getElementById(view);
 
     if(element){
-
-        element.classList.add(
-            "active"
-        );
-
+        element.classList.add("active");
     }
 
-
     document
-        .querySelectorAll(
-            ".navBtn"
-        )
+        .querySelectorAll(".navBtn")
         .forEach(btn=>{
 
             btn.classList.toggle(
@@ -1965,92 +1727,63 @@ function sendChat(){
             "chatInput"
         );
 
-
     const text =
         input.value.trim();
 
-
     if(!text)
         return;
-
 
     publish(
         CHAT_TOPIC,
         {
             type:"chat",
-
             playerId,
-
             name:username,
-
             text,
-
             ts:Date.now()
         }
     );
-
 
     input.value = "";
 
 }
 
 
-function handleChatMessage(
-    text
-){
+function handleChatMessage(text){
 
     let data;
 
-
     try{
-
-        data =
-            JSON.parse(text);
-
+        data = JSON.parse(text);
     }catch(e){
-
         return;
     }
 
-
-    if(
-        data.type !== "chat"
-    )
+    if(data.type !== "chat")
         return;
 
-
-    renderChatMessage(
-        data
-    );
+    renderChatMessage(data);
 
 }
 
 
-function renderChatMessage(
-    data
-){
+function renderChatMessage(data){
 
     const container =
         document.getElementById(
             "chatMessages"
         );
 
-
     const div =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     div.className =
         "chatMessage";
-
 
     const time =
         new Date(
             data.ts || Date.now()
         );
-
 
     div.innerHTML = `
 
@@ -2071,11 +1804,7 @@ function renderChatMessage(
 
     `;
 
-
-    container.appendChild(
-        div
-    );
-
+    container.appendChild(div);
 
     container.scrollTop =
         container.scrollHeight;
@@ -2083,9 +1812,7 @@ function renderChatMessage(
 }
 
 
-function escapeHTML(
-    value
-){
+function escapeHTML(value){
 
     return String(value)
         .replace(/&/g,"&amp;")
@@ -2098,7 +1825,7 @@ function escapeHTML(
 
 
 /* =========================================================
-   PLAYER PRESENCE
+   PRESENCE
 ========================================================= */
 
 function publishPresence(){
@@ -2106,35 +1833,16 @@ function publishPresence(){
     if(!username)
         return;
 
-
     const presence = {
 
         type:"presence",
-
         playerId,
-
         name:username,
-
         busy:!!match,
-
         ts:Date.now(),
-
         room:null
 
     };
-
-
-    /*
-       MUY IMPORTANTE:
-
-       Si somos host y estamos esperando,
-       mandamos la sala también dentro del
-       heartbeat de presence.
-
-       Así los demás jugadores pueden verla
-       aunque el mensaje retained de /rooms/
-       no llegue correctamente.
-    */
 
     if(
         match &&
@@ -2148,40 +1856,26 @@ function publishPresence(){
         presence.room = {
 
             roomId:match.id,
-
             game:match.game,
-
             host:playerId,
-
             hostName:username,
-
             state:match.state,
-
             ts:Date.now()
 
         };
 
     }
 
-
     publish(
-
         PLAYER_PREFIX + playerId,
-
         presence,
-
         {
             retain:true
         }
-
     );
 
 }
 
-
-/* =========================================================
-   PLAYER MESSAGE
-========================================================= */
 
 function handlePlayerTopic(
     topic,
@@ -2193,21 +1887,12 @@ function handlePlayerTopic(
             PLAYER_PREFIX.length
         );
 
-
-    /*
-       Si la presence desapareció,
-       eliminamos jugador y sus salas.
-    */
-
     if(!text){
 
         delete players[id];
 
-
-        Object.keys(
-            rooms
-        ).forEach(
-            roomId=>{
+        Object.keys(rooms)
+            .forEach(roomId=>{
 
                 if(
                     rooms[roomId].host === id
@@ -2217,38 +1902,22 @@ function handlePlayerTopic(
 
                 }
 
-            }
-        );
-
+            });
 
         renderRooms();
 
         return;
     }
 
-
     let data;
 
-
     try{
-
-        data =
-            JSON.parse(text);
-
+        data = JSON.parse(text);
     }catch(e){
-
         return;
     }
 
-
-    players[id] =
-        data;
-
-
-    /*
-       Si trae una sala,
-       reconstruimos la sala localmente.
-    */
+    players[id] = data;
 
     if(
         data.room &&
@@ -2258,35 +1927,24 @@ function handlePlayerTopic(
         const room =
             data.room;
 
-
         if(
             room.state === "waiting" ||
             room.state === "ready"
         ){
 
-            rooms[
-                room.roomId
-            ] = {
+            rooms[room.roomId] = {
 
-                roomId:
-                    room.roomId,
-
-                game:
-                    room.game,
-
-                host:
-                    room.host,
+                roomId:room.roomId,
+                game:room.game,
+                host:room.host,
 
                 hostName:
                     room.hostName ||
                     data.name ||
                     "Jugador",
 
-                state:
-                    room.state,
-
-                ts:
-                    Date.now()
+                state:room.state,
+                ts:Date.now()
 
             };
 
@@ -2294,15 +1952,8 @@ function handlePlayerTopic(
 
     }else{
 
-        /*
-           Si dejó de mandar room,
-           borramos sus salas.
-        */
-
-        Object.keys(
-            rooms
-        ).forEach(
-            roomId=>{
+        Object.keys(rooms)
+            .forEach(roomId=>{
 
                 if(
                     rooms[roomId].host === id
@@ -2312,11 +1963,9 @@ function handlePlayerTopic(
 
                 }
 
-            }
-        );
+            });
 
     }
-
 
     renderRooms();
 
@@ -2327,46 +1976,32 @@ function handlePlayerTopic(
    ROOMS
 ========================================================= */
 
-function gameName(
-    game
-){
+function gameName(game){
 
     const names = {
 
         target:"🎯 Caza el objetivo",
-
         reaction:"⚡ Reflejos",
-
         ttt:"❌ Tres en línea",
-
         draw:"🎨 Duelo de dibujo"
 
     };
 
-
-    return names[game] ||
-        game;
+    return names[game] || game;
 
 }
 
 
-function createRoom(
-    game
-){
+function createRoom(game){
 
     if(!username){
 
         document
-            .getElementById(
-                "nameModal"
-            )
-            .classList.add(
-                "show"
-            );
+            .getElementById("nameModal")
+            .classList.add("show");
 
         return;
     }
-
 
     if(match){
 
@@ -2377,102 +2012,51 @@ function createRoom(
         return;
     }
 
-
     const roomId =
         crypto.randomUUID();
 
-
     match = {
 
-        id:
-            roomId,
+        id:roomId,
+        game,
+        host:playerId,
+        guest:null,
+        guestName:"",
+        state:"waiting",
+        createdAt:Date.now(),
+        started:false,
 
-        game:
-            game,
+        targetScore:0,
+        enemyScore:null,
 
-        host:
-            playerId,
+        reactionTime:null,
+        enemyReaction:null,
 
-        guest:
-            null,
+        targetFinished:false,
+        enemyTargetFinished:false,
 
-        guestName:
-            "",
+        tttBoard:Array(9).fill(""),
+        tttTurn:null,
+        tttOver:false,
 
-        state:
-            "waiting",
-
-        createdAt:
-            Date.now(),
-
-        started:
-            false,
-
-        targetScore:
-            0,
-
-        enemyScore:
-            null,
-
-        reactionTime:
-            null,
-
-        enemyReaction:
-            null,
-
-        targetFinished:
-            false,
-
-        enemyTargetFinished:
-            false,
-
-        tttBoard:
-            Array(9).fill(""),
-
-        tttTurn:
-            null,
-
-        tttOver:
-            false
+        drawObject:null,
+        drawStarted:false,
+        drawFinished:false
 
     };
 
-
-    /*
-       Publicamos room retained.
-    */
-
     publishRoom();
-
-
-    /*
-       También publicamos presence con room.
-    */
 
     publishPresence();
 
-
     document
-        .getElementById(
-            "waitingGame"
-        )
+        .getElementById("waitingGame")
         .textContent =
             gameName(game);
 
-
     document
-        .getElementById(
-            "waitingModal"
-        )
-        .classList.add(
-            "show"
-        );
-
-
-    console.log(
-        "Sala creada:",
-        roomId
-    );
+        .getElementById("waitingModal")
+        .classList.add("show");
 
 }
 
@@ -2482,71 +2066,39 @@ function publishRoom(){
     if(!match)
         return;
 
-
     publish(
-
-        ROOM_PREFIX +
-        match.id,
-
+        ROOM_PREFIX + match.id,
         {
-
             type:"room",
-
-            roomId:
-                match.id,
-
-            game:
-                match.game,
-
-            host:
-                match.host,
-
-            hostName:
-                username,
-
-            state:
-                match.state,
-
-            ts:
-                Date.now()
-
+            roomId:match.id,
+            game:match.game,
+            host:match.host,
+            hostName:username,
+            state:match.state,
+            ts:Date.now()
         },
-
         {
             retain:true
         }
-
     );
 
 }
 
 
-function clearRoom(
-    roomId
-){
+function clearRoom(roomId){
 
     if(!roomId)
         return;
 
-
     publish(
-
-        ROOM_PREFIX +
-        roomId,
-
+        ROOM_PREFIX + roomId,
         "",
-
         {
             retain:true
         }
-
     );
 
-
-    delete rooms[
-        roomId
-    ];
-
+    delete rooms[roomId];
 
     renderRooms();
 
@@ -2563,69 +2115,46 @@ function handleRoomTopic(
             ROOM_PREFIX.length
         );
 
-
     if(!text){
 
-        delete rooms[
-            roomId
-        ];
+        delete rooms[roomId];
 
         renderRooms();
 
         return;
     }
 
-
     let data;
 
-
     try{
-
-        data =
-            JSON.parse(text);
-
+        data = JSON.parse(text);
     }catch(e){
-
         return;
     }
 
-
-    if(
-        data.type !== "room"
-    )
+    if(data.type !== "room")
         return;
 
-
-    if(
-        data.host === playerId
-    )
+    if(data.host === playerId)
         return;
 
-
-    rooms[
-        roomId
-    ] = {
+    rooms[roomId] = {
 
         roomId,
 
-        game:
-            data.game,
+        game:data.game,
 
-        host:
-            data.host,
+        host:data.host,
 
         hostName:
             data.hostName ||
             "Jugador",
 
-        state:
-            data.state,
+        state:data.state,
 
-        ts:
-            Date.now()
+        ts:Date.now()
 
     };
-
 
     renderRooms();
 
@@ -2639,44 +2168,33 @@ function renderRooms(){
             "roomList"
         );
 
-
     if(!list)
         return;
 
-
     list.innerHTML = "";
 
-
-    const now =
-        Date.now();
-
+    const now = Date.now();
 
     const available =
-        Object.values(
-            rooms
-        ).filter(
-            room=>{
+        Object.values(rooms)
+        .filter(room=>{
 
-                if(
-                    room.host === playerId
-                )
-                    return false;
+            if(
+                room.host === playerId
+            )
+                return false;
 
+            if(
+                room.state !== "waiting"
+            )
+                return false;
 
-                if(
-                    room.state !== "waiting"
-                )
-                    return false;
+            return (
+                now -
+                (room.ts || 0)
+            ) < 10000;
 
-
-                return (
-                    now -
-                    (room.ts || 0)
-                ) < 10000;
-
-            }
-        );
-
+        });
 
     if(
         available.length === 0
@@ -2696,78 +2214,57 @@ function renderRooms(){
         return;
     }
 
+    available.forEach(room=>{
 
-    available
-        .forEach(room=>{
+        const div =
+            document.createElement("div");
 
-            const div =
-                document.createElement(
-                    "div"
-                );
+        div.className = "room";
 
+        div.innerHTML = `
 
-            div.className =
-                "room";
+            <div class="roomInfo">
 
+                <strong>
+                    ${escapeHTML(room.hostName)}
+                </strong>
 
-            div.innerHTML = `
+                <span>
+                    ${gameName(room.game)}
+                </span>
 
-                <div class="roomInfo">
+            </div>
 
-                    <strong>
-                        ${escapeHTML(
-                            room.hostName
-                        )}
-                    </strong>
+            <button
+                class="btn"
+                onclick="joinRoom('${room.roomId}')"
+            >
+                Unirse
+            </button>
 
-                    <span>
-                        ${gameName(
-                            room.game
-                        )}
-                    </span>
+        `;
 
-                </div>
+        list.appendChild(div);
 
-                <button
-                    class="btn"
-                    onclick="joinRoom('${room.roomId}')"
-                >
-                    Unirse
-                </button>
-
-            `;
-
-
-            list.appendChild(
-                div
-            );
-
-        });
+    });
 
 }
 
 
 /* =========================================================
-   JOIN ROOM
+   JOIN
 ========================================================= */
 
-function joinRoom(
-    roomId
-){
+function joinRoom(roomId){
 
     if(!username){
 
         document
-            .getElementById(
-                "nameModal"
-            )
-            .classList.add(
-                "show"
-            );
+            .getElementById("nameModal")
+            .classList.add("show");
 
         return;
     }
-
 
     if(match){
 
@@ -2778,10 +2275,8 @@ function joinRoom(
         return;
     }
 
-
     const room =
         rooms[roomId];
-
 
     if(!room){
 
@@ -2794,157 +2289,90 @@ function joinRoom(
         return;
     }
 
-
     match = {
 
-        id:
-            roomId,
+        id:roomId,
+        game:room.game,
+        host:room.host,
+        guest:playerId,
+        hostName:room.hostName,
+        guestName:username,
+        state:"joining",
+        createdAt:Date.now(),
+        started:false,
 
-        game:
-            room.game,
+        targetScore:0,
+        enemyScore:null,
 
-        host:
-            room.host,
+        reactionTime:null,
+        enemyReaction:null,
 
-        guest:
-            playerId,
+        targetFinished:false,
+        enemyTargetFinished:false,
 
-        hostName:
-            room.hostName,
+        tttBoard:Array(9).fill(""),
+        tttTurn:null,
+        tttOver:false,
 
-        guestName:
-            username,
-
-        state:
-            "joining",
-
-        createdAt:
-            Date.now(),
-
-        started:
-            false,
-
-        targetScore:
-            0,
-
-        enemyScore:
-            null,
-
-        reactionTime:
-            null,
-
-        enemyReaction:
-            null,
-
-        targetFinished:
-            false,
-
-        enemyTargetFinished:
-            false,
-
-        tttBoard:
-            Array(9).fill(""),
-
-        tttTurn:
-            null,
-
-        tttOver:
-            false
+        drawObject:null,
+        drawStarted:false,
+        drawFinished:false
 
     };
 
-
     publishMatch({
 
-        type:
-            "join",
-
+        type:"join",
         roomId,
-
         playerId,
-
-        playerName:
-            username,
-
-        ts:
-            Date.now()
+        playerName:username,
+        ts:Date.now()
 
     });
 
-
     publishPresence();
 
-
     document
-        .getElementById(
-            "waitingGame"
-        )
+        .getElementById("waitingGame")
         .textContent =
-            gameName(
-                room.game
-            );
-
+            gameName(room.game);
 
     document
-        .getElementById(
-            "waitingModal"
-        )
-        .classList.add(
-            "show"
-        );
+        .getElementById("waitingModal")
+        .classList.add("show");
 
 }
 
 
 /* =========================================================
-   MATCH PUBLISH
+   MATCH
 ========================================================= */
 
-function publishMatch(
-    data
-){
+function publishMatch(data){
 
     if(!match)
         return;
 
-
     publish(
-
-        MATCH_PREFIX +
-        match.id,
-
+        MATCH_PREFIX + match.id,
         data
-
     );
 
 }
 
 
-/* =========================================================
-   MATCH MESSAGE
-========================================================= */
-
-function handleMatchMessage(
-    text
-){
+function handleMatchMessage(text){
 
     let data;
 
-
     try{
-
-        data =
-            JSON.parse(text);
-
+        data = JSON.parse(text);
     }catch(e){
-
         return;
     }
 
-
     if(!match)
         return;
-
 
     if(
         data.roomId &&
@@ -2953,250 +2381,126 @@ function handleMatchMessage(
         return;
 
 
-    /* =========================
-       JOIN
-    ========================= */
+    if(data.type === "join"){
 
-    if(
-        data.type === "join"
-    ){
-
-        if(
-            match.host !== playerId
-        )
+        if(match.host !== playerId)
             return;
 
-
-        if(
-            data.playerId === playerId
-        )
+        if(data.playerId === playerId)
             return;
 
-
-        if(
-            match.guest
-        )
+        if(match.guest)
             return;
-
 
         match.guest =
             data.playerId;
-
 
         match.guestName =
             data.playerName ||
             "Jugador";
 
-
         match.state =
             "ready";
-
-
-        console.log(
-            "Jugador unido:",
-            match.guestName
-        );
-
 
         publishMatch({
 
-            type:
-                "accepted",
+            type:"accepted",
 
-            roomId:
-                match.id,
+            roomId:match.id,
 
-            host:
-                playerId,
+            host:playerId,
 
-            hostName:
-                username,
+            hostName:username,
 
-            guest:
-                match.guest,
+            guest:match.guest,
 
-            guestName:
-                match.guestName
+            guestName:match.guestName
 
         });
 
-
-        clearRoom(
-            match.id
-        );
-
+        clearRoom(match.id);
 
         document
-            .getElementById(
-                "waitingModal"
-            )
-            .classList.remove(
-                "show"
-            );
-
+            .getElementById("waitingModal")
+            .classList.remove("show");
 
         publishPresence();
 
-
         startCountdown();
 
-
         return;
-
     }
 
 
-    /* =========================
-       ACCEPTED
-    ========================= */
+    if(data.type === "accepted"){
 
-    if(
-        data.type === "accepted"
-    ){
-
-        if(
-            data.guest !== playerId
-        )
+        if(data.guest !== playerId)
             return;
-
 
         match.state =
             "ready";
 
-
         match.hostName =
-            data.hostName ||
-            "Jugador";
-
+            data.hostName || "Jugador";
 
         match.guest =
             playerId;
 
-
         document
-            .getElementById(
-                "waitingModal"
-            )
-            .classList.remove(
-                "show"
-            );
+            .getElementById("waitingModal")
+            .classList.remove("show");
 
-
-        clearRoom(
-            match.id
-        );
-
+        clearRoom(match.id);
 
         publishPresence();
 
-
         startCountdown();
 
-
         return;
-
     }
 
 
-    /*
-       El START ya no es necesario.
-       Ambos jugadores empiezan cuando
-       reciben JOIN / ACCEPTED.
-    */
-
-    if(
-        data.type === "start"
-    ){
-
+    if(data.type === "start"){
         return;
-
     }
 
 
-    /* =========================
-       TARGET
-    ========================= */
-
-    if(
-        data.type === "targetScore"
-    ){
+    if(data.type === "targetScore"){
 
         match.enemyScore =
-            Number(
-                data.score
-            ) || 0;
-
+            Number(data.score) || 0;
 
         match.enemyTargetFinished =
             true;
 
-
-        const enemy =
-            document.getElementById(
-                "enemyScore"
-            );
-
-
-        if(enemy){
-
-            enemy.textContent =
+        document
+            .getElementById("enemyScore")
+            .textContent =
                 match.enemyScore;
-
-        }
-
 
         checkTargetResult();
 
-
         return;
-
     }
 
 
-    /* =========================
-       REACTION
-    ========================= */
-
-    if(
-        data.type === "reaction"
-    ){
+    if(data.type === "reaction"){
 
         match.enemyReaction =
-            Number(
-                data.time
-            );
+            Number(data.time);
 
-
-        const enemy =
-            document.getElementById(
-                "enemyReaction"
-            );
-
-
-        if(enemy){
-
-            enemy.textContent =
-                match.enemyReaction +
-                " ms";
-
-        }
-
+        document
+            .getElementById("enemyReaction")
+            .textContent =
+                match.enemyReaction + " ms";
 
         checkReactionResult();
 
-
         return;
-
     }
 
 
-    /* =========================
-       TTT
-    ========================= */
-
-    if(
-        data.type === "tttMove"
-    ){
+    if(data.type === "tttMove"){
 
         applyRemoteTTTMove(
             data.index,
@@ -3204,47 +2508,68 @@ function handleMatchMessage(
         );
 
         return;
-
     }
 
 
-    /* =========================
-       DRAW
-    ========================= */
+    /* =====================================================
+       DIBUJO
+    ===================================================== */
 
-    if(
-        data.type === "drawLine"
-    ){
+    if(data.type === "drawStart"){
 
-        drawRemoteLine(
-            data
+        if(
+            match.game !== "draw"
+        )
+            return;
+
+        match.drawObject =
+            data.object;
+
+        match.drawStarted =
+            true;
+
+        document
+            .getElementById("drawObject")
+            .textContent =
+                data.object;
+
+        showView("draw");
+
+        startDrawTimer(
+            data.endTime
         );
 
         return;
-
     }
 
 
-    if(
-        data.type === "drawClear"
-    ){
+    if(data.type === "drawLine"){
 
-        clearCanvas(
+        drawRemoteLine(data);
+
+        return;
+    }
+
+
+    if(data.type === "drawClear"){
+
+        clearCanvas(false);
+
+        return;
+    }
+
+
+    if(data.type === "drawFinished"){
+
+        finishDrawGame(
             false
         );
 
         return;
-
     }
 
 
-    /* =========================
-       ROOM CLOSED
-    ========================= */
-
-    if(
-        data.type === "roomClosed"
-    ){
+    if(data.type === "roomClosed"){
 
         if(
             match &&
@@ -3253,29 +2578,15 @@ function handleMatchMessage(
 
             match = null;
 
+            document
+                .getElementById("waitingModal")
+                .classList.remove("show");
 
             document
-                .getElementById(
-                    "waitingModal"
-                )
-                .classList.remove(
-                    "show"
-                );
+                .getElementById("resultModal")
+                .classList.remove("show");
 
-
-            document
-                .getElementById(
-                    "resultModal"
-                )
-                .classList.remove(
-                    "show"
-                );
-
-
-            showView(
-                "arcade"
-            );
-
+            showView("arcade");
 
             publishPresence();
 
@@ -3295,98 +2606,62 @@ function startCountdown(){
     if(!match)
         return;
 
-
     if(match.started)
         return;
 
-
     document
-        .getElementById(
-            "waitingModal"
-        )
-        .classList.remove(
-            "show"
-        );
+        .getElementById("waitingModal")
+        .classList.remove("show");
 
-
-    showView(
-        "game"
-    );
-
+    showView("game");
 
     hideAllGames();
 
-
     document
-        .getElementById(
-            "countdownArea"
-        )
+        .getElementById("countdownArea")
         .style.display =
             "block";
 
-
     let count = 3;
 
-
     document
-        .getElementById(
-            "countdownText"
-        )
+        .getElementById("countdownText")
         .textContent =
             count;
-
 
     const timer =
         setInterval(()=>{
 
             if(!match){
 
-                clearInterval(
-                    timer
-                );
-
+                clearInterval(timer);
                 return;
 
             }
-
 
             count--;
 
-
             if(count <= 0){
 
-                clearInterval(
-                    timer
-                );
-
+                clearInterval(timer);
 
                 document
-                    .getElementById(
-                        "countdownArea"
-                    )
+                    .getElementById("countdownArea")
                     .style.display =
                         "none";
 
-
-                match.started =
-                    true;
-
+                match.started = true;
 
                 startMatchGame();
-
 
                 return;
 
             }
 
-
             document
-                .getElementById(
-                    "countdownText"
-                )
+                .getElementById("countdownText")
                 .textContent =
                     count;
-
 
         },1000);
 
@@ -3394,7 +2669,7 @@ function startCountdown(){
 
 
 /* =========================================================
-   START GAME
+   START MATCH GAME
 ========================================================= */
 
 function startMatchGame(){
@@ -3402,21 +2677,13 @@ function startMatchGame(){
     if(!match)
         return;
 
-
     document
-        .getElementById(
-            "gameTitle"
-        )
+        .getElementById("gameTitle")
         .textContent =
-            gameName(
-                match.game
-            );
-
+            gameName(match.game);
 
     document
-        .getElementById(
-            "opponentName"
-        )
+        .getElementById("opponentName")
         .textContent =
             match.host === playerId
                 ? (
@@ -3428,31 +2695,22 @@ function startMatchGame(){
                     "Jugador"
                 );
 
-
-    if(
-        match.game === "target"
-    ){
+    if(match.game === "target"){
 
         startTargetGame();
 
     }
-    else if(
-        match.game === "reaction"
-    ){
+    else if(match.game === "reaction"){
 
         startReactionGame();
 
     }
-    else if(
-        match.game === "ttt"
-    ){
+    else if(match.game === "ttt"){
 
         startTTT();
 
     }
-    else if(
-        match.game === "draw"
-    ){
+    else if(match.game === "draw"){
 
         startDraw();
 
@@ -3461,32 +2719,20 @@ function startMatchGame(){
 }
 
 
-/* =========================================================
-   HIDE GAMES
-========================================================= */
-
 function hideAllGames(){
 
     document
-        .getElementById(
-            "targetGame"
-        )
+        .getElementById("targetGame")
         .style.display =
             "none";
 
-
     document
-        .getElementById(
-            "reactionGame"
-        )
+        .getElementById("reactionGame")
         .style.display =
             "none";
 
-
     document
-        .getElementById(
-            "tttGame"
-        )
+        .getElementById("tttGame")
         .style.display =
             "none";
 
@@ -3494,98 +2740,58 @@ function hideAllGames(){
 
 
 /* =========================================================
-   TARGET GAME
+   TARGET
 ========================================================= */
 
-let targetTimerInterval =
-    null;
-
-
-let targetSpawnTimeout =
-    null;
-
+let targetTimerInterval = null;
 
 function startTargetGame(){
 
     hideAllGames();
 
+    document
+        .getElementById("targetGame")
+        .style.display =
+            "block";
 
-    const game =
-        document.getElementById(
-            "targetGame"
-        );
+    match.targetScore = 0;
+    match.enemyScore = 0;
 
-
-    game.style.display =
-        "block";
-
-
-    match.targetScore =
-        0;
-
-
-    match.enemyScore =
-        0;
-
-
-    match.targetFinished =
-        false;
-
-
-    match.enemyTargetFinished =
-        false;
-
+    match.targetFinished = false;
+    match.enemyTargetFinished = false;
 
     document
-        .getElementById(
-            "myScore"
-        )
-        .textContent =
-            "0";
-
+        .getElementById("myScore")
+        .textContent = "0";
 
     document
-        .getElementById(
-            "enemyScore"
-        )
-        .textContent =
-            "0";
-
+        .getElementById("enemyScore")
+        .textContent = "0";
 
     let time = 30;
 
-
     document
-        .getElementById(
-            "targetTimer"
-        )
+        .getElementById("targetTimer")
         .textContent =
             time;
 
-
     spawnTarget();
-
 
     targetTimerInterval =
         setInterval(()=>{
 
             time--;
 
-
             document
-                .getElementById(
-                    "targetTimer"
-                )
+                .getElementById("targetTimer")
                 .textContent =
                     time;
-
 
             if(time <= 0){
 
                 clearInterval(
                     targetTimerInterval
                 );
-
 
                 finishTargetGame();
 
@@ -3599,16 +2805,10 @@ function startTargetGame(){
 function spawnTarget(){
 
     const target =
-        document.getElementById(
-            "target"
-        );
-
+        document.getElementById("target");
 
     const board =
-        document.getElementById(
-            "targetBoard"
-        );
-
+        document.getElementById("targetBoard");
 
     const maxX =
         Math.max(
@@ -3617,7 +2817,6 @@ function spawnTarget(){
             target.offsetWidth
         );
 
-
     const maxY =
         Math.max(
             0,
@@ -3625,18 +2824,11 @@ function spawnTarget(){
             target.offsetHeight
         );
 
-
     target.style.left =
-        Math.random() *
-        maxX +
-        "px";
-
+        Math.random() * maxX + "px";
 
     target.style.top =
-        Math.random() *
-        maxY +
-        "px";
-
+        Math.random() * maxY + "px";
 
     target.style.display =
         "block";
@@ -3653,17 +2845,12 @@ function hitTarget(){
     )
         return;
 
-
     match.targetScore++;
 
-
     document
-        .getElementById(
-            "myScore"
-        )
+        .getElementById("myScore")
         .textContent =
             match.targetScore;
-
 
     spawnTarget();
 
@@ -3678,34 +2865,21 @@ function finishTargetGame(){
     )
         return;
 
-
-    match.targetFinished =
-        true;
-
+    match.targetFinished = true;
 
     document
-        .getElementById(
-            "target"
-        )
+        .getElementById("target")
         .style.display =
             "none";
 
-
     publishMatch({
 
-        type:
-            "targetScore",
-
-        roomId:
-            match.id,
-
+        type:"targetScore",
+        roomId:match.id,
         playerId,
-
-        score:
-            match.targetScore
+        score:match.targetScore
 
     });
-
 
     checkTargetResult();
 
@@ -3721,17 +2895,14 @@ function checkTargetResult(){
     )
         return;
 
-
     let title;
-
 
     if(
         match.targetScore >
         match.enemyScore
     ){
 
-        title =
-            "🏆 ¡Ganaste!";
+        title = "🏆 ¡Ganaste!";
 
     }
     else if(
@@ -3739,97 +2910,69 @@ function checkTargetResult(){
         match.enemyScore
     ){
 
-        title =
-            "😢 Perdiste";
+        title = "😢 Perdiste";
 
     }
     else{
 
-        title =
-            "🤝 Empate";
+        title = "🤝 Empate";
 
     }
 
-
     showResult(
-
         title,
-
         `Vos ${match.targetScore} - ${match.enemyScore} Rival`
-
     );
 
 }
 
 
 /* =========================================================
-   REACTION GAME
+   REACTION
 ========================================================= */
 
-let reactionTimeout =
-    null;
-
-
-let reactionStartedAt =
-    0;
-
-
-let reactionClicked =
-    false;
-
+let reactionTimeout = null;
+let reactionStartedAt = 0;
+let reactionClicked = false;
 
 function startReactionGame(){
 
     hideAllGames();
 
-
     document
-        .getElementById(
-            "reactionGame"
-        )
+        .getElementById("reactionGame")
         .style.display =
             "block";
-
 
     const button =
         document.getElementById(
             "reactionButton"
         );
 
-
     button.className =
         "reactionButton wait";
-
 
     button.textContent =
         "ESPERÁ...";
 
-
-    reactionClicked =
-        false;
-
+    reactionClicked = false;
+    reactionStartedAt = 0;
 
     const delay =
         1500 +
         Math.random() * 4000;
 
-
     reactionTimeout =
         setTimeout(()=>{
 
-            if(
-                !match
-            )
+            if(!match)
                 return;
-
 
             reactionStartedAt =
                 performance.now();
 
-
             button.className =
                 "reactionButton ready";
-
 
             button.textContent =
                 "¡AHORA!";
@@ -3848,48 +2991,28 @@ function reactionClick(){
     )
         return;
 
-
-    if(
-        reactionClicked
-    )
+    if(reactionClicked)
         return;
-
 
     const button =
         document.getElementById(
             "reactionButton"
         );
 
-
-    /*
-       Si todavía no empezó:
-       falsa salida.
-    */
-
-    if(
-        !reactionStartedAt
-    ){
+    if(!reactionStartedAt){
 
         button.textContent =
             "¡MUY PRONTO!";
 
-
         setTimeout(
-            ()=>{
-                startReactionGame();
-            },
+            startReactionGame,
             1000
         );
 
-
         return;
-
     }
 
-
-    reactionClicked =
-        true;
-
+    reactionClicked = true;
 
     const time =
         Math.round(
@@ -3897,37 +3020,25 @@ function reactionClick(){
             reactionStartedAt
         );
 
-
     match.reactionTime =
         time;
 
-
     document
-        .getElementById(
-            "myReaction"
-        )
+        .getElementById("myReaction")
         .textContent =
             time + " ms";
 
-
     publishMatch({
 
-        type:
-            "reaction",
-
-        roomId:
-            match.id,
-
+        type:"reaction",
+        roomId:match.id,
         playerId,
-
         time
 
     });
 
-
     button.textContent =
         time + " ms";
-
 
     checkReactionResult();
 
@@ -3943,17 +3054,14 @@ function checkReactionResult(){
     )
         return;
 
-
     let title;
-
 
     if(
         match.reactionTime <
         match.enemyReaction
     ){
 
-        title =
-            "⚡ ¡Ganaste!";
+        title = "⚡ ¡Ganaste!";
 
     }
     else if(
@@ -3961,24 +3069,18 @@ function checkReactionResult(){
         match.enemyReaction
     ){
 
-        title =
-            "😢 Perdiste";
+        title = "😢 Perdiste";
 
     }
     else{
 
-        title =
-            "🤝 Empate";
+        title = "🤝 Empate";
 
     }
 
-
     showResult(
-
         title,
-
         `Vos ${match.reactionTime} ms - ${match.enemyReaction} ms Rival`
-
     );
 
 }
@@ -3992,26 +3094,18 @@ function startTTT(){
 
     hideAllGames();
 
-
     document
-        .getElementById(
-            "tttGame"
-        )
+        .getElementById("tttGame")
         .style.display =
             "block";
-
 
     match.tttBoard =
         Array(9).fill("");
 
-
-    match.tttOver =
-        false;
-
+    match.tttOver = false;
 
     match.tttTurn =
         match.host;
-
 
     renderTTT();
 
@@ -4025,7 +3119,6 @@ function renderTTT(){
             ".tttCell"
         );
 
-
     cells.forEach(
         (cell,index)=>{
 
@@ -4036,21 +3129,13 @@ function renderTTT(){
         }
     );
 
-
     const status =
         document.getElementById(
             "tttStatus"
         );
 
-
-    if(
-        match.tttOver
-    ){
-
+    if(match.tttOver)
         return;
-
-    }
-
 
     if(
         match.tttTurn === playerId
@@ -4059,8 +3144,7 @@ function renderTTT(){
         status.textContent =
             "🟢 Es tu turno";
 
-    }
-    else{
+    }else{
 
         status.textContent =
             "⏳ Turno del rival";
@@ -4070,9 +3154,7 @@ function renderTTT(){
 }
 
 
-function tttClick(
-    index
-){
+function tttClick(index){
 
     if(
         !match ||
@@ -4080,60 +3162,41 @@ function tttClick(
     )
         return;
 
-
-    if(
-        match.tttOver
-    )
+    if(match.tttOver)
         return;
-
 
     if(
         match.tttTurn !== playerId
     )
         return;
 
-
-    if(
-        match.tttBoard[index]
-    )
+    if(match.tttBoard[index])
         return;
-
 
     const symbol =
         match.host === playerId
             ? "X"
             : "O";
 
-
     match.tttBoard[index] =
         symbol;
 
-
     publishMatch({
 
-        type:
-            "tttMove",
-
-        roomId:
-            match.id,
-
+        type:"tttMove",
+        roomId:match.id,
         playerId,
-
         index,
-
         symbol
 
     });
-
 
     match.tttTurn =
         match.host === playerId
             ? match.guest
             : match.host;
 
-
     renderTTT();
-
 
     checkTTT();
 
@@ -4151,25 +3214,18 @@ function applyRemoteTTTMove(
     )
         return;
 
-
-    if(
-        match.tttBoard[index]
-    )
+    if(match.tttBoard[index])
         return;
-
 
     match.tttBoard[index] =
         symbol;
-
 
     match.tttTurn =
         symbol === "X"
             ? match.guest
             : match.host;
 
-
     renderTTT();
-
 
     checkTTT();
 
@@ -4181,26 +3237,21 @@ function checkTTT(){
     const board =
         match.tttBoard;
 
-
     const wins = [
 
         [0,1,2],
         [3,4,5],
         [6,7,8],
-
         [0,3,6],
         [1,4,7],
         [2,5,8],
-
         [0,4,8],
         [2,4,6]
 
     ];
 
-
     for(
-        const [a,b,c]
-        of wins
+        const [a,b,c] of wins
     ){
 
         if(
@@ -4209,19 +3260,15 @@ function checkTTT(){
             board[a] === board[c]
         ){
 
-            match.tttOver =
-                true;
-
+            match.tttOver = true;
 
             const winner =
                 board[a];
-
 
             const mySymbol =
                 match.host === playerId
                     ? "X"
                     : "O";
-
 
             if(
                 winner === mySymbol
@@ -4241,13 +3288,11 @@ function checkTTT(){
 
             }
 
-
             return;
 
         }
 
     }
-
 
     if(
         board.every(
@@ -4255,9 +3300,7 @@ function checkTTT(){
         )
     ){
 
-        match.tttOver =
-            true;
-
+        match.tttOver = true;
 
         showResult(
             "🤝 Empate",
@@ -4270,53 +3313,306 @@ function checkTTT(){
 
 
 /* =========================================================
-   DRAW
+   DIBUJO
 ========================================================= */
+
+const DRAW_OBJECTS = [
+
+    "🚗 Auto",
+    "🏠 Casa",
+    "🐱 Gato",
+    "🐶 Perro",
+    "🌳 Árbol",
+    "🚀 Cohete",
+    "✈️ Avión",
+    "🚲 Bicicleta",
+    "🎸 Guitarra",
+    "🍕 Pizza",
+    "🍔 Hamburguesa",
+    "🍎 Manzana",
+    "⚽ Pelota",
+    "🎮 Joystick",
+    "🤖 Robot",
+    "👽 Alien",
+    "🐟 Pez",
+    "🦖 Dinosaurio",
+    "🌙 Luna",
+    "☀️ Sol",
+    "⭐ Estrella",
+    "☁️ Nube",
+    "🏰 Castillo",
+    "🚓 Patrullero",
+    "🏍️ Moto",
+    "🚁 Helicóptero",
+    "🛸 OVNI",
+    "⛵ Barco",
+    "🌋 Volcán",
+    "🌵 Cactus"
+
+];
+
 
 let canvas =
     document.getElementById(
         "drawCanvas"
     );
 
-
 let ctx =
-    canvas.getContext(
-        "2d"
-    );
+    canvas.getContext("2d");
 
-
-let drawing =
-    false;
-
+let drawing = false;
 
 let lastX = 0;
-
 let lastY = 0;
 
+let drawTimerInterval = null;
+
+let drawEndTime = 0;
+
+
+/* =========================================================
+   START DRAW
+========================================================= */
 
 function startDraw(){
 
-    showView(
-        "draw"
-    );
-
+    showView("draw");
 
     canvas =
         document.getElementById(
             "drawCanvas"
         );
 
-
     ctx =
-        canvas.getContext(
-            "2d"
+        canvas.getContext("2d");
+
+
+    clearCanvas(false);
+
+
+    /*
+       SOLAMENTE EL HOST ELIGE
+       EL OBJETO.
+
+       El invitado recibe el objeto
+       mediante drawStart.
+    */
+
+    if(
+        match &&
+        match.host === playerId
+    ){
+
+        const object =
+            DRAW_OBJECTS[
+                Math.floor(
+                    Math.random() *
+                    DRAW_OBJECTS.length
+                )
+            ];
+
+        match.drawObject =
+            object;
+
+        match.drawStarted =
+            true;
+
+        /*
+           2 minutos desde ahora.
+        */
+
+        const endTime =
+            Date.now() +
+            120000;
+
+        match.drawEndTime =
+            endTime;
+
+        document
+            .getElementById("drawObject")
+            .textContent =
+                object;
+
+        startDrawTimer(
+            endTime
         );
 
+        publishMatch({
 
-    setupCanvas();
+            type:"drawStart",
+
+            roomId:
+                match.id,
+
+            object,
+
+            endTime
+
+        });
+
+    }
 
 }
 
+
+/* =========================================================
+   DRAW TIMER
+========================================================= */
+
+function startDrawTimer(
+    endTime
+){
+
+    if(drawTimerInterval){
+
+        clearInterval(
+            drawTimerInterval
+        );
+
+    }
+
+    drawEndTime =
+        Number(endTime);
+
+
+    function update(){
+
+        if(!match){
+
+            clearInterval(
+                drawTimerInterval
+            );
+
+            return;
+
+        }
+
+
+        const remaining =
+            Math.max(
+                0,
+                drawEndTime -
+                Date.now()
+            );
+
+
+        const totalSeconds =
+            Math.ceil(
+                remaining / 1000
+            );
+
+
+        const minutes =
+            Math.floor(
+                totalSeconds / 60
+            );
+
+
+        const seconds =
+            totalSeconds % 60;
+
+
+        document
+            .getElementById("drawTimer")
+            .textContent =
+                minutes +
+                ":" +
+                String(seconds)
+                    .padStart(2,"0");
+
+
+        if(
+            remaining <= 0
+        ){
+
+            clearInterval(
+                drawTimerInterval
+            );
+
+            drawTimerInterval =
+                null;
+
+            finishDrawGame(
+                true
+            );
+
+        }
+
+    }
+
+
+    update();
+
+
+    drawTimerInterval =
+        setInterval(
+            update,
+            250
+        );
+
+}
+
+
+/* =========================================================
+   FINISH DRAW
+========================================================= */
+
+function finishDrawGame(
+    send
+){
+
+    if(
+        !match ||
+        match.drawFinished
+    )
+        return;
+
+    match.drawFinished =
+        true;
+
+
+    if(drawTimerInterval){
+
+        clearInterval(
+            drawTimerInterval
+        );
+
+        drawTimerInterval =
+            null;
+
+    }
+
+
+    if(send){
+
+        publishMatch({
+
+            type:"drawFinished",
+
+            roomId:
+                match.id,
+
+            playerId
+
+        });
+
+    }
+
+
+    showResult(
+
+        "⏱️ ¡Tiempo terminado!",
+
+        "Se terminó el tiempo del dibujo."
+
+    );
+
+}
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
 
 function setupCanvas(){
 
@@ -4324,16 +3620,22 @@ function setupCanvas(){
         "pointerdown",
         e=>{
 
+            if(
+                !match ||
+                match.game !== "draw" ||
+                !match.drawStarted ||
+                match.drawFinished
+            )
+                return;
+
             drawing = true;
 
             const rect =
                 canvas.getBoundingClientRect();
 
-
             lastX =
                 (e.clientX - rect.left) *
                 (canvas.width / rect.width);
-
 
             lastY =
                 (e.clientY - rect.top) *
@@ -4370,15 +3672,44 @@ function setupCanvas(){
             if(!drawing)
                 return;
 
+            if(
+                !match ||
+                match.game !== "draw" ||
+                !match.drawStarted ||
+                match.drawFinished
+            ){
+
+                drawing = false;
+
+                return;
+
+            }
+
+
+            /*
+               Si ya se terminaron los 2 minutos,
+               no permitimos seguir dibujando.
+            */
+
+            if(
+                Date.now() >= drawEndTime
+            ){
+
+                drawing = false;
+
+                finishDrawGame(true);
+
+                return;
+
+            }
+
 
             const rect =
                 canvas.getBoundingClientRect();
 
-
             const x =
                 (e.clientX - rect.left) *
                 (canvas.width / rect.width);
-
 
             const y =
                 (e.clientY - rect.top) *
@@ -4409,41 +3740,30 @@ function setupCanvas(){
             ctx.stroke();
 
 
-            if(
-                match &&
-                match.game === "draw"
-            ){
+            publishMatch({
 
-                publishMatch({
+                type:"drawLine",
 
-                    type:
-                        "drawLine",
+                roomId:
+                    match.id,
 
-                    roomId:
-                        match.id,
+                x1:
+                    lastX,
 
-                    x1:
-                        lastX,
+                y1:
+                    lastY,
 
-                    y1:
-                        lastY,
+                x2:
+                    x,
 
-                    x2:
-                        x,
+                y2:
+                    y
 
-                    y2:
-                        y
-
-                });
-
-            }
+            });
 
 
-            lastX =
-                x;
-
-            lastY =
-                y;
+            lastX = x;
+            lastY = y;
 
         }
     );
@@ -4451,42 +3771,10 @@ function setupCanvas(){
 }
 
 
-function startDraw(){
-
-    showView(
-        "draw"
-    );
-
-
-    if(!canvas){
-
-        canvas =
-            document.getElementById(
-                "drawCanvas"
-            );
-
-        ctx =
-            canvas.getContext(
-                "2d"
-            );
-
-    }
-
-
-    clearCanvas(
-        false
-    );
-
-}
-
-
-function drawRemoteLine(
-    data
-){
+function drawRemoteLine(data){
 
     if(!ctx)
         return;
-
 
     ctx.beginPath();
 
@@ -4514,13 +3802,10 @@ function drawRemoteLine(
 }
 
 
-function clearCanvas(
-    send
-){
+function clearCanvas(send){
 
     if(!ctx)
         return;
-
 
     ctx.clearRect(
         0,
@@ -4532,13 +3817,13 @@ function clearCanvas(
 
     if(
         send &&
-        match
+        match &&
+        match.game === "draw"
     ){
 
         publishMatch({
 
-            type:
-                "drawClear",
+            type:"drawClear",
 
             roomId:
                 match.id,
@@ -4556,41 +3841,27 @@ function clearCanvas(
    NUMBER GAME
 ========================================================= */
 
-let numberTarget =
-    0;
-
-
-let numberAttempts =
-    0;
-
+let numberTarget = 0;
+let numberAttempts = 0;
 
 function startLocalNumberGame(){
 
-    showView(
-        "game"
-    );
-
+    showView("game");
 
     hideAllGames();
 
-
     document
-        .getElementById(
-            "countdownArea"
-        )
+        .getElementById("countdownArea")
         .style.display =
             "none";
-
 
     const game =
         document.getElementById(
             "targetGame"
         );
 
-
     game.style.display =
         "block";
-
 
     game.innerHTML = `
 
@@ -4630,15 +3901,12 @@ function startLocalNumberGame(){
 
     `;
 
-
     numberTarget =
         Math.floor(
             Math.random() * 100
         ) + 1;
 
-
-    numberAttempts =
-        0;
+    numberAttempts = 0;
 
 }
 
@@ -4650,18 +3918,13 @@ function guessNumber(){
             "numberGuess"
         );
 
-
     const hint =
         document.getElementById(
             "numberHint"
         );
 
-
     const guess =
-        Number(
-            input.value
-        );
-
+        Number(input.value);
 
     if(
         guess < 1 ||
@@ -4669,9 +3932,7 @@ function guessNumber(){
     )
         return;
 
-
     numberAttempts++;
-
 
     if(
         guess === numberTarget
@@ -4682,17 +3943,14 @@ function guessNumber(){
             numberAttempts +
             " intentos!";
 
-
         sendESP(
             "NUMBER_WIN:" +
             numberAttempts
         );
 
-
         return;
 
     }
-
 
     if(
         guess < numberTarget
@@ -4723,28 +3981,18 @@ function showResult(
 ){
 
     document
-        .getElementById(
-            "resultTitle"
-        )
+        .getElementById("resultTitle")
         .textContent =
             title;
 
-
     document
-        .getElementById(
-            "resultText"
-        )
+        .getElementById("resultText")
         .textContent =
             text;
 
-
     document
-        .getElementById(
-            "resultModal"
-        )
-        .classList.add(
-            "show"
-        );
+        .getElementById("resultModal")
+        .classList.add("show");
 
 }
 
@@ -4752,13 +4000,8 @@ function showResult(
 function closeResult(){
 
     document
-        .getElementById(
-            "resultModal"
-        )
-        .classList.remove(
-            "show"
-        );
-
+        .getElementById("resultModal")
+        .classList.remove("show");
 
     leaveMatch();
 
@@ -4771,63 +4014,49 @@ function closeResult(){
 
 function leaveMatch(){
 
-    if(
-        !match
-    ){
+    if(!match){
 
-        showView(
-            "arcade"
-        );
+        showView("arcade");
 
         return;
 
     }
 
-
     const oldMatch =
         match;
 
 
-    if(
-        oldMatch
-    ){
+    publish(
 
-        publish(
+        MATCH_PREFIX +
+        oldMatch.id,
 
-            MATCH_PREFIX +
-            oldMatch.id,
+        {
 
-            {
+            type:"roomClosed",
 
-                type:
-                    "roomClosed",
+            roomId:
+                oldMatch.id,
 
-                roomId:
-                    oldMatch.id,
-
-                playerId
-
-            }
-
-        );
-
-
-        if(
-            oldMatch.host === playerId
-        ){
-
-            clearRoom(
-                oldMatch.id
-            );
+            playerId
 
         }
+
+    );
+
+
+    if(
+        oldMatch.host === playerId
+    ){
+
+        clearRoom(
+            oldMatch.id
+        );
 
     }
 
 
-    if(
-        targetTimerInterval
-    ){
+    if(targetTimerInterval){
 
         clearInterval(
             targetTimerInterval
@@ -4839,9 +4068,7 @@ function leaveMatch(){
     }
 
 
-    if(
-        reactionTimeout
-    ){
+    if(reactionTimeout){
 
         clearTimeout(
             reactionTimeout
@@ -4853,44 +4080,38 @@ function leaveMatch(){
     }
 
 
-    match =
-        null;
+    if(drawTimerInterval){
 
-
-    document
-        .getElementById(
-            "waitingModal"
-        )
-        .classList.remove(
-            "show"
+        clearInterval(
+            drawTimerInterval
         );
 
+        drawTimerInterval =
+            null;
+
+    }
+
+
+    match = null;
+
+    drawing = false;
 
     document
-        .getElementById(
-            "resultModal"
-        )
-        .classList.remove(
-            "show"
-        );
+        .getElementById("waitingModal")
+        .classList.remove("show");
 
+    document
+        .getElementById("resultModal")
+        .classList.remove("show");
 
     publishPresence();
 
-
-    showView(
-        "arcade"
-    );
-
+    showView("arcade");
 
     renderRooms();
 
 }
 
-
-/* =========================================================
-   CANCEL WAITING
-========================================================= */
 
 function cancelWaitingRoom(){
 
@@ -4903,15 +4124,12 @@ function cancelWaitingRoom(){
    ESP32
 ========================================================= */
 
-function sendESP(
-    command
-){
+function sendESP(command){
 
     publish(
         COMMAND_TOPIC,
         command
     );
-
 
     addESPLog(
         "→ " + command
@@ -4927,36 +4145,27 @@ function sendESPMessage(){
             "espMessage"
         );
 
-
     const text =
         input.value.trim();
-
 
     if(!text)
         return;
 
-
     sendESP(
         "MSG:" + text
     );
-
 
     input.value = "";
 
 }
 
 
-function handleESPState(
-    text
-){
+function handleESPState(text){
 
     document
-        .getElementById(
-            "espStatus"
-        )
+        .getElementById("espStatus")
         .textContent =
             text;
-
 
     addESPLog(
         "ESP32: " + text
@@ -4965,21 +4174,15 @@ function handleESPState(
 }
 
 
-function addESPLog(
-    text
-){
+function addESPLog(text){
 
     const log =
         document.getElementById(
             "espLog"
         );
 
-
     const line =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     line.textContent =
         "[" +
@@ -4987,11 +4190,7 @@ function addESPLog(
         "] " +
         text;
 
-
-    log.appendChild(
-        line
-    );
-
+    log.appendChild(line);
 
     while(
         log.children.length > 20
@@ -5015,14 +4214,8 @@ function heartbeat(){
     if(!mqttConnected)
         return;
 
-
     publishPresence();
 
-
-    /*
-       El host mantiene publicada la sala
-       mientras está esperando.
-    */
 
     if(
         match &&
@@ -5038,18 +4231,11 @@ function heartbeat(){
     }
 
 
-    /*
-       Refresca salas.
-    */
-
-    Object.keys(
-        rooms
-    ).forEach(
-        roomId=>{
+    Object.keys(rooms)
+        .forEach(roomId=>{
 
             const room =
                 rooms[roomId];
-
 
             if(
                 Date.now() -
@@ -5057,14 +4243,11 @@ function heartbeat(){
                 > 10000
             ){
 
-                delete rooms[
-                    roomId
-                ];
+                delete rooms[roomId];
 
             }
 
-        }
-    );
+        });
 
 
     renderRooms();
@@ -5077,25 +4260,21 @@ function heartbeat(){
 ========================================================= */
 
 document
-    .querySelectorAll(
-        ".navBtn"
-    )
-    .forEach(
-        button=>{
+    .querySelectorAll(".navBtn")
+    .forEach(button=>{
 
-            button.addEventListener(
-                "click",
-                ()=>{
+        button.addEventListener(
+            "click",
+            ()=>{
 
-                    showView(
-                        button.dataset.view
-                    );
+                showView(
+                    button.dataset.view
+                );
 
-                }
-            );
+            }
+        );
 
-        }
-    );
+    });
 
 
 /* =========================================================
@@ -5103,19 +4282,13 @@ document
 ========================================================= */
 
 document
-    .getElementById(
-        "chatInput"
-    )
+    .getElementById("chatInput")
     .addEventListener(
         "keydown",
         e=>{
 
-            if(
-                e.key === "Enter"
-            ){
-
+            if(e.key === "Enter"){
                 sendChat();
-
             }
 
         }
@@ -5123,7 +4296,7 @@ document
 
 
 /* =========================================================
-   DRAW INIT
+   CANVAS INIT
 ========================================================= */
 
 canvas =
@@ -5131,12 +4304,8 @@ canvas =
         "drawCanvas"
     );
 
-
 ctx =
-    canvas.getContext(
-        "2d"
-    );
-
+    canvas.getContext("2d");
 
 setupCanvas();
 
@@ -5149,21 +4318,12 @@ window.addEventListener(
     "beforeunload",
     ()=>{
 
-        /*
-           Eliminamos nuestra presence.
-        */
-
         publish(
-
-            PLAYER_PREFIX +
-            playerId,
-
+            PLAYER_PREFIX + playerId,
             "",
-
             {
                 retain:true
             }
-
         );
 
 
@@ -5173,16 +4333,11 @@ window.addEventListener(
         ){
 
             publish(
-
-                ROOM_PREFIX +
-                match.id,
-
+                ROOM_PREFIX + match.id,
                 "",
-
                 {
                     retain:true
                 }
-
             );
 
         }
@@ -5199,19 +4354,14 @@ function startup(){
 
     updateUsernameUI();
 
-
     if(!username){
 
         setTimeout(
             ()=>{
 
                 document
-                    .getElementById(
-                        "nameModal"
-                    )
-                    .classList.add(
-                        "show"
-                    );
+                    .getElementById("nameModal")
+                    .classList.add("show");
 
             },
             500
@@ -5219,9 +4369,7 @@ function startup(){
 
     }
 
-
     connectMQTT();
-
 
     setInterval(
         heartbeat,
@@ -5229,7 +4377,6 @@ function startup(){
     );
 
 }
-
 
 startup();
 
